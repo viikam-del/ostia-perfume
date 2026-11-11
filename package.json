@@ -1,8 +1,8 @@
 {
   "name": "ostia",
   "private": true,
-  "version": "1.0.0",
-  "description": "Ostia - Small-batch handmade perfume management platform (v1.0.0)",
+  "version": "2.1.0",
+  "description": "Ostia - Artisan Perfume OS (v2.1.0: Multi-Stage Production Pipeline, Stock Telemetry, Bottle Tags, Discovery Sets & Shareable Reminders)",
   "type": "module",
   "scripts": {
     "dev": "vite",

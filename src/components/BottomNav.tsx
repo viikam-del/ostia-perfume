@@ -1,22 +1,27 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
-import { Calculator, Hourglass, ReceiptText, Package } from 'lucide-react';
+import { useApp, ActiveTab } from '../context/AppContext';
+import { FlaskConical, Calculator, Hourglass, ReceiptText, Layers, CheckSquare } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
-  const { activeTab, setActiveTab, orders } = useApp();
+  const { activeTab, setActiveTab, orders, batches } = useApp();
 
   const pendingOrdersCount = orders.filter(o => o.status === 'Pending Payment').length;
+  const readyBatchesCount = batches.filter(b => b.status === 'ready_to_bottle').length;
 
-  const tabs = [
-    { id: 'pricing', label: 'Pricing Lab', icon: Calculator },
-    { id: 'aging', label: 'Batch Aging', icon: Hourglass },
-    { id: 'orders', label: 'Orders & QR', icon: ReceiptText, badge: pendingOrdersCount },
-    { id: 'inventory', label: 'Raw Stock', icon: Package }
-  ] as const;
+  const activeProductionCount = batches.filter(b => b.currentStageId !== 'stocked').length;
+
+  const tabs: { id: ActiveTab; label: string; icon: React.ElementType; badge?: number }[] = [
+    { id: 'recipes', label: 'Formulas', icon: FlaskConical },
+    { id: 'pricing', label: 'Pricing', icon: Calculator },
+    { id: 'aging', label: 'Pipeline', icon: Hourglass, badge: activeProductionCount },
+    { id: 'orders', label: 'Orders', icon: ReceiptText, badge: pendingOrdersCount },
+    { id: 'inventory', label: 'Materials', icon: Layers },
+    { id: 'roadmap', label: 'Roadmap', icon: CheckSquare }
+  ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#12151c]/95 backdrop-blur-md border-t border-[#252a36] px-2 py-2 safe-bottom">
-      <div className="max-w-md mx-auto grid grid-cols-4 gap-1">
+    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#0b0e14]/95 backdrop-blur-md border-t border-[#1c2230] px-1 py-1.5 safe-bottom">
+      <div className="max-w-xl mx-auto grid grid-cols-6 gap-0.5">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -24,21 +29,21 @@ export const BottomNav: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition relative ${
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-lg transition font-mono ${
                 isActive
-                  ? 'text-amber-400 font-semibold bg-amber-500/10'
+                  ? 'text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 shadow-sm'
                   : 'text-gray-400 hover:text-gray-200 active:bg-gray-800/40'
               }`}
             >
               <div className="relative">
-                <Icon className={`w-5 h-5 ${isActive ? 'text-amber-400 stroke-[2.2]' : 'text-gray-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400 stroke-[2.2]' : 'text-gray-400'}`} />
                 {tab.badge && tab.badge > 0 ? (
-                  <span className="absolute -top-1.5 -right-2.5 bg-amber-500 text-black text-[10px] font-bold px-1.5 py-0.2 rounded-full min-w-4 text-center">
+                  <span className="absolute -top-1.5 -right-2 bg-amber-500 text-black text-[9px] font-bold px-1 rounded-full min-w-3.5 text-center leading-tight">
                     {tab.badge}
                   </span>
                 ) : null}
               </div>
-              <span className="text-[11px] mt-1 tracking-tight">{tab.label}</span>
+              <span className="text-[10px] mt-1 tracking-tight truncate max-w-full">{tab.label}</span>
             </button>
           );
         })}
