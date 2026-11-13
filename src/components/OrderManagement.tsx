@@ -69,37 +69,28 @@ export const OrderManagement: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-20 font-mono">
-      {/* Telemetry Bar (3 SaaS Metric Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-4">
-          <div className="flex justify-between items-center text-gray-400">
-            <span className="text-[10px] uppercase font-bold tracking-wider">All Reservations</span>
-            <ReceiptText className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div className="text-xl font-extrabold text-white mt-1">{orders.length} Orders</div>
-          <span className="text-[10px] text-gray-500 font-sans">{deliveredCount} Fulfilled & Delivered</span>
+      {/* Telemetry Bar (3 Compact Mobile SaaS Metric Cards) */}
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-2.5">
+          <span className="text-[9px] uppercase font-bold tracking-wider text-gray-400 block">Orders</span>
+          <div className="text-base font-extrabold text-white mt-0.5">{orders.length}</div>
+          <span className="text-[8px] text-gray-500 block truncate">{deliveredCount} Fulfilled</span>
         </div>
 
-        <div className="bg-[#10141e] border border-amber-500/30 rounded-2xl p-4">
-          <div className="flex justify-between items-center text-gray-400">
-            <span className="text-[10px] uppercase font-bold tracking-wider">Pending Dues</span>
-            <Clock className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="text-xl font-extrabold text-amber-400 mt-1">
+        <div className="bg-[#10141e] border border-amber-500/30 rounded-2xl p-2.5">
+          <span className="text-[9px] uppercase font-bold tracking-wider text-amber-400 block">Pending</span>
+          <div className="text-base font-extrabold text-amber-400 mt-0.5">
             {profile.currency}{pendingDuesINR.toLocaleString('en-IN')}
           </div>
-          <span className="text-[10px] text-gray-500 font-sans">{pendingCount} orders awaiting payment</span>
+          <span className="text-[8px] text-amber-500/70 block truncate">{pendingCount} Awaiting</span>
         </div>
 
-        <div className="bg-[#10141e] border border-emerald-500/30 rounded-2xl p-4">
-          <div className="flex justify-between items-center text-gray-400">
-            <span className="text-[10px] uppercase font-bold tracking-wider">Realized Cashflow</span>
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-xl font-extrabold text-emerald-400 mt-1">
+        <div className="bg-[#10141e] border border-emerald-500/30 rounded-2xl p-2.5">
+          <span className="text-[9px] uppercase font-bold tracking-wider text-emerald-400 block">Realized</span>
+          <div className="text-base font-extrabold text-emerald-400 mt-0.5">
             {profile.currency}{totalCollectedINR.toLocaleString('en-IN')}
           </div>
-          <span className="text-[10px] text-gray-500 font-sans">Settled via UPI & Direct Cash</span>
+          <span className="text-[8px] text-emerald-500/70 block truncate">Settled</span>
         </div>
       </div>
 
@@ -157,7 +148,7 @@ export const OrderManagement: React.FC = () => {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex gap-1 bg-[#10141e] p-1 rounded-xl border border-[#1e2536] text-xs shrink-0">
+        <div className="flex gap-1 bg-[#10141e] p-1 rounded-xl border border-[#1e2536] text-xs shrink-0 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setFilter('all')}
             className={`py-1.5 px-3 rounded-lg font-bold transition ${

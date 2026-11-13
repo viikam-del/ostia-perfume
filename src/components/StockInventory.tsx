@@ -89,16 +89,16 @@ export const StockInventory: React.FC = () => {
                   isLow ? 'bg-[#141219] border-amber-500/40' : 'bg-[#10141e] border-[#1e2536]'
                 }`}
               >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-xs text-white">{item.name}</span>
+                <div className="flex-1 min-w-0 pr-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-bold text-xs text-white truncate max-w-full">{item.name}</span>
                     {isLow && (
-                      <span className="text-[9px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.2 rounded border border-amber-500/30">
+                      <span className="text-[9px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.2 rounded border border-amber-500/30 shrink-0">
                         Low Stock
                       </span>
                     )}
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5">
+                  <div className="text-[10px] text-gray-400 mt-0.5 truncate">
                     {profile.currency}{item.costPerUnit.toFixed(2)} / {item.unit} • {item.supplier || 'Local Supplier'}
                   </div>
                 </div>
@@ -144,16 +144,16 @@ export const StockInventory: React.FC = () => {
                   isLow ? 'bg-[#141219] border-amber-500/40' : 'bg-[#10141e] border-[#1e2536]'
                 }`}
               >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-xs text-white">{item.name}</span>
+                <div className="flex-1 min-w-0 pr-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-bold text-xs text-white truncate max-w-full">{item.name}</span>
                     {isLow && (
-                      <span className="text-[9px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.2 rounded border border-amber-500/30">
+                      <span className="text-[9px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.2 rounded border border-amber-500/30 shrink-0">
                         Low Stock
                       </span>
                     )}
                   </div>
-                  <div className="text-[10px] text-gray-400 mt-0.5">
+                  <div className="text-[10px] text-gray-400 mt-0.5 truncate">
                     {profile.currency}{item.costPerUnit.toFixed(2)} / {item.unit} • {item.supplier || 'Specialty Distillery'}
                   </div>
                 </div>
@@ -183,8 +183,8 @@ export const StockInventory: React.FC = () => {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl animate-scaleUp">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
+          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-sm w-full max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl my-auto animate-scaleUp no-scrollbar">
             <div className="flex justify-between items-center border-b border-[#1c2230] pb-2">
               <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase">
                 <Sparkles className="w-4 h-4 text-amber-400" />

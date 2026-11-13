@@ -115,38 +115,38 @@ export const BatchAgingTracker: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-20 font-mono">
-      {/* 4 PRODUCTION TELEMETRY TILES */}
-      <div className="grid grid-cols-4 gap-1.5 text-center">
-        <div className="bg-[#10141e] border border-[#1e2536] p-2 rounded-2xl">
-          <span className="text-[9px] text-gray-500 uppercase font-bold block">Total Made</span>
-          <div className="text-base font-extrabold text-white mt-0.5">
+      {/* 4 PRODUCTION TELEMETRY TILES (Symmetrical 2x2 Mobile Grid) */}
+      <div className="grid grid-cols-2 gap-2 text-center">
+        <div className="bg-[#10141e] border border-[#1e2536] p-3 rounded-2xl">
+          <span className="text-[10px] text-gray-400 uppercase font-bold block">Total Made</span>
+          <div className="text-xl font-extrabold text-white mt-1">
             {productionStats.totalMadeAllTime}
           </div>
-          <span className="text-[8px] text-gray-400 block">All-Time</span>
+          <span className="text-[9px] text-gray-500 block">All-Time Yield</span>
         </div>
 
-        <div className="bg-[#10141e] border border-amber-500/30 p-2 rounded-2xl">
-          <span className="text-[9px] text-amber-400 uppercase font-bold block">In Production</span>
-          <div className="text-base font-extrabold text-amber-400 mt-0.5">
+        <div className="bg-[#10141e] border border-amber-500/30 p-3 rounded-2xl">
+          <span className="text-[10px] text-amber-400 uppercase font-bold block">In Production</span>
+          <div className="text-xl font-extrabold text-amber-400 mt-1">
             {productionStats.inProductionCount}
           </div>
-          <span className="text-[8px] text-gray-400 block">WIP Flacons</span>
+          <span className="text-[9px] text-amber-500/70 block">WIP Flacons</span>
         </div>
 
-        <div className="bg-[#10141e] border border-cyan-500/30 p-2 rounded-2xl">
-          <span className="text-[9px] text-cyan-400 uppercase font-bold block">Ready Stock</span>
-          <div className="text-base font-extrabold text-cyan-400 mt-0.5">
+        <div className="bg-[#10141e] border border-cyan-500/30 p-3 rounded-2xl">
+          <span className="text-[10px] text-cyan-400 uppercase font-bold block">Ready Stock</span>
+          <div className="text-xl font-extrabold text-cyan-400 mt-1">
             {productionStats.finishedStockCount}
           </div>
-          <span className="text-[8px] text-gray-400 block">On-Shelf</span>
+          <span className="text-[9px] text-cyan-500/70 block">On-Shelf Bottles</span>
         </div>
 
-        <div className="bg-[#10141e] border border-emerald-500/30 p-2 rounded-2xl">
-          <span className="text-[9px] text-emerald-400 uppercase font-bold block">Delivered</span>
-          <div className="text-base font-extrabold text-emerald-400 mt-0.5">
+        <div className="bg-[#10141e] border border-emerald-500/30 p-3 rounded-2xl">
+          <span className="text-[10px] text-emerald-400 uppercase font-bold block">Delivered</span>
+          <div className="text-xl font-extrabold text-emerald-400 mt-1">
             {productionStats.bottlesSoldCount}
           </div>
-          <span className="text-[8px] text-gray-400 block">Sold</span>
+          <span className="text-[9px] text-emerald-500/70 block">Sold & Shipped</span>
         </div>
       </div>
 
@@ -196,7 +196,7 @@ export const BatchAgingTracker: React.FC = () => {
       )}
 
       {/* Visual Production Pipeline Stepper Bar */}
-      <div className="bg-[#0b0e14] border border-[#1c2230] p-2.5 rounded-2xl overflow-x-auto space-y-1.5">
+      <div className="bg-[#0b0e14] border border-[#1c2230] p-2.5 rounded-2xl overflow-x-auto no-scrollbar space-y-1.5">
         <div className="flex justify-between items-center text-[10px] px-1 text-gray-400">
           <span className="uppercase font-bold text-amber-400 flex items-center gap-1">
             <Layers className="w-3 h-3" /> 7 Production Milestones
@@ -352,24 +352,24 @@ export const BatchAgingTracker: React.FC = () => {
                 </div>
 
                 {/* Action Bar: Advance Stage, Share Reminder, Print Tags */}
-                <div className="pt-3 mt-3 border-t border-[#1c2230] flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5">
+                <div className="pt-3 mt-3 border-t border-[#1c2230] space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {/* Share Reminder Button */}
                     <button
                       onClick={() => handleShareReminder(batch.id)}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-gray-300 text-[11px] font-bold flex items-center gap-1 border border-[#222a3d] active:scale-95 transition"
+                      className="w-full py-2 px-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-gray-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-[#222a3d] active:scale-95 transition"
                     >
-                      <Bell className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Share Reminder</span>
+                      <Bell className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Alert</span>
                     </button>
 
                     {/* Print Tags Button */}
                     <button
                       onClick={() => setActiveTagBatch(batch)}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-amber-300 text-[11px] font-bold flex items-center gap-1 border border-amber-500/30 active:scale-95 transition"
+                      className="w-full py-2 px-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-amber-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-amber-500/30 active:scale-95 transition"
                     >
-                      <Printer className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Tags</span>
+                      <Printer className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Bottle Tags</span>
                     </button>
                   </div>
 
@@ -377,16 +377,16 @@ export const BatchAgingTracker: React.FC = () => {
                   {!isCompletedStock ? (
                     <button
                       onClick={() => setAdvanceModalBatch(batch)}
-                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-[11px] font-extrabold flex items-center gap-1 shadow-md shadow-amber-500/20 active:scale-95 transition"
+                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition"
                     >
                       <span>
-                        Advance &rarr; {productionStages[currentStageIndex + 1]?.shortCode || 'Next'}
+                        Advance to {productionStages[currentStageIndex + 1]?.name || 'Next Stage'} &rarr;
                       </span>
                     </button>
                   ) : (
-                    <span className="text-emerald-400 font-bold text-xs flex items-center gap-1">
-                      <CheckCircle2 className="w-4 h-4" /> Ready in Stock
-                    </span>
+                    <div className="w-full py-2 text-center text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                      <CheckCircle2 className="w-4 h-4" /> Ready in Stock ({batch.bottlesPlanned} Flacons)
+                    </div>
                   )}
                 </div>
               </div>

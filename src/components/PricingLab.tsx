@@ -105,26 +105,26 @@ export const PricingLab: React.FC = () => {
           </div>
 
           {/* Preset Pricing Shortcuts in INR */}
-          <div className="grid grid-cols-3 gap-2 pt-1">
+          <div className="grid grid-cols-3 gap-1.5 pt-1">
             <button
               onClick={() => handlePriceChange(1999)}
               className="p-2 rounded-xl bg-[#0b0e14] hover:bg-[#141824] border border-[#1e2536] text-center active:scale-95 transition"
             >
-              <div className="text-[10px] text-gray-400">Friends & Family</div>
+              <div className="text-[9px] text-gray-400 leading-tight">Friends & Fam</div>
               <div className="font-bold text-xs text-white mt-0.5">{profile.currency}1,999</div>
             </button>
             <button
               onClick={() => handlePriceChange(2899)}
               className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-center active:scale-95 transition"
             >
-              <div className="text-[10px] text-amber-400 font-bold">Standard Retail</div>
+              <div className="text-[9px] text-amber-400 font-bold leading-tight">Standard</div>
               <div className="font-bold text-xs text-amber-300 mt-0.5">{profile.currency}2,899</div>
             </button>
             <button
               onClick={() => handlePriceChange(3499)}
               className="p-2 rounded-xl bg-[#0b0e14] hover:bg-[#141824] border border-[#1e2536] text-center active:scale-95 transition"
             >
-              <div className="text-[10px] text-gray-400">Collector Edition</div>
+              <div className="text-[9px] text-gray-400 leading-tight">Collector</div>
               <div className="font-bold text-xs text-white mt-0.5">{profile.currency}3,499</div>
             </button>
           </div>

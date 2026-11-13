@@ -228,7 +228,7 @@ export const CustomerStorefront: React.FC = () => {
     : '';
 
   return (
-    <div className="max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto space-y-5 pb-20 pt-1 font-mono">
+    <div className="w-full space-y-4 pb-20 pt-1 font-mono">
       {/* Brand Hero (Shown on catalog & details) */}
       {checkoutStep !== 'confirmation' && checkoutStep !== 'order_received' && (
         <div className="text-center space-y-2 py-3 px-2">
@@ -318,19 +318,19 @@ export const CustomerStorefront: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Scent Pyramid Tags */}
-                    <div className="pt-2 border-t border-[#1c2230] grid grid-cols-3 gap-1.5 text-[10px]">
-                      <div className="bg-[#080a0f] p-2 rounded-xl border border-[#1a2130]">
-                        <span className="text-amber-400 font-bold block uppercase text-[8px]">Top Note</span>
-                        <span className="text-gray-300 truncate block">{recipe.pyramid.top[0]}</span>
+                    {/* Scent Pyramid Breakdown */}
+                    <div className="pt-2 border-t border-[#1c2230] space-y-1 text-[11px]">
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-amber-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Top:</span>
+                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.top.join(', ')}</span>
                       </div>
-                      <div className="bg-[#080a0f] p-2 rounded-xl border border-[#1a2130]">
-                        <span className="text-pink-400 font-bold block uppercase text-[8px]">Heart Note</span>
-                        <span className="text-gray-300 truncate block">{recipe.pyramid.heart[0]}</span>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-pink-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Heart:</span>
+                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(', ')}</span>
                       </div>
-                      <div className="bg-[#080a0f] p-2 rounded-xl border border-[#1a2130]">
-                        <span className="text-amber-500 font-bold block uppercase text-[8px]">Base Note</span>
-                        <span className="text-gray-300 truncate block">{recipe.pyramid.base[0]}</span>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-amber-500 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Base:</span>
+                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.base.join(', ')}</span>
                       </div>
                     </div>
 

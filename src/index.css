@@ -5,10 +5,20 @@
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .font-serif-luxury {
   font-family: 'Cinzel', serif;
+}
+
+/* Hide scrollbars for horizontal pill tracks */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom smooth scrollbars */
@@ -20,14 +30,17 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2f3a;
+  background: #232a38;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3e4555;
+  background: #374258;
 }
 
 /* Mobile safe area */
 .safe-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+.safe-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
 }

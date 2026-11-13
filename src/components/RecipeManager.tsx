@@ -176,100 +176,100 @@ export const RecipeManager: React.FC = () => {
                 </div>
               </div>
 
-              {/* Scent Pyramid Tags */}
-              <div className="grid grid-cols-3 gap-1.5 text-[11px] font-mono">
-                <div className="bg-[#0b0e14] p-2 rounded-xl border border-[#1a2130]">
-                  <span className="text-amber-400 font-bold block text-[9px] uppercase tracking-wider">Top Note</span>
-                  <span className="text-gray-300 truncate block">{recipe.pyramid.top.join(', ')}</span>
+              {/* Scent Pyramid Breakdown (Clean Mobile-First Stack) */}
+              <div className="bg-[#0b0e14] p-2.5 rounded-xl border border-[#1a2130] space-y-1.5 text-[11px] font-mono">
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Top:</span>
+                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.top.join(', ')}</span>
                 </div>
-                <div className="bg-[#0b0e14] p-2 rounded-xl border border-[#1a2130]">
-                  <span className="text-pink-400 font-bold block text-[9px] uppercase tracking-wider">Heart Note</span>
-                  <span className="text-gray-300 truncate block">{recipe.pyramid.heart.join(', ')}</span>
+                <div className="flex items-start gap-2">
+                  <span className="text-pink-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Heart:</span>
+                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(', ')}</span>
                 </div>
-                <div className="bg-[#0b0e14] p-2 rounded-xl border border-[#1a2130]">
-                  <span className="text-amber-500 font-bold block text-[9px] uppercase tracking-wider">Base Note</span>
-                  <span className="text-gray-300 truncate block">{recipe.pyramid.base.join(', ')}</span>
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-500 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Base:</span>
+                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.base.join(', ')}</span>
                 </div>
               </div>
 
-              {/* Financial & Formulation Telemetry */}
-              <div className="grid grid-cols-4 gap-1.5 p-2 rounded-xl bg-[#0b0e14] border border-[#1a2130] text-center font-mono">
-                <div>
+              {/* Financial & Formulation Telemetry (Symmetrical 2x2 Mobile Grid) */}
+              <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-[#0b0e14] border border-[#1a2130] text-center font-mono">
+                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
                   <span className="text-[9px] text-gray-500 block uppercase">Liquid Cost</span>
                   <span className="text-xs font-bold text-gray-200">{profile.currency}{Math.round(oilCost)}</span>
                 </div>
-                <div>
+                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
                   <span className="text-[9px] text-gray-500 block uppercase">Pack Cost</span>
                   <span className="text-xs font-bold text-gray-200">{profile.currency}{packCost}</span>
                 </div>
-                <div>
-                  <span className="text-[9px] text-gray-500 block uppercase">Unit COGS</span>
+                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
+                  <span className="text-[9px] text-amber-500/80 block uppercase">Unit COGS</span>
                   <span className="text-xs font-bold text-amber-400">{profile.currency}{Math.round(totalCogs)}</span>
                 </div>
-                <div>
-                  <span className="text-[9px] text-gray-500 block uppercase">Net Margin</span>
+                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
+                  <span className="text-[9px] text-emerald-500/80 block uppercase">Net Margin</span>
                   <span className="text-xs font-bold text-emerald-400">{margin.toFixed(0)}%</span>
                 </div>
               </div>
 
               {/* Formulation Ingredients Summary */}
               <div className="text-[11px] text-gray-400 flex items-center justify-between border-t border-[#1c2230] pt-2 font-mono">
-                <span>{recipe.ingredients.length} formula ingredients • {recipe.maturationDaysNeeded} days aging</span>
-                <span className="text-cyan-400 font-semibold">{recipe.inStockBottles} bottles in stock</span>
+                <span>{recipe.ingredients.length} formula oils • {recipe.maturationDaysNeeded}d aging</span>
+                <span className="text-cyan-400 font-semibold">{recipe.inStockBottles} flacons ready</span>
               </div>
 
               {/* Batch Scaler & Actions */}
-              <div className="flex items-center justify-between gap-2 pt-1">
-                <div className="flex items-center gap-1 font-mono text-[10px]">
-                  <Scale className="w-3.5 h-3.5 text-gray-500" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#1a2130]">
+                <div className="flex items-center gap-1.5 font-mono text-[10px]">
+                  <Scale className="w-3.5 h-3.5 text-gray-500 shrink-0" />
                   <span className="text-gray-500">Scale:</span>
-                  <button
-                    onClick={() => {
-                      scaleRecipe(recipe.id, 50);
-                      showNotification(`Scaled ${recipe.name} to 50ml trial blend`);
-                    }}
-                    className={`px-1.5 py-0.5 rounded border transition ${
-                      recipe.batchVolumeMl === 50 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    50ml
-                  </button>
-                  <button
-                    onClick={() => {
-                      scaleRecipe(recipe.id, 500);
-                      showNotification(`Scaled ${recipe.name} to 500ml (10 bottles)`);
-                    }}
-                    className={`px-1.5 py-0.5 rounded border transition ${
-                      recipe.batchVolumeMl === 500 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    500ml
-                  </button>
-                  <button
-                    onClick={() => {
-                      scaleRecipe(recipe.id, 1000);
-                      showNotification(`Scaled ${recipe.name} to 1000ml (20 bottles)`);
-                    }}
-                    className={`px-1.5 py-0.5 rounded border transition ${
-                      recipe.batchVolumeMl === 1000 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    1000ml
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        scaleRecipe(recipe.id, 50);
+                        showNotification(`Scaled ${recipe.name} to 50ml trial blend`);
+                      }}
+                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
+                        recipe.batchVolumeMl === 50 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      50ml
+                    </button>
+                    <button
+                      onClick={() => {
+                        scaleRecipe(recipe.id, 500);
+                        showNotification(`Scaled ${recipe.name} to 500ml (10 bottles)`);
+                      }}
+                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
+                        recipe.batchVolumeMl === 500 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      500ml
+                    </button>
+                    <button
+                      onClick={() => {
+                        scaleRecipe(recipe.id, 1000);
+                        showNotification(`Scaled ${recipe.name} to 1000ml (20 bottles)`);
+                      }}
+                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
+                        recipe.batchVolumeMl === 1000 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      1000ml
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => {
-                      setSelectedRecipeId(recipe.id);
-                      setActiveTab('pricing');
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-[#141824] hover:bg-[#1a2030] text-amber-400 text-[11px] font-mono font-semibold border border-[#222a3d] flex items-center gap-1"
-                  >
-                    Pricing & Margins
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    setSelectedRecipeId(recipe.id);
+                    setActiveTab('pricing');
+                  }}
+                  className="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-amber-400 text-xs font-mono font-semibold border border-[#222a3d] flex items-center justify-center gap-1 active:scale-95 transition"
+                >
+                  <span>Pricing & Margins</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           );
@@ -278,8 +278,8 @@ export const RecipeManager: React.FC = () => {
 
       {/* Full Modal: Create New Perfume / Formula */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl my-8 animate-scaleUp">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
+          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-md w-full max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl my-auto animate-scaleUp no-scrollbar">
             {/* Modal Header */}
             <div className="flex justify-between items-center border-b border-[#1c2230] pb-3">
               <div className="flex items-center gap-2">
