@@ -231,18 +231,25 @@ export const CustomerStorefront: React.FC = () => {
     <div className="max-w-md mx-auto space-y-4 pb-20 pt-1 font-mono">
       {/* Brand Hero (Shown on catalog & details) */}
       {checkoutStep !== 'confirmation' && checkoutStep !== 'order_received' && (
-        <div className="text-center space-y-1.5 py-2 px-2">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-amber-700 p-0.5 shadow-xl">
-            <div className="w-full h-full bg-[#0b0e14] rounded-2xl flex items-center justify-center text-amber-300 font-serif-luxury font-bold text-xl">
-              O
-            </div>
+        <div className="text-center space-y-2 py-3 px-2">
+          <div className="w-24 h-24 mx-auto rounded-3xl p-1 flex items-center justify-center">
+            <img
+              src="/ostia-logo.png"
+              alt="OSTIA Logo"
+              className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(217,119,6,0.3)]"
+            />
           </div>
-          <h2 className="text-lg font-extrabold text-white tracking-widest font-serif-luxury uppercase">
-            {profile.businessName}
-          </h2>
-          <p className="text-[11px] text-amber-400/90 max-w-xs mx-auto italic font-sans">
-            {profile.tagline}
-          </p>
+          <div>
+            <h2 className="text-2xl font-extrabold text-white tracking-[0.25em] font-serif-luxury uppercase">
+              {profile.businessName}
+            </h2>
+            <div className="text-[10px] text-amber-400 font-bold uppercase tracking-widest mt-0.5">
+              Haute Parfumerie • Master Perfumer {profile.perfumerName}
+            </div>
+            <p className="text-[11px] text-gray-400 max-w-xs mx-auto italic font-sans mt-1">
+              {profile.tagline}
+            </p>
+          </div>
         </div>
       )}
 
@@ -783,9 +790,12 @@ export const CustomerStorefront: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'order_received' && orderCompleteData && (
         <div className="bg-[#10141e] border-2 border-emerald-500/50 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleUp text-center">
-          {/* Animated Success Badge */}
-          <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
-            <CheckCircle2 className="w-9 h-9 stroke-[2.5]" />
+          {/* Brand Logo & Animated Success Badge */}
+          <div className="flex flex-col items-center justify-center gap-2">
+            <img src="/ostia-logo.png" alt="OSTIA" className="w-16 h-16 object-contain filter drop-shadow" />
+            <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
+              <CheckCircle2 className="w-7 h-7 stroke-[2.5]" />
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -796,7 +806,7 @@ export const CustomerStorefront: React.FC = () => {
               Thank You, {orderCompleteData.customerName}!
             </h3>
             <p className="text-xs text-gray-400 font-sans">
-              Your bespoke fragrance reservation has been received by the artisan.
+              Your bespoke fragrance reservation is logged with Master Perfumer <strong className="text-amber-300 font-serif-luxury">{profile.perfumerName}</strong>.
             </p>
           </div>
 

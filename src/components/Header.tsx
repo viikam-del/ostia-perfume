@@ -25,23 +25,23 @@ export const Header: React.FC = () => {
         {/* Top Bar: Brand, Version, Currency & Controls */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-bold shadow-md shadow-amber-500/10">
-              <FlaskConical className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-[#121622] border border-[#222a3d] p-0.5 flex items-center justify-center shrink-0 shadow-md">
+              <img src="/ostia-logo.png" alt="OSTIA" className="w-full h-full object-contain filter drop-shadow" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-extrabold tracking-tight text-white font-mono uppercase">
-                  Ostia
+                  {profile.businessName}
                 </span>
                 <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                  v2.0 • Pro
+                  v2.1
                 </span>
                 <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center">
                   ₹ INR
                 </span>
               </div>
               <p className="text-[10px] text-gray-400 font-mono tracking-tight">
-                {viewMode === 'maker' ? 'Artisan Studio Terminal' : 'Public Storefront Preview'}
+                {viewMode === 'maker' ? `Maker: ${profile.perfumerName} • Studio` : `By ${profile.perfumerName} • Storefront`}
               </p>
             </div>
           </div>

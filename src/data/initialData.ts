@@ -1,11 +1,12 @@
 import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage } from '../types';
 
 export const initialProfile: PerfumerProfile = {
-  businessName: 'Ostia Parfums',
+  businessName: 'OSTIA',
   tagline: 'Artisan Micro-Batch Botanical & Molecular Formulations',
-  perfumerName: 'Arjun Verma',
+  perfumerName: 'Faisal Parvez',
   upiId: 'ostia@okaxis',
-  currency: '₹'
+  currency: '₹',
+  logoUrl: '/ostia-logo.png'
 };
 
 export const defaultProductionStages: ProductionStage[] = [

@@ -94,6 +94,7 @@ export interface PerfumerProfile {
   perfumerName: string;
   upiId: string;
   currency: string; // "₹"
+  logoUrl?: string;
 }
 
 export interface DiscoveryConfig {

@@ -85,11 +85,16 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
 
             {/* Atelier Brand Emblem */}
             <div className="text-center space-y-1">
+              <img
+                src="/ostia-logo.png"
+                alt="OSTIA Logo"
+                className="w-16 h-16 mx-auto object-contain filter drop-shadow my-1"
+              />
               <div className="text-amber-400 font-serif-luxury text-sm font-bold tracking-[0.25em] uppercase">
                 {profile.businessName}
               </div>
               <div className="text-[9px] text-amber-300/80 tracking-widest uppercase font-mono">
-                Artisan Haute Parfumerie
+                Haute Parfumerie • {profile.perfumerName}
               </div>
               <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto my-1"></div>
             </div>
@@ -145,8 +150,8 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
             {/* Artisan Seal & Date */}
             <div className="pt-2 border-t border-amber-500/20 flex justify-between items-end text-[9px] font-mono text-gray-400">
               <div>
-                <span className="block text-gray-500">Formulated in India</span>
-                <span className="text-gray-300 font-serif-luxury">{profile.perfumerName}</span>
+                <span className="block text-gray-500">Master Perfumer</span>
+                <span className="text-amber-300 font-serif-luxury font-bold text-xs">{profile.perfumerName}</span>
               </div>
               <div className="text-right">
                 <span className="block text-gray-500">Brewed on</span>

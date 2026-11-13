@@ -133,19 +133,24 @@ export const Dashboard: React.FC = () => {
       {/* Studio Header & Status */}
       <div className="bg-gradient-to-r from-[#121622] via-[#0f131d] to-[#0a0d14] border border-[#1e2536] rounded-3xl p-4.5 shadow-xl relative overflow-hidden">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" />
-              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                Studio Command Center • Live Telemetry
-              </span>
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-[#080a0f] border border-amber-500/30 p-1 flex items-center justify-center shrink-0 shadow-md">
+              <img src="/ostia-logo.png" alt="OSTIA" className="w-10 h-10 object-contain filter drop-shadow" />
             </div>
-            <h1 className="text-xl font-extrabold text-white font-serif-luxury mt-1 tracking-tight">
-              {profile.businessName} Atelier
-            </h1>
-            <p className="text-xs text-gray-400 font-sans">
-              Maker: <strong className="text-amber-300">{profile.perfumerName}</strong> • Handcrafted Micro-Batch Production
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" />
+                <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+                  Studio Command Center • Live Telemetry
+                </span>
+              </div>
+              <h1 className="text-xl font-extrabold text-white font-serif-luxury mt-0.5 tracking-tight">
+                {profile.businessName} Atelier
+              </h1>
+              <p className="text-xs text-gray-400 font-sans">
+                Master Perfumer: <strong className="text-amber-300 font-serif-luxury font-bold">{profile.perfumerName}</strong> • Micro-Batch Formulation
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">

@@ -59,7 +59,21 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<PerfumerProfile>(() => {
     const saved = localStorage.getItem('ostia_v3_profile');
-    return saved ? JSON.parse(saved) : initialProfile;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...initialProfile,
+          ...parsed,
+          businessName: 'OSTIA',
+          perfumerName: 'Faisal Parvez',
+          logoUrl: '/ostia-logo.png'
+        };
+      } catch (e) {
+        return initialProfile;
+      }
+    }
+    return initialProfile;
   });
 
   const [discoveryConfig, setDiscoveryConfig] = useState<DiscoveryConfig>(() => {
