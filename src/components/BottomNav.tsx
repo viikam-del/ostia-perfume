@@ -20,7 +20,7 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-[#0b0e14]/95 backdrop-blur-md border-t border-[#1c2230] px-1 py-1.5 safe-bottom">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0b0e14]/95 backdrop-blur-md border-t border-[#1c2230] px-1 py-1.5 safe-bottom">
       <div className="max-w-xl mx-auto grid grid-cols-6 gap-0.5">
         {tabs.map(tab => {
           const Icon = tab.icon;

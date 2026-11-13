@@ -79,7 +79,7 @@ export const StockInventory: React.FC = () => {
           Bottling Hardware & Packaging ({packagingHardware.length} items)
         </h3>
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {packagingHardware.map(item => {
             const isLow = item.stockQty <= item.reorderPoint;
             return (
@@ -134,7 +134,7 @@ export const StockInventory: React.FC = () => {
           Aroma Concentrate & Carrier Liquids ({oilsAndAlcohol.length} items)
         </h3>
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {oilsAndAlcohol.map(item => {
             const isLow = item.stockQty <= item.reorderPoint;
             return (

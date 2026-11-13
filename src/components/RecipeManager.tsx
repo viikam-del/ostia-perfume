@@ -139,7 +139,7 @@ export const RecipeManager: React.FC = () => {
       )}
 
       {/* Recipe Cards List */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {recipes.map(recipe => {
           const { oilCost, packCost, totalCogs, concentrationPercent } = calculateRecipeCogs(recipe);
           const profit = recipe.manualPrice - totalCogs;

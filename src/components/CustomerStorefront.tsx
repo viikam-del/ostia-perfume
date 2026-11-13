@@ -228,7 +228,7 @@ export const CustomerStorefront: React.FC = () => {
     : '';
 
   return (
-    <div className="max-w-md mx-auto space-y-4 pb-20 pt-1 font-mono">
+    <div className="max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto space-y-5 pb-20 pt-1 font-mono">
       {/* Brand Hero (Shown on catalog & details) */}
       {checkoutStep !== 'confirmation' && checkoutStep !== 'order_received' && (
         <div className="text-center space-y-2 py-3 px-2">
@@ -286,7 +286,7 @@ export const CustomerStorefront: React.FC = () => {
 
           {/* 50ml Flacons List */}
           {catalogCategory === 'flacons' ? (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {recipes.map(recipe => {
                 const isAvailable = recipe.inStockBottles > 0;
 

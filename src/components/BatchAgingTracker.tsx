@@ -271,7 +271,7 @@ export const BatchAgingTracker: React.FC = () => {
       </div>
 
       {/* Batches Cards in Production */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredBatches.length === 0 ? (
           <div className="p-8 text-center text-gray-500 bg-[#10141e] rounded-2xl border border-[#1e2536] text-xs">
             No batches at this production stage.

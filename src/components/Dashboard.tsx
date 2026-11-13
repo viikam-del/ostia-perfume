@@ -369,218 +369,247 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 4. FRAGRANCE PORTFOLIO & IN-STOCK RADAR                       */}
+      {/* 4 & 5. RESPONSIVE 2-COLUMN SAAS GRID: PORTFOLIO & ORDERS      */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <FlaskConical className="w-4 h-4 text-amber-400" />
-              Fragrance Portfolio & Stock Health
-            </h2>
-            <p className="text-[11px] text-gray-400 font-sans mt-0.5">
-              Finished inventory ready for allocation and direct client dispatch
-            </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        {/* Fragrance Portfolio & In-Stock Radar */}
+        <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg h-full">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <FlaskConical className="w-4 h-4 text-amber-400" />
+                Fragrance Portfolio & Stock Health
+              </h2>
+              <p className="text-[11px] text-gray-400 font-sans mt-0.5">
+                Finished inventory ready for allocation and client dispatch
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveTab('recipes')}
+              className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
+            >
+              <span>Formulas</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-          <button
-            onClick={() => setActiveTab('recipes')}
-            className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
-          >
-            <span>Formulas</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
 
-        <div className="space-y-2">
-          {recipes.map(recipe => {
-            const cogs = calculateRecipeCogs(recipe);
-            const unitProfit = Math.max(0, recipe.manualPrice - cogs.totalCogs);
-            const margin = Math.round((unitProfit / recipe.manualPrice) * 100);
-            const inStock = recipe.inStockBottles;
-            const soldCount = orders.filter(o => o.recipeId === recipe.id).length;
+          <div className="space-y-2">
+            {recipes.map(recipe => {
+              const cogs = calculateRecipeCogs(recipe);
+              const unitProfit = Math.max(0, recipe.manualPrice - cogs.totalCogs);
+              const margin = Math.round((unitProfit / recipe.manualPrice) * 100);
+              const inStock = recipe.inStockBottles;
+              const soldCount = orders.filter(o => o.recipeId === recipe.id).length;
 
-            return (
-              <div
-                key={recipe.id}
-                className="bg-[#080a0f] p-3.5 rounded-2xl border border-[#1e2536] flex flex-col sm:flex-row justify-between sm:items-center gap-2.5"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xs font-extrabold text-white font-serif-luxury">{recipe.name}</h3>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#161c28] text-gray-300 border border-[#222a3d]">
-                      {recipe.concentration}
+              return (
+                <div
+                  key={recipe.id}
+                  className="bg-[#080a0f] p-3.5 rounded-2xl border border-[#1e2536] flex flex-col sm:flex-row justify-between sm:items-center gap-2.5"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs font-extrabold text-white font-serif-luxury">{recipe.name}</h3>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#161c28] text-gray-300 border border-[#222a3d]">
+                        {recipe.concentration}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 italic font-sans mt-0.5">
+                      "{recipe.tagline}"
+                    </p>
+                    <div className="flex items-center gap-2.5 text-[10px] text-gray-500 mt-1 font-mono">
+                      <span>COGS: ₹{Math.round(cogs.totalCogs)}</span>
+                      <span>•</span>
+                      <span className="text-emerald-400">Profit: ₹{unitProfit.toLocaleString('en-IN')} ({margin}%)</span>
+                      <span>•</span>
+                      <span>{soldCount} Sold</span>
+                    </div>
+                  </div>
+
+                  <div className="flex sm:flex-col justify-between sm:items-end items-center shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#1a2130]">
+                    <div className="text-sm font-extrabold text-amber-400 font-mono">
+                      ₹{recipe.manualPrice.toLocaleString('en-IN')}
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
+                      inStock > 2
+                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
+                        : inStock > 0
+                        ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                        : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'
+                    }`}>
+                      {inStock > 0 ? `${inStock} In Stock` : 'Sold Out'}
                     </span>
                   </div>
-                  <p className="text-[10px] text-gray-400 italic font-sans mt-0.5">
-                    "{recipe.tagline}"
-                  </p>
-                  <div className="flex items-center gap-2.5 text-[10px] text-gray-500 mt-1 font-mono">
-                    <span>COGS: ₹{Math.round(cogs.totalCogs)}</span>
-                    <span>•</span>
-                    <span className="text-emerald-400">Profit: ₹{unitProfit.toLocaleString('en-IN')} ({margin}%)</span>
-                    <span>•</span>
-                    <span>{soldCount} Sold</span>
-                  </div>
                 </div>
-
-                <div className="flex sm:flex-col justify-between sm:items-end items-center shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#1a2130]">
-                  <div className="text-sm font-extrabold text-amber-400 font-mono">
-                    ₹{recipe.manualPrice.toLocaleString('en-IN')}
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
-                    inStock > 2
-                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
-                      : inStock > 0
-                      ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
-                      : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'
-                  }`}>
-                    {inStock > 0 ? `${inStock} In Stock` : 'Sold Out'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------- */}
-      {/* 5. RECENT ORDERS & CASHFLOW FEED                              */}
-      {/* ------------------------------------------------------------- */}
-      <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <ReceiptText className="w-4 h-4 text-amber-400" />
-              Recent Orders & Cashflow
-            </h2>
-            <p className="text-[11px] text-gray-400 font-sans mt-0.5">
-              Live customer reservations from the online storefront
-            </p>
+              );
+            })}
           </div>
-          <button
-            onClick={() => setActiveTab('orders')}
-            className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
-          >
-            <span>All Orders ({orders.length})</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
         </div>
 
-        {orders.length > 0 ? (
-          <div className="space-y-2">
-            {orders.slice(0, 4).map(order => (
-              <div
-                key={order.id}
-                className="bg-[#080a0f] p-3 rounded-2xl border border-[#1e2536] flex justify-between items-center gap-2 text-xs"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-amber-300 font-mono">{order.orderNumber}</span>
-                    <span className="text-gray-200 font-bold truncate">{order.customerName}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-[10px] text-gray-400 font-sans mt-0.5 truncate">
-                    <span className="truncate">{order.recipeName}</span>
-                    <span>•</span>
-                    <span className="font-mono text-gray-500">{order.bottleSerial}</span>
-                  </div>
-                </div>
-
-                <div className="text-right shrink-0 space-y-1">
-                  <div className="font-bold text-emerald-400 font-mono text-xs">
-                    ₹{order.price.toLocaleString('en-IN')}
-                  </div>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold block ${
-                    order.status === 'Paid'
-                      ? 'bg-emerald-500/20 text-emerald-300'
-                      : order.status === 'Delivered'
-                      ? 'bg-cyan-500/20 text-cyan-300'
-                      : 'bg-amber-500/20 text-amber-300'
-                  }`}>
-                    {order.status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-4 bg-[#080a0f] rounded-2xl border border-dashed border-[#1e2536] text-xs text-gray-500">
-            No orders logged yet. Customer orders from the storefront will appear here.
-          </div>
-        )}
-      </div>
-
-      {/* ------------------------------------------------------------- */}
-      {/* 6. RAW MATERIALS & PACKAGING HEALTH RADAR                     */}
-      {/* ------------------------------------------------------------- */}
-      <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-amber-400" />
-              Studio Inventory Health & Valuation
-            </h2>
-            <p className="text-[11px] text-gray-400 font-sans mt-0.5">
-              Stock reserve of perfumer alcohol, glass flacons, pumps, and boxes
-            </p>
-          </div>
-          <button
-            onClick={() => setActiveTab('inventory')}
-            className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
-          >
-            <span>Materials</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          {materials.slice(0, 4).map(m => (
-            <div key={m.id} className="bg-[#080a0f] p-2.5 rounded-xl border border-[#1e2536]">
-              <span className="text-[9px] text-gray-500 uppercase block font-bold truncate">{m.name}</span>
-              <span className="text-sm font-extrabold text-white font-mono mt-0.5 block">
-                {m.stockQty} <span className="text-[10px] text-gray-400 font-normal">{m.unit}</span>
-              </span>
-              <span className={`text-[8px] font-bold block mt-0.5 ${
-                m.stockQty <= m.reorderThreshold ? 'text-rose-400' : 'text-emerald-400'
-              }`}>
-                {m.stockQty <= m.reorderThreshold ? '⚠️ Low Stock' : '✓ Normal Reserve'}
-              </span>
+        {/* Recent Orders & Cashflow Feed */}
+        <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg h-full">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <ReceiptText className="w-4 h-4 text-amber-400" />
+                Recent Orders & Cashflow
+              </h2>
+              <p className="text-[11px] text-gray-400 font-sans mt-0.5">
+                Live customer reservations from the storefront
+              </p>
             </div>
-          ))}
-        </div>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
+            >
+              <span>All Orders ({orders.length})</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-        <div className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] flex justify-between items-center text-xs">
-          <span className="text-gray-400">Total Aroma & Packaging Asset Value:</span>
-          <strong className="text-amber-300 font-mono text-sm">₹{Math.round(totalMaterialsValue).toLocaleString('en-IN')}</strong>
+          {orders.length > 0 ? (
+            <div className="space-y-2">
+              {orders.slice(0, 4).map(order => (
+                <div
+                  key={order.id}
+                  className="bg-[#080a0f] p-3 rounded-2xl border border-[#1e2536] flex justify-between items-center gap-2 text-xs"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-amber-300 font-mono">{order.orderNumber}</span>
+                      <span className="text-gray-200 font-bold truncate">{order.customerName}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-gray-400 font-sans mt-0.5 truncate">
+                      <span className="truncate">{order.recipeName}</span>
+                      <span>•</span>
+                      <span className="font-mono text-gray-500">{order.bottleSerial}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0 space-y-1">
+                    <div className="font-bold text-emerald-400 font-mono text-xs">
+                      ₹{order.price.toLocaleString('en-IN')}
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold block ${
+                      order.status === 'Paid'
+                        ? 'bg-emerald-500/20 text-emerald-300'
+                        : order.status === 'Delivered'
+                        ? 'bg-cyan-500/20 text-cyan-300'
+                        : 'bg-amber-500/20 text-amber-300'
+                    }`}>
+                      {order.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-[#080a0f] rounded-2xl border border-dashed border-[#1e2536] text-xs text-gray-500">
+              No orders logged yet. Customer orders from the storefront will appear here.
+            </div>
+          )}
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 7. QUICK STUDIO LAUNCHPAD / SHORTCUTS                         */}
+      {/* 6 & 7. RESPONSIVE 2-COLUMN SAAS GRID: INVENTORY & LAUNCHPAD   */}
       {/* ------------------------------------------------------------- */}
-      <div className="grid grid-cols-3 gap-2">
-        <button
-          onClick={() => setActiveTab('recipes')}
-          className="p-3 rounded-2xl bg-[#10141e] hover:bg-[#151b28] border border-[#1e2536] text-center active:scale-95 transition space-y-1"
-        >
-          <FlaskConical className="w-5 h-5 text-amber-400 mx-auto" />
-          <span className="text-[11px] text-gray-200 font-bold block">Formula Lab</span>
-        </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+        {/* Raw Materials & Packaging Health (2 cols on lg) */}
+        <div className="lg:col-span-2 bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3.5 shadow-lg flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-center mb-3">
+              <div>
+                <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                  <Layers className="w-4 h-4 text-amber-400" />
+                  Studio Inventory Health & Valuation
+                </h2>
+                <p className="text-[11px] text-gray-400 font-sans mt-0.5">
+                  Stock reserve of perfumer alcohol, glass flacons, pumps, and boxes
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveTab('inventory')}
+                className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-0.5 transition"
+              >
+                <span>Materials</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
 
-        <button
-          onClick={() => setActiveTab('pricing')}
-          className="p-3 rounded-2xl bg-[#10141e] hover:bg-[#151b28] border border-[#1e2536] text-center active:scale-95 transition space-y-1"
-        >
-          <IndianRupee className="w-5 h-5 text-emerald-400 mx-auto" />
-          <span className="text-[11px] text-gray-200 font-bold block">Pricing & Margin</span>
-        </button>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              {materials.slice(0, 4).map(m => (
+                <div key={m.id} className="bg-[#080a0f] p-2.5 rounded-xl border border-[#1e2536]">
+                  <span className="text-[9px] text-gray-500 uppercase block font-bold truncate">{m.name}</span>
+                  <span className="text-sm font-extrabold text-white font-mono mt-0.5 block">
+                    {m.stockQty} <span className="text-[10px] text-gray-400 font-normal">{m.unit}</span>
+                  </span>
+                  <span className={`text-[8px] font-bold block mt-0.5 ${
+                    m.stockQty <= m.reorderThreshold ? 'text-rose-400' : 'text-emerald-400'
+                  }`}>
+                    {m.stockQty <= m.reorderThreshold ? '⚠️ Low Stock' : '✓ Normal Reserve'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <button
-          onClick={() => setActiveTab('orders')}
-          className="p-3 rounded-2xl bg-[#10141e] hover:bg-[#151b28] border border-[#1e2536] text-center active:scale-95 transition space-y-1"
-        >
-          <ReceiptText className="w-5 h-5 text-cyan-400 mx-auto" />
-          <span className="text-[11px] text-gray-200 font-bold block">Orders & Log</span>
-        </button>
+          <div className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] flex justify-between items-center text-xs mt-3">
+            <span className="text-gray-400">Total Aroma & Packaging Asset Value:</span>
+            <strong className="text-amber-300 font-mono text-sm">₹{Math.round(totalMaterialsValue).toLocaleString('en-IN')}</strong>
+          </div>
+        </div>
+
+        {/* Quick Studio Launchpad (1 col on lg) */}
+        <div className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-4.5 space-y-3 shadow-lg flex flex-col justify-between">
+          <div>
+            <h2 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5 mb-1">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              Studio Launchpad
+            </h2>
+            <p className="text-[11px] text-gray-400 font-sans mb-3">
+              Direct access to core formulation & commercial labs
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <button
+              onClick={() => setActiveTab('recipes')}
+              className="w-full p-2.5 rounded-xl bg-[#080a0f] hover:bg-[#121724] border border-[#1e2536] hover:border-amber-500/30 text-left transition flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-2.5">
+                <FlaskConical className="w-4 h-4 text-amber-400 group-hover:scale-110 transition" />
+                <span className="text-xs text-gray-200 font-bold">Formulation Studio</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-amber-400 transition" />
+            </button>
+
+            <button
+              onClick={() => setActiveTab('pricing')}
+              className="w-full p-2.5 rounded-xl bg-[#080a0f] hover:bg-[#121724] border border-[#1e2536] hover:border-emerald-500/30 text-left transition flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-2.5">
+                <IndianRupee className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition" />
+                <span className="text-xs text-gray-200 font-bold">Pricing & Margin Lab</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-emerald-400 transition" />
+            </button>
+
+            <button
+              onClick={() => setActiveTab('orders')}
+              className="w-full p-2.5 rounded-xl bg-[#080a0f] hover:bg-[#121724] border border-[#1e2536] hover:border-cyan-500/30 text-left transition flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-2.5">
+                <ReceiptText className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition" />
+                <span className="text-xs text-gray-200 font-bold">Orders & Dispatches</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-cyan-400 transition" />
+            </button>
+          </div>
+
+          <div className="text-[10px] text-gray-500 text-center pt-1 font-sans">
+            Press <kbd className="px-1 py-0.5 rounded bg-[#080a0f] border border-[#1e2536] text-[9px] text-gray-400 font-mono">⌘K</kbd> for command palette
+          </div>
+        </div>
       </div>
     </div>
   );
