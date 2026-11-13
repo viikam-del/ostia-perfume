@@ -35,7 +35,7 @@ interface AppContextType {
   brewBatch: (batchData: Omit<Batch, 'id' | 'status' | 'bottlesBottled'>) => { success: boolean; message: string };
   updateBatchStatus: (batchId: string, status: Batch['status']) => void;
   bottleBatch: (batchId: string) => { success: boolean; message: string };
-  addOrder: (order: Omit<Order, 'id' | 'orderNumber' | 'createdAt'>) => string;
+  addOrder: (order: Omit<Order, 'id' | 'orderNumber' | 'createdAt'>) => Order;
   updateOrderStatus: (orderId: string, status: Order['status'], paymentMethod?: Order['paymentMethod']) => void;
   updateMaterialStock: (materialId: string, delta: number) => void;
   addMaterial: (material: Omit<RawMaterial, 'id'>) => void;
@@ -333,7 +333,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }));
     }
 
-    return orderNumber;
+    return newOrder;
   };
 
   const updateOrderStatus = (orderId: string, status: Order['status'], paymentMethod?: Order['paymentMethod']) => {

@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { QRCodeSVG } from 'qrcode.react';
+import { Order } from '../types';
 import {
   Sparkles,
-  QrCode,
   CheckCircle,
+  CheckCircle2,
   Copy,
   Check,
   ChevronRight,
-  ShieldCheck,
-  Tag,
   Box,
   ArrowLeft,
   Phone,
   User,
   MapPin,
   ExternalLink,
-  Gift
+  Gift,
+  Banknote,
+  Clock,
+  RotateCcw
 } from 'lucide-react';
 
 export const CustomerStorefront: React.FC = () => {
-  const { profile, recipes, addOrder, discoveryConfig } = useApp();
+  const { profile, recipes, addOrder, updateOrderStatus, discoveryConfig } = useApp();
 
   // Multi-step checkout funnel state
-  const [checkoutStep, setCheckoutStep] = useState<'catalog' | 'details' | 'confirmation'>('catalog');
+  const [checkoutStep, setCheckoutStep] = useState<'catalog' | 'details' | 'confirmation' | 'order_received'>('catalog');
   
   // Selection
   const [selectedProductType, setSelectedProductType] = useState<'flacon' | 'discovery'>('flacon');
@@ -43,19 +46,53 @@ export const CustomerStorefront: React.FC = () => {
   const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>('delivery');
   const [giftNote, setGiftNote] = useState('');
 
-  // Confirmation state
-  const [submittedOrder, setSubmittedOrder] = useState<{
+  // Confirmation / Payment state
+  const [submittedOrder, setSubmittedOrder] = useState<Order | null>(null);
+
+  // Order received state
+  const [orderCompleteData, setOrderCompleteData] = useState<{
     orderNumber: string;
-    recipeName: string;
-    bottleSerial: string;
+    paymentMethod: 'UPI' | 'Cash';
+    customerName: string;
     price: number;
+    bottleSerial: string;
+    recipeName: string;
     discoveryItems?: string[];
+    deliveryNote: string;
   } | null>(null);
 
+  const [redirectCountdown, setRedirectCountdown] = useState<number>(6);
   const [copiedUpi, setCopiedUpi] = useState(false);
-  const [confirmedTransfer, setConfirmedTransfer] = useState(false);
 
   const selectedRecipe = recipes.find(r => r.id === selectedRecipeId) || recipes[0];
+
+  // Auto-redirect countdown effect on order completion
+  useEffect(() => {
+    if (checkoutStep !== 'order_received') return;
+
+    if (redirectCountdown <= 0) {
+      resetToCatalog();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setRedirectCountdown(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [checkoutStep, redirectCountdown]);
+
+  const resetToCatalog = () => {
+    setCustomerName('');
+    setCustomerPhone('');
+    setDeliveryAddress('');
+    setGiftNote('');
+    setSubmittedOrder(null);
+    setOrderCompleteData(null);
+    setRedirectCountdown(6);
+    setCheckoutStep('catalog');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // 1. Choose product from catalog and move to details page
   const handleSelectFlacon = (recipeId: string) => {
@@ -102,7 +139,7 @@ export const CustomerStorefront: React.FC = () => {
         giftNote.trim() ? `Gift Note: "${giftNote.trim()}"` : ''
       ].filter(Boolean).join(' • ');
 
-      const orderNumber = addOrder({
+      const createdOrder = addOrder({
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
         deliveryNote: combinedNote,
@@ -112,17 +149,11 @@ export const CustomerStorefront: React.FC = () => {
         discoveryItems: selectedNames,
         bottleSerial: `Discovery Box #${Math.floor(100 + Math.random() * 900)}`,
         price: discoveryConfig.price,
-        paymentMethod: 'UPI',
+        paymentMethod: 'Pending',
         status: 'Pending Payment'
       });
 
-      setSubmittedOrder({
-        orderNumber,
-        recipeName: `Discovery Sampler Box (${discoveryConfig.vialCount} × ${discoveryConfig.vialSizeMl}ml)`,
-        bottleSerial: 'Curated 3-Vial Set',
-        price: discoveryConfig.price,
-        discoveryItems: selectedNames
-      });
+      setSubmittedOrder(createdOrder);
     } else {
       if (!selectedRecipe) return;
 
@@ -137,7 +168,7 @@ export const CustomerStorefront: React.FC = () => {
         giftNote.trim() ? `Gift Note: "${giftNote.trim()}"` : ''
       ].filter(Boolean).join(' • ');
 
-      const orderNumber = addOrder({
+      const createdOrder = addOrder({
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
         deliveryNote: combinedNote,
@@ -146,19 +177,40 @@ export const CustomerStorefront: React.FC = () => {
         recipeName: selectedRecipe.name,
         bottleSerial,
         price: selectedRecipe.manualPrice,
-        paymentMethod: 'UPI',
+        paymentMethod: 'Pending',
         status: 'Pending Payment'
       });
 
-      setSubmittedOrder({
-        orderNumber,
-        recipeName: selectedRecipe.name,
-        bottleSerial,
-        price: selectedRecipe.manualPrice
-      });
+      setSubmittedOrder(createdOrder);
     }
 
     setCheckoutStep('confirmation');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 3. User chooses payment method: Paid via UPI vs Pay with Cash
+  const handlePaymentConfirm = (method: 'UPI' | 'Cash') => {
+    if (!submittedOrder) return;
+
+    if (method === 'UPI') {
+      updateOrderStatus(submittedOrder.id, 'Paid', 'UPI');
+    } else {
+      updateOrderStatus(submittedOrder.id, 'Pending Payment', 'Cash');
+    }
+
+    setOrderCompleteData({
+      orderNumber: submittedOrder.orderNumber,
+      paymentMethod: method,
+      customerName: customerName.trim() || 'Valued Collector',
+      price: submittedOrder.price,
+      bottleSerial: submittedOrder.bottleSerial,
+      recipeName: submittedOrder.recipeName,
+      discoveryItems: submittedOrder.discoveryItems,
+      deliveryNote: submittedOrder.deliveryNote
+    });
+
+    setRedirectCountdown(6);
+    setCheckoutStep('order_received');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -170,10 +222,15 @@ export const CustomerStorefront: React.FC = () => {
 
   const payablePrice = selectedProductType === 'discovery' ? discoveryConfig.price : (selectedRecipe?.manualPrice || 0);
 
+  // Standard NPCI UPI URI string
+  const upiUri = submittedOrder
+    ? `upi://pay?pa=${encodeURIComponent(profile.upiId)}&pn=${encodeURIComponent(profile.businessName || 'Ostia')}&am=${submittedOrder.price}&cu=INR&tn=${encodeURIComponent(submittedOrder.orderNumber)}`
+    : '';
+
   return (
     <div className="max-w-md mx-auto space-y-4 pb-20 pt-1 font-mono">
       {/* Brand Hero (Shown on catalog & details) */}
-      {checkoutStep !== 'confirmation' && (
+      {checkoutStep !== 'confirmation' && checkoutStep !== 'order_received' && (
         <div className="text-center space-y-1.5 py-2 px-2">
           <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-amber-700 p-0.5 shadow-xl">
             <div className="w-full h-full bg-[#0b0e14] rounded-2xl flex items-center justify-center text-amber-300 font-serif-luxury font-bold text-xl">
@@ -565,7 +622,7 @@ export const CustomerStorefront: React.FC = () => {
               type="submit"
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide"
             >
-              <span>Confirm Details & Pay ({profile.currency}{payablePrice.toLocaleString('en-IN')})</span>
+              <span>Confirm Details & Proceed to Payment ({profile.currency}{payablePrice.toLocaleString('en-IN')})</span>
               <ChevronRight className="w-4 h-4 stroke-[3]" />
             </button>
             <p className="text-[10px] text-gray-500 text-center font-sans">
@@ -576,7 +633,7 @@ export const CustomerStorefront: React.FC = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* PAGE 3: ORDER CONFIRMED & ON-SCREEN UPI PAYMENT PAGE          */}
+      {/* PAGE 3: ORDER CONFIRMED & ON-SCREEN UPI/CASH PAYMENT PAGE     */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'confirmation' && submittedOrder && (
         <div className="bg-[#10141e] border-2 border-emerald-500/40 rounded-3xl p-5 shadow-2xl space-y-4 animate-scaleUp">
@@ -624,22 +681,37 @@ export const CustomerStorefront: React.FC = () => {
           </div>
 
           {/* On-Screen Direct UPI QR Code Terminal */}
-          <div className="bg-white p-4 rounded-2xl text-center space-y-3 text-black">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-700">
-              Scan with Any UPI App to Complete Payment
+          <div className="bg-white p-4.5 rounded-2xl text-center space-y-3 text-black shadow-md">
+            <div className="space-y-0.5">
+              <div className="text-[11px] font-black uppercase tracking-wider text-gray-900">
+                Scan with Any UPI App to Complete Payment
+              </div>
+              <p className="text-[10px] text-gray-600 font-sans">
+                Google Pay • PhonePe • Paytm • BHIM • Cred • Mobile Banking
+              </p>
             </div>
             
-            {/* Crisp High-Res QR */}
-            <div className="w-44 h-44 mx-auto bg-gray-50 border-2 border-black/10 rounded-xl p-2.5 flex items-center justify-center shadow-inner">
-              <QrCode className="w-full h-full text-black" />
+            {/* Crisp High-Res Dynamic Vector QR Code */}
+            <div className="w-48 h-48 mx-auto bg-gray-50 border-2 border-black/10 rounded-2xl p-3 flex items-center justify-center shadow-inner">
+              <QRCodeSVG
+                value={upiUri}
+                size={168}
+                level="M"
+                includeMargin={false}
+                className="w-full h-full"
+              />
             </div>
 
             {/* UPI ID & Copy Button */}
-            <div className="bg-gray-100 rounded-xl p-2 flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-800 font-mono">{profile.upiId}</span>
+            <div className="bg-gray-100 rounded-xl p-2.5 flex items-center justify-between border border-gray-200">
+              <div className="text-left">
+                <span className="text-[9px] text-gray-500 uppercase block font-bold">Beneficiary UPI ID</span>
+                <span className="text-xs font-bold text-gray-800 font-mono">{profile.upiId}</span>
+              </div>
               <button
+                type="button"
                 onClick={copyUpi}
-                className="px-2.5 py-1 rounded-lg bg-black text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition"
+                className="px-2.5 py-1.5 rounded-lg bg-black text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition hover:bg-gray-800"
               >
                 {copiedUpi ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                 {copiedUpi ? 'Copied' : 'Copy UPI'}
@@ -647,45 +719,163 @@ export const CustomerStorefront: React.FC = () => {
             </div>
 
             {/* Deep link direct launch for mobile users */}
-            <a
-              href={`upi://pay?pa=${encodeURIComponent(profile.upiId)}&pn=${encodeURIComponent(profile.businessName)}&am=${submittedOrder.price}&cu=INR&tn=${encodeURIComponent(submittedOrder.orderNumber)}`}
-              className="w-full py-2.5 rounded-xl bg-[#121622] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition"
-            >
-              <span>Tap to Open UPI App (GPay / PhonePe / Paytm)</span>
-              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
-            </a>
+            <div className="space-y-1">
+              <a
+                href={upiUri}
+                className="w-full py-3 rounded-xl bg-[#121622] hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition"
+              >
+                <span>Tap to Open UPI App (Mobile Only)</span>
+                <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+              </a>
+              <span className="text-[9px] text-gray-500 block font-sans">
+                (Tapping above triggers installed UPI apps on smartphones)
+              </span>
+            </div>
 
-            <p className="text-[10px] text-gray-600 font-sans">
-              Exact Amount: <strong>₹{submittedOrder.price.toLocaleString('en-IN')}</strong>
+            <div className="pt-1 border-t border-gray-200 flex justify-between items-center text-xs text-gray-700 font-sans">
+              <span>Payable Amount:</span>
+              <strong className="text-sm font-mono text-emerald-700">₹{submittedOrder.price.toLocaleString('en-IN')}</strong>
+            </div>
+          </div>
+
+          {/* Payment Method Action Buttons: UPI Complete vs Cash Payment */}
+          <div className="space-y-2 pt-1">
+            <div className="text-[10px] text-gray-400 text-center font-bold uppercase tracking-wider">
+              Choose Payment Confirmation:
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Option 1: Paid via UPI */}
+              <button
+                type="button"
+                onClick={() => handlePaymentConfirm('UPI')}
+                className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/25 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide"
+              >
+                <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+                <span>I Have Paid via UPI</span>
+              </button>
+
+              {/* Option 2: Pay with Cash */}
+              <button
+                type="button"
+                onClick={() => handlePaymentConfirm('Cash')}
+                className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide"
+              >
+                <Banknote className="w-4 h-4 stroke-[2.5]" />
+                <span>Pay with Cash (Delivery/Handover)</span>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setCheckoutStep('details')}
+            className="w-full text-center text-xs text-gray-400 hover:text-white pt-1 flex items-center justify-center gap-1"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Edit Delivery Details</span>
+          </button>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* PAGE 4: ORDER RECEIVED & AUTO-REDIRECT SCREEN                 */}
+      {/* ------------------------------------------------------------- */}
+      {checkoutStep === 'order_received' && orderCompleteData && (
+        <div className="bg-[#10141e] border-2 border-emerald-500/50 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleUp text-center">
+          {/* Animated Success Badge */}
+          <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
+            <CheckCircle2 className="w-9 h-9 stroke-[2.5]" />
+          </div>
+
+          <div className="space-y-1">
+            <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-extrabold block">
+              Order Confirmed & Received
+            </span>
+            <h3 className="text-xl font-extrabold text-white font-serif-luxury">
+              Thank You, {orderCompleteData.customerName}!
+            </h3>
+            <p className="text-xs text-gray-400 font-sans">
+              Your bespoke fragrance reservation has been received by the artisan.
             </p>
           </div>
 
-          {/* Customer Self-Verification Shield */}
-          {confirmedTransfer ? (
-            <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs text-center font-bold flex items-center justify-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              Transfer Recorded! The perfumer has received your order and payment notification.
+          {/* Receipt Card */}
+          <div className="bg-[#080a0f] p-4 rounded-2xl border border-[#1e2536] text-left text-xs space-y-3">
+            <div className="flex justify-between items-center pb-2.5 border-b border-[#1e2536]">
+              <span className="text-gray-400">Order Reference:</span>
+              <span className="text-amber-400 font-mono font-extrabold text-sm">{orderCompleteData.orderNumber}</span>
             </div>
-          ) : (
-            <button
-              onClick={() => setConfirmedTransfer(true)}
-              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide"
-            >
-              <CheckCircle className="w-4 h-4" />
-              I Have Completed the Transfer ({profile.currency}{submittedOrder.price.toLocaleString('en-IN')})
-            </button>
-          )}
 
-          <button
-            onClick={() => {
-              setSubmittedOrder(null);
-              setConfirmedTransfer(false);
-              setCheckoutStep('catalog');
-            }}
-            className="w-full text-center text-xs text-gray-400 hover:text-white pt-1 underline"
-          >
-            ← Back to Storefront / Order another item
-          </button>
+            <div className="space-y-1">
+              <span className="text-[10px] text-gray-500 uppercase block font-bold">Fragrance / Edition:</span>
+              <span className="text-white font-bold block">{orderCompleteData.recipeName}</span>
+              <span className="text-[11px] text-gray-400 font-mono block">({orderCompleteData.bottleSerial})</span>
+            </div>
+
+            {orderCompleteData.discoveryItems && (
+              <div className="pt-2 border-t border-[#1e2536] space-y-1">
+                <span className="text-[10px] text-gray-500 uppercase block font-bold">3 Included Vials (5ml):</span>
+                <ul className="text-gray-300 text-[11px] space-y-0.5 font-sans">
+                  {orderCompleteData.discoveryItems.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-1.5">
+                      <span className="text-amber-400">✦</span> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center pt-2.5 border-t border-[#1e2536]">
+              <span className="text-gray-400">Payment Method:</span>
+              <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 ${
+                orderCompleteData.paymentMethod === 'UPI'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+              }`}>
+                {orderCompleteData.paymentMethod === 'UPI' ? (
+                  <>
+                    <CheckCircle className="w-3 h-3 text-emerald-400" />
+                    <span>Paid via UPI (Transfer Recorded)</span>
+                  </>
+                ) : (
+                  <>
+                    <Banknote className="w-3 h-3 text-amber-400" />
+                    <span>Pay with Cash on Delivery / Handover</span>
+                  </>
+                )}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center pt-2 border-t border-[#1e2536]">
+              <span className="text-gray-400">Total Payable:</span>
+              <span className="text-emerald-400 font-mono font-extrabold text-sm">
+                {profile.currency}{orderCompleteData.price.toLocaleString('en-IN')}
+              </span>
+            </div>
+          </div>
+
+          {/* Handover Notice */}
+          <div className="p-3 rounded-xl bg-[#141a27] border border-[#222c42] text-[11px] text-gray-300 leading-relaxed font-sans">
+            ✨ Handcrafted preparation and packaging has started. You will receive handover and dispatch updates on your phone.
+          </div>
+
+          {/* Auto-redirect countdown & manual back button */}
+          <div className="space-y-2.5 pt-2">
+            <div className="flex items-center justify-center gap-2 text-xs text-amber-400 font-bold bg-amber-400/10 py-2.5 px-3 rounded-xl border border-amber-400/20">
+              <Clock className="w-4 h-4 animate-spin" />
+              <span>Redirecting back to storefront in {redirectCountdown}s...</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={resetToCatalog}
+              className="w-full py-3 rounded-xl bg-[#181f2e] hover:bg-[#222b3e] text-white text-xs font-bold transition flex items-center justify-center gap-2 border border-[#2a3449] active:scale-95"
+            >
+              <RotateCcw className="w-4 h-4 text-amber-400" />
+              <span>Return to Scent Collection Now</span>
+            </button>
+          </div>
         </div>
       )}
     </div>
