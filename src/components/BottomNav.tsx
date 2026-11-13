@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp, ActiveTab } from '../context/AppContext';
-import { FlaskConical, Calculator, Hourglass, ReceiptText, Layers, CheckSquare } from 'lucide-react';
+import { FlaskConical, Calculator, Hourglass, ReceiptText, Layers, LayoutDashboard } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const { activeTab, setActiveTab, orders, batches } = useApp();
@@ -11,12 +11,12 @@ export const BottomNav: React.FC = () => {
   const activeProductionCount = batches.filter(b => b.currentStageId !== 'stocked').length;
 
   const tabs: { id: ActiveTab; label: string; icon: React.ElementType; badge?: number }[] = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'aging', label: 'Pipeline', icon: Hourglass, badge: activeProductionCount },
     { id: 'recipes', label: 'Formulas', icon: FlaskConical },
     { id: 'pricing', label: 'Pricing', icon: Calculator },
-    { id: 'aging', label: 'Pipeline', icon: Hourglass, badge: activeProductionCount },
     { id: 'orders', label: 'Orders', icon: ReceiptText, badge: pendingOrdersCount },
-    { id: 'inventory', label: 'Materials', icon: Layers },
-    { id: 'roadmap', label: 'Roadmap', icon: CheckSquare }
+    { id: 'inventory', label: 'Materials', icon: Layers }
   ];
 
   return (

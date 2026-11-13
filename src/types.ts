@@ -120,11 +120,3 @@ export interface BottleTagData {
   perfumerName: string;
   businessName: string;
 }
-
-export interface RoadmapFeature {
-  id: string;
-  title: string;
-  category: 'Currency & Core' | 'Recipe Engine' | 'UI & Aesthetics' | 'Batch & Inventory' | 'Store & Sales' | 'Luxury & Packaging';
-  status: 'completed' | 'in_progress' | 'planned';
-  description: string;
-}

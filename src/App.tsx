@@ -7,7 +7,7 @@ import { PricingLab } from './components/PricingLab';
 import { BatchAgingTracker } from './components/BatchAgingTracker';
 import { OrderManagement } from './components/OrderManagement';
 import { StockInventory } from './components/StockInventory';
-import { RoadmapTracker } from './components/RoadmapTracker';
+import { Dashboard } from './components/Dashboard';
 import { CustomerStorefront } from './components/CustomerStorefront';
 
 export const App: React.FC = () => {
@@ -32,12 +32,12 @@ export const App: React.FC = () => {
           <CustomerStorefront />
         ) : (
           <>
+            {activeTab === 'dashboard' && <Dashboard />}
+            {activeTab === 'aging' && <BatchAgingTracker />}
             {activeTab === 'recipes' && <RecipeManager />}
             {activeTab === 'pricing' && <PricingLab />}
-            {activeTab === 'aging' && <BatchAgingTracker />}
             {activeTab === 'orders' && <OrderManagement />}
             {activeTab === 'inventory' && <StockInventory />}
-            {activeTab === 'roadmap' && <RoadmapTracker />}
 
             {/* Bottom Nav Bar */}
             <BottomNav />

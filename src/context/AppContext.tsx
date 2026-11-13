@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, RoadmapFeature, DiscoveryConfig, ProductionStage } from '../types';
+import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage } from '../types';
 import { initialMaterials, initialRecipes, initialBatches, initialOrders, initialProfile, initialDiscoveryConfig, defaultProductionStages } from '../data/initialData';
-import { initialRoadmap } from '../data/roadmapData';
 
-export type ActiveTab = 'recipes' | 'pricing' | 'aging' | 'orders' | 'inventory' | 'roadmap';
+export type ActiveTab = 'dashboard' | 'aging' | 'recipes' | 'pricing' | 'orders' | 'inventory';
 
 interface AppContextType {
   profile: PerfumerProfile;
@@ -11,7 +10,6 @@ interface AppContextType {
   recipes: Recipe[];
   batches: Batch[];
   orders: Order[];
-  roadmap: RoadmapFeature[];
   discoveryConfig: DiscoveryConfig;
   productionStages: ProductionStage[];
   viewMode: 'maker' | 'storefront';
@@ -39,7 +37,6 @@ interface AppContextType {
   updateOrderStatus: (orderId: string, status: Order['status'], paymentMethod?: Order['paymentMethod']) => void;
   updateMaterialStock: (materialId: string, delta: number) => void;
   addMaterial: (material: Omit<RawMaterial, 'id'>) => void;
-  toggleRoadmapStatus: (featureId: string) => void;
   calculateRecipeCogs: (recipe: Recipe) => {
     oilCost: number;
     packCost: number;
@@ -95,13 +92,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : initialOrders;
   });
 
-  const [roadmap, setRoadmap] = useState<RoadmapFeature[]>(() => {
-    const saved = localStorage.getItem('ostia_v3_roadmap');
-    return saved ? JSON.parse(saved) : initialRoadmap;
-  });
-
   const [viewMode, setViewMode] = useState<'maker' | 'storefront'>('maker');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('aging');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>(recipes[0]?.id || 'rec-1');
   const [tagModalBatch, setTagModalBatch] = useState<Batch | null>(null);
 
@@ -113,7 +105,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => { localStorage.setItem('ostia_v3_recipes', JSON.stringify(recipes)); }, [recipes]);
   useEffect(() => { localStorage.setItem('ostia_v3_batches', JSON.stringify(batches)); }, [batches]);
   useEffect(() => { localStorage.setItem('ostia_v3_orders', JSON.stringify(orders)); }, [orders]);
-  useEffect(() => { localStorage.setItem('ostia_v3_roadmap', JSON.stringify(roadmap)); }, [roadmap]);
 
   const updateProfile = (updates: Partial<PerfumerProfile>) => {
     setProfile(prev => ({ ...prev, ...updates }));
@@ -349,14 +340,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setMaterials(prev => [...prev, newMat]);
   };
 
-  const toggleRoadmapStatus = (featureId: string) => {
-    setRoadmap(prev => prev.map(f => {
-      if (f.id !== featureId) return f;
-      const nextStatus = f.status === 'completed' ? 'in_progress' : f.status === 'in_progress' ? 'planned' : 'completed';
-      return { ...f, status: nextStatus };
-    }));
-  };
-
   const calculateRecipeCogs = (recipe: Recipe) => {
     let totalBatchOilCost = 0;
     let concentrateGrams = 0;
@@ -407,7 +390,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       recipes,
       batches,
       orders,
-      roadmap,
       discoveryConfig,
       productionStages,
       viewMode,
@@ -435,7 +417,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updateOrderStatus,
       updateMaterialStock,
       addMaterial,
-      toggleRoadmapStatus,
       calculateRecipeCogs,
       productionStats: {
         totalMadeAllTime,
