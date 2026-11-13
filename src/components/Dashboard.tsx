@@ -397,6 +397,18 @@ export const Dashboard: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Available sizes */}
+                {recipe.sizes && recipe.sizes.length > 0 && (
+                  <div className="flex items-center gap-1 overflow-x-auto no-scrollbar text-[9px] font-mono pt-1 border-t border-[#141b2a]">
+                    <span className="text-gray-500 uppercase font-bold shrink-0">Sizes:</span>
+                    {recipe.sizes.map(s => (
+                      <span key={s.sizeMl} className="px-1.5 py-0.2 rounded bg-[#10141e] text-gray-300 border border-[#1e2536] shrink-0">
+                        {s.sizeMl}ml <span className="text-amber-400 font-bold">({s.inStock})</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 {/* Scent notes summary */}
                 <div className="pt-1.5 border-t border-[#141b2a] flex justify-between items-center text-[10px] text-gray-400 font-mono">
                   <span>COGS: ₹{Math.round(cogs.totalCogs)}</span>

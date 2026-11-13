@@ -239,11 +239,18 @@ export const OrderManagement: React.FC = () => {
 
                   {/* Details Badge */}
                   <div className="bg-[#080a0f] p-2.5 rounded-xl border border-[#1a2130] space-y-1.5 text-[11px] text-gray-300">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1 text-amber-400 font-bold">
-                        <Tag className="w-3 h-3" />
-                        Edition: {order.bottleSerial}
-                      </span>
+                    <div className="flex items-center justify-between gap-1 flex-wrap">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {order.bottleSizeLabel && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            {order.bottleSizeLabel}
+                          </span>
+                        )}
+                        <span className="flex items-center gap-1 text-amber-400 font-bold">
+                          <Tag className="w-3 h-3" />
+                          {order.bottleSerial}
+                        </span>
+                      </div>
                       <span className="text-gray-400 flex items-center gap-1">
                         <Phone className="w-3 h-3 text-gray-500" />
                         {order.customerPhone || 'Direct Client'}

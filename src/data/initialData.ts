@@ -1,4 +1,14 @@
-import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage } from '../types';
+import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage, BottleSizeOption } from '../types';
+
+export const getDefaultRecipeSizes = (manualPrice: number = 2899): BottleSizeOption[] => {
+  const p50 = manualPrice;
+  return [
+    { sizeMl: 15, label: '15ml Travel Spray', price: Math.max(799, Math.round((p50 * 0.42) / 50) * 50 - 1), inStock: 6, packagingCost: 120 },
+    { sizeMl: 30, label: '30ml Studio Flacon', price: Math.max(1299, Math.round((p50 * 0.68) / 50) * 50 - 1), inStock: 4, packagingCost: 210 },
+    { sizeMl: 50, label: '50ml Signature Flacon', price: p50, inStock: 5, packagingCost: 340 },
+    { sizeMl: 100, label: '100ml Grand Flacon', price: Math.max(2999, Math.round((p50 * 1.72) / 50) * 50 - 1), inStock: 2, packagingCost: 520 }
+  ];
+};
 
 export const initialProfile: PerfumerProfile = {
   businessName: 'OSTIA',
@@ -122,7 +132,13 @@ export const initialRecipes: Recipe[] = [
       heart: ['Cardamom Pods', 'Frankincense Tears', 'Black Tea'],
       base: ['Mysore Sandalwood', 'Amber Resin', 'Virginian Cedar']
     },
-    inStockBottles: 6
+    inStockBottles: 6,
+    sizes: [
+      { sizeMl: 15, label: '15ml Travel Spray', price: 1199.00, inStock: 6, packagingCost: 120.00 },
+      { sizeMl: 30, label: '30ml Studio Flacon', price: 1899.00, inStock: 4, packagingCost: 210.00 },
+      { sizeMl: 50, label: '50ml Signature Flacon', price: 2899.00, inStock: 6, packagingCost: 340.00 },
+      { sizeMl: 100, label: '100ml Grand Flacon', price: 4899.00, inStock: 2, packagingCost: 520.00 }
+    ]
   },
   {
     id: 'rec-2',
@@ -145,7 +161,13 @@ export const initialRecipes: Recipe[] = [
       heart: ['Kannauj Damask Rose', 'Turkish Rose Petals'],
       base: ['Mysore Sandalwood', 'Ambroxan', 'Velvet Cashmeran']
     },
-    inStockBottles: 4
+    inStockBottles: 4,
+    sizes: [
+      { sizeMl: 15, label: '15ml Travel Spray', price: 1399.00, inStock: 5, packagingCost: 120.00 },
+      { sizeMl: 30, label: '30ml Studio Flacon', price: 2199.00, inStock: 3, packagingCost: 210.00 },
+      { sizeMl: 50, label: '50ml Signature Flacon', price: 3299.00, inStock: 4, packagingCost: 340.00 },
+      { sizeMl: 100, label: '100ml Grand Flacon', price: 5499.00, inStock: 1, packagingCost: 520.00 }
+    ]
   },
   {
     id: 'rec-3',
@@ -168,7 +190,13 @@ export const initialRecipes: Recipe[] = [
       heart: ['Smoked Birch Wood', 'Haitian Vetiver Roots'],
       base: ['Iso E Super', 'Clean Petrichor', 'Earthy Oakmoss']
     },
-    inStockBottles: 5
+    inStockBottles: 5,
+    sizes: [
+      { sizeMl: 15, label: '15ml Travel Spray', price: 999.00, inStock: 7, packagingCost: 120.00 },
+      { sizeMl: 30, label: '30ml Studio Flacon', price: 1699.00, inStock: 5, packagingCost: 210.00 },
+      { sizeMl: 50, label: '50ml Signature Flacon', price: 2499.00, inStock: 5, packagingCost: 340.00 },
+      { sizeMl: 100, label: '100ml Grand Flacon', price: 4299.00, inStock: 2, packagingCost: 520.00 }
+    ]
   }
 ];
 
@@ -229,6 +257,8 @@ export const initialOrders: Order[] = [
     orderType: 'full_bottle',
     recipeId: 'rec-1',
     recipeName: 'Golden Amber & Bergamot',
+    bottleSizeMl: 50,
+    bottleSizeLabel: '50ml Signature Flacon',
     bottleSerial: 'Bottle 04 of 10',
     price: 2899.00,
     paymentMethod: 'UPI',
@@ -244,6 +274,8 @@ export const initialOrders: Order[] = [
     orderType: 'full_bottle',
     recipeId: 'rec-2',
     recipeName: 'Velvet Santal & Rose',
+    bottleSizeMl: 50,
+    bottleSizeLabel: '50ml Signature Flacon',
     bottleSerial: 'Bottle 02 of 10',
     price: 3299.00,
     paymentMethod: 'UPI',

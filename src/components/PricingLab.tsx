@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Calculator, TrendingUp, Percent, Info, Check, Sparkles, Box, Sliders } from 'lucide-react';
+import { getDefaultRecipeSizes } from '../data/initialData';
+import { Calculator, TrendingUp, Percent, Info, Check, Sparkles, Box, Sliders, Layers } from 'lucide-react';
 
 export const PricingLab: React.FC = () => {
-  const { recipes, selectedRecipeId, setSelectedRecipeId, updateRecipePrice, calculateRecipeCogs, profile, discoveryConfig, updateDiscoveryConfig } = useApp();
+  const {
+    recipes,
+    selectedRecipeId,
+    setSelectedRecipeId,
+    updateRecipePrice,
+    updateRecipeSizePrice,
+    calculateRecipeCogs,
+    profile,
+    discoveryConfig,
+    updateDiscoveryConfig
+  } = useApp();
   const [saveToast, setSaveToast] = useState(false);
 
   const currentRecipe = recipes.find(r => r.id === selectedRecipeId) || recipes[0];
@@ -15,6 +26,13 @@ export const PricingLab: React.FC = () => {
   const netProfit = currentPrice - totalCogs;
   const marginPercent = currentPrice > 0 ? (netProfit / currentPrice) * 100 : 0;
 
+  // Recipe sizes
+  const recipeSizes = currentRecipe
+    ? (currentRecipe.sizes && currentRecipe.sizes.length > 0
+        ? currentRecipe.sizes
+        : getDefaultRecipeSizes(currentRecipe.manualPrice))
+    : [];
+
   // Discovery Box calculations (3x 5ml = 15ml total juice + packaging)
   const discoveryLiquidCost = Math.round((oilCost / 50) * 15);
   const discoveryTotalCogs = discoveryLiquidCost + (discoveryConfig.boxCost || 140);
@@ -24,6 +42,13 @@ export const PricingLab: React.FC = () => {
   const handlePriceChange = (val: number) => {
     if (!currentRecipe) return;
     updateRecipePrice(currentRecipe.id, Math.max(0, val));
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 1500);
+  };
+
+  const handleSizePriceChange = (sizeMl: number, val: number) => {
+    if (!currentRecipe) return;
+    updateRecipeSizePrice(currentRecipe.id, sizeMl, Math.max(0, val));
     setSaveToast(true);
     setTimeout(() => setSaveToast(false), 1500);
   };
@@ -248,6 +273,88 @@ export const PricingLab: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* MULTI-SIZE FLACON PRICING & MARGIN MATRIX                     */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-4 shadow-sm space-y-3">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-amber-400" />
+              Flacon Sizing & Pricing Matrix
+            </h3>
+            <p className="text-[10px] text-gray-400 font-sans mt-0.5">
+              Configure retail prices across 15ml, 30ml, 50ml, & 100ml tiers
+            </p>
+          </div>
+          <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+            4 Sizing Tiers
+          </span>
+        </div>
+
+        <div className="space-y-2.5">
+          {recipeSizes.map(size => {
+            const sizeLiquidCost = Math.round((oilCost / 50) * size.sizeMl);
+            const sizePackCost = size.packagingCost || (size.sizeMl === 15 ? 120 : size.sizeMl === 30 ? 210 : size.sizeMl === 50 ? 340 : 520);
+            const sizeTotalCogs = sizeLiquidCost + sizePackCost;
+            const sizeProfit = size.price - sizeTotalCogs;
+            const sizeMargin = size.price > 0 ? (sizeProfit / size.price) * 100 : 0;
+
+            return (
+              <div
+                key={size.sizeMl}
+                className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-2"
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-lg bg-amber-400/15 text-amber-300 font-bold flex items-center justify-center text-xs border border-amber-500/25 font-mono">
+                      {size.sizeMl}m
+                    </span>
+                    <div>
+                      <span className="text-xs font-bold text-white block">{size.label}</span>
+                      <span className="text-[10px] text-gray-500 font-mono">Stock: {size.inStock} bottles</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-amber-400 font-bold font-mono">₹</span>
+                    <input
+                      type="number"
+                      step="50"
+                      value={size.price}
+                      onChange={(e) => handleSizePriceChange(size.sizeMl, parseFloat(e.target.value) || 0)}
+                      className="w-24 bg-[#121622] border border-amber-500/40 text-amber-300 font-extrabold text-sm rounded-lg px-2 py-1 text-right outline-none focus:border-amber-400 font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Sizing Telemetry: Liquid + Packaging = COGS -> Net Profit & Margin */}
+                <div className="grid grid-cols-4 gap-1.5 p-2 rounded-xl bg-[#0e121a] border border-[#1a2130] text-center font-mono text-[10px]">
+                  <div>
+                    <span className="text-[8px] text-gray-500 block uppercase">Juice ({size.sizeMl}ml)</span>
+                    <span className="font-bold text-gray-300">₹{sizeLiquidCost}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-gray-500 block uppercase">Pack Cost</span>
+                    <span className="font-bold text-gray-300">₹{sizePackCost}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-amber-500/80 block uppercase">Unit COGS</span>
+                    <span className="font-bold text-amber-400">₹{sizeTotalCogs}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-emerald-500/80 block uppercase">Net Profit</span>
+                    <span className={`font-bold ${sizeProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      ₹{Math.round(sizeProfit)} ({sizeMargin.toFixed(0)}%)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -18,6 +18,14 @@ export interface RecipeIngredient {
   noteType: 'top' | 'heart' | 'base' | 'carrier';
 }
 
+export interface BottleSizeOption {
+  sizeMl: number;         // e.g. 15, 30, 50, 100
+  label: string;          // e.g. "15ml Travel Spray", "30ml Studio Flacon", "50ml Signature Flacon", "100ml Grand Flacon"
+  price: number;          // in INR
+  inStock: number;        // units available in this size
+  packagingCost?: number; // packaging cost for this bottle size
+}
+
 export interface Recipe {
   id: string;
   name: string;
@@ -26,8 +34,8 @@ export interface Recipe {
   batchVolumeMl: number;
   maturationDaysNeeded: number;
   ingredients: RecipeIngredient[];
-  bottleMaterialCost: number; // in INR (sum of bottle, pump, collar, label, box)
-  manualPrice: number; // in INR set by perfumer
+  bottleMaterialCost: number; // in INR (sum of bottle, pump, collar, label, box for 50ml)
+  manualPrice: number; // in INR set by perfumer (standard 50ml)
   bottlesYield: number; // e.g. 10 bottles of 50ml
   pyramid: {
     top: string[];
@@ -35,6 +43,7 @@ export interface Recipe {
     base: string[];
   };
   inStockBottles: number;
+  sizes?: BottleSizeOption[]; // Sizing tiers: 15ml, 30ml, 50ml, 100ml
   createdAt?: string;
 }
 
@@ -80,6 +89,8 @@ export interface Order {
   orderType?: 'full_bottle' | 'discovery_set';
   recipeId: string;
   recipeName: string;
+  bottleSizeMl?: number; // e.g. 15, 30, 50, 100
+  bottleSizeLabel?: string; // e.g. "50ml Signature Flacon" or "15ml Travel Spray"
   discoveryItems?: string[]; // Names of the 3 selected sample vials
   bottleSerial: string; // e.g. "Bottle 04 of 10" or "Discovery Set Box #08"
   price: number; // in INR
@@ -111,6 +122,8 @@ export interface BottleTagData {
   tagline: string;
   batchNumber: string;
   bottleSerial: string;
+  bottleSizeMl?: number;
+  bottleSizeLabel?: string;
   brewDate: string;
   maturationDays: number;
   pyramid: {

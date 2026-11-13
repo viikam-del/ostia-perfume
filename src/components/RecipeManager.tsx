@@ -212,6 +212,24 @@ export const RecipeManager: React.FC = () => {
                 </div>
               </div>
 
+              {/* Sizing Tiers Available */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[10px] font-mono">
+                <span className="text-gray-500 uppercase text-[9px] font-bold shrink-0">Sizes:</span>
+                {(recipe.sizes && recipe.sizes.length > 0 ? recipe.sizes : [
+                  { sizeMl: 15, price: Math.round(recipe.manualPrice * 0.42 / 50) * 50 - 1 },
+                  { sizeMl: 30, price: Math.round(recipe.manualPrice * 0.68 / 50) * 50 - 1 },
+                  { sizeMl: 50, price: recipe.manualPrice },
+                  { sizeMl: 100, price: Math.round(recipe.manualPrice * 1.72 / 50) * 50 - 1 }
+                ]).map(size => (
+                  <span
+                    key={size.sizeMl}
+                    className="px-2 py-0.5 rounded-lg bg-[#080a0f] text-gray-300 border border-[#1a2130] shrink-0"
+                  >
+                    <strong className="text-amber-400 font-bold">{size.sizeMl}ml</strong>: ₹{size.price.toLocaleString('en-IN')}
+                  </span>
+                ))}
+              </div>
+
               {/* Formulation Ingredients Summary */}
               <div className="text-[11px] text-gray-400 flex items-center justify-between border-t border-[#1c2230] pt-2 font-mono">
                 <span>{recipe.ingredients.length} formula oils • {recipe.maturationDaysNeeded}d aging</span>

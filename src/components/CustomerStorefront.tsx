@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { QRCodeSVG } from 'qrcode.react';
-import { Order } from '../types';
+import { Order, BottleSizeOption } from '../types';
+import { getDefaultRecipeSizes } from '../data/initialData';
 import {
   Sparkles,
   CheckCircle,
@@ -18,7 +19,8 @@ import {
   Gift,
   Banknote,
   Clock,
-  RotateCcw
+  RotateCcw,
+  Layers
 } from 'lucide-react';
 
 export const CustomerStorefront: React.FC = () => {
@@ -30,6 +32,8 @@ export const CustomerStorefront: React.FC = () => {
   // Selection
   const [selectedProductType, setSelectedProductType] = useState<'flacon' | 'discovery'>('flacon');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>(recipes[0]?.id || '');
+  const [selectedSizeMl, setSelectedSizeMl] = useState<number>(50);
+  const [recipeSelectedSizes, setRecipeSelectedSizes] = useState<Record<string, number>>({});
   const [catalogCategory, setCatalogCategory] = useState<'flacons' | 'discovery'>('flacons');
 
   // Discovery selections (up to 3 items)
@@ -94,9 +98,21 @@ export const CustomerStorefront: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Helper to get active size for a recipe
+  const getRecipeActiveSize = (recipe: typeof recipes[0]) => {
+    const currentSizeMl = recipeSelectedSizes[recipe.id] || 50;
+    const availableSizes = recipe.sizes && recipe.sizes.length > 0
+      ? recipe.sizes
+      : getDefaultRecipeSizes(recipe.manualPrice);
+    return availableSizes.find(s => s.sizeMl === currentSizeMl) || availableSizes.find(s => s.sizeMl === 50) || availableSizes[0];
+  };
+
   // 1. Choose product from catalog and move to details page
-  const handleSelectFlacon = (recipeId: string) => {
+  const handleSelectFlacon = (recipeId: string, sizeMl?: number) => {
+    const chosenSize = sizeMl || recipeSelectedSizes[recipeId] || 50;
     setSelectedRecipeId(recipeId);
+    setSelectedSizeMl(chosenSize);
+    setRecipeSelectedSizes(prev => ({ ...prev, [recipeId]: chosenSize }));
     setSelectedProductType('flacon');
     setCheckoutStep('details');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -146,6 +162,8 @@ export const CustomerStorefront: React.FC = () => {
         orderType: 'discovery_set',
         recipeId: 'discovery',
         recipeName: `Discovery Sampler Box (${discoveryConfig.vialCount} × ${discoveryConfig.vialSizeMl}ml)`,
+        bottleSizeMl: 15,
+        bottleSizeLabel: `Discovery Sampler Box (3 × 5ml)`,
         discoveryItems: selectedNames,
         bottleSerial: `Discovery Box #${Math.floor(100 + Math.random() * 900)}`,
         price: discoveryConfig.price,
@@ -157,10 +175,15 @@ export const CustomerStorefront: React.FC = () => {
     } else {
       if (!selectedRecipe) return;
 
+      const activeSize = (selectedRecipe.sizes && selectedRecipe.sizes.length > 0
+        ? selectedRecipe.sizes
+        : getDefaultRecipeSizes(selectedRecipe.manualPrice))
+        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Flacon', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles };
+
       const totalYield = selectedRecipe.bottlesYield || 10;
-      const remaining = selectedRecipe.inStockBottles;
+      const remaining = activeSize.inStock;
       const serialNum = Math.max(1, totalYield - remaining + 1);
-      const bottleSerial = `Bottle ${String(serialNum).padStart(2, '0')} of ${totalYield}`;
+      const bottleSerial = `${activeSize.sizeMl}ml • Bottle ${String(serialNum).padStart(2, '0')} of ${totalYield}`;
 
       const combinedNote = [
         deliveryAddress.trim(),
@@ -174,9 +197,11 @@ export const CustomerStorefront: React.FC = () => {
         deliveryNote: combinedNote,
         orderType: 'full_bottle',
         recipeId: selectedRecipe.id,
-        recipeName: selectedRecipe.name,
+        recipeName: `${selectedRecipe.name} (${activeSize.label})`,
+        bottleSizeMl: activeSize.sizeMl,
+        bottleSizeLabel: activeSize.label,
         bottleSerial,
-        price: selectedRecipe.manualPrice,
+        price: activeSize.price,
         paymentMethod: 'Pending',
         status: 'Pending Payment'
       });
@@ -220,7 +245,14 @@ export const CustomerStorefront: React.FC = () => {
     setTimeout(() => setCopiedUpi(false), 2000);
   };
 
-  const payablePrice = selectedProductType === 'discovery' ? discoveryConfig.price : (selectedRecipe?.manualPrice || 0);
+  const activeSelectedSizeObj = selectedRecipe
+    ? ((selectedRecipe.sizes && selectedRecipe.sizes.length > 0
+        ? selectedRecipe.sizes
+        : getDefaultRecipeSizes(selectedRecipe.manualPrice))
+        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Flacon', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles })
+    : { sizeMl: 50, label: '50ml Signature Flacon', price: 2899, inStock: 5 };
+
+  const payablePrice = selectedProductType === 'discovery' ? discoveryConfig.price : activeSelectedSizeObj.price;
 
   // Standard NPCI UPI URI string
   const upiUri = submittedOrder
@@ -288,7 +320,13 @@ export const CustomerStorefront: React.FC = () => {
           {catalogCategory === 'flacons' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {recipes.map(recipe => {
-                const isAvailable = recipe.inStockBottles > 0;
+                const availableSizes = recipe.sizes && recipe.sizes.length > 0
+                  ? recipe.sizes
+                  : getDefaultRecipeSizes(recipe.manualPrice);
+
+                const currentSizeMl = recipeSelectedSizes[recipe.id] || 50;
+                const activeSize = availableSizes.find(s => s.sizeMl === currentSizeMl) || availableSizes.find(s => s.sizeMl === 50) || availableSizes[0];
+                const isAvailable = activeSize.inStock > 0;
 
                 return (
                   <div
@@ -309,11 +347,11 @@ export const CustomerStorefront: React.FC = () => {
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className="text-lg font-extrabold text-amber-300">
-                          {profile.currency}{recipe.manualPrice.toLocaleString('en-IN')}
+                        <div className="text-lg font-extrabold text-amber-300 font-mono">
+                          {profile.currency}{activeSize.price.toLocaleString('en-IN')}
                         </div>
                         <span className={`text-[10px] font-bold ${isAvailable ? 'text-emerald-400' : 'text-red-400'}`}>
-                          {isAvailable ? `${recipe.inStockBottles} in stock` : 'Sold Out'}
+                          {isAvailable ? `${activeSize.inStock} in stock` : 'Sold Out'}
                         </span>
                       </div>
                     </div>
@@ -334,13 +372,56 @@ export const CustomerStorefront: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Flacon Sizing Options Selector */}
+                    <div className="pt-2.5 border-t border-[#1c2230] space-y-1.5">
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="text-gray-400 uppercase font-bold tracking-wider flex items-center gap-1">
+                          <Layers className="w-3 h-3 text-amber-400" />
+                          Choose Flacon Size:
+                        </span>
+                        <span className="text-amber-400 font-bold">{activeSize.label}</span>
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {availableSizes.map(size => {
+                          const isSelected = size.sizeMl === activeSize.sizeMl;
+                          const hasStock = size.inStock > 0;
+                          return (
+                            <button
+                              key={size.sizeMl}
+                              type="button"
+                              onClick={() => {
+                                setRecipeSelectedSizes(prev => ({ ...prev, [recipe.id]: size.sizeMl }));
+                              }}
+                              className={`py-2 px-1 rounded-xl text-center border transition relative ${
+                                isSelected
+                                  ? 'bg-amber-400 text-black border-amber-300 font-extrabold shadow-md shadow-amber-500/20'
+                                  : hasStock
+                                  ? 'bg-[#080a0f] hover:bg-[#141926] text-gray-300 border-[#1e2536]'
+                                  : 'bg-[#06080c] text-gray-600 border-[#141824] opacity-50'
+                              }`}
+                            >
+                              <div className="text-[11px] leading-tight font-bold">{size.sizeMl}ml</div>
+                              <div className={`text-[9px] leading-tight mt-0.5 font-mono ${isSelected ? 'text-black font-black' : 'text-amber-300/80'}`}>
+                                ₹{size.price.toLocaleString('en-IN')}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     {/* Product Action Button -> Opens Details Page */}
                     <button
-                      onClick={() => handleSelectFlacon(recipe.id)}
+                      onClick={() => handleSelectFlacon(recipe.id, activeSize.sizeMl)}
                       disabled={!isAvailable}
                       className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-md shadow-amber-500/20 active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide disabled:opacity-50"
                     >
-                      <span>Select Flacon & Proceed ({profile.currency}{recipe.manualPrice.toLocaleString('en-IN')})</span>
+                      <span>
+                        {isAvailable
+                          ? `Select ${activeSize.sizeMl}ml Flacon & Proceed (${profile.currency}${activeSize.price.toLocaleString('en-IN')})`
+                          : `${activeSize.sizeMl}ml Sold Out`}
+                      </span>
                       <ChevronRight className="w-4 h-4 stroke-[3]" />
                     </button>
                   </div>
@@ -421,20 +502,57 @@ export const CustomerStorefront: React.FC = () => {
                     ? `Discovery Sampler Box (3 × 5ml)`
                     : selectedRecipe?.name}
                 </h3>
-                <p className="text-[11px] text-gray-400 italic font-sans">
-                  {selectedProductType === 'discovery'
-                    ? 'Handmade 3-piece trial set'
-                    : `50ml Flacon • ${selectedRecipe?.concentration}`}
-                </p>
+                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                  {selectedProductType === 'discovery' ? (
+                    <span className="text-[11px] text-gray-400 italic font-sans">
+                      Handcrafted 3-piece trial set
+                    </span>
+                  ) : (
+                    <>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        {activeSelectedSizeObj.label}
+                      </span>
+                      <span className="text-[10px] text-gray-400">
+                        {selectedRecipe?.concentration}
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="text-right">
-                <span className="text-lg font-extrabold text-emerald-400">
+                <span className="text-lg font-extrabold text-emerald-400 font-mono">
                   {profile.currency}{payablePrice.toLocaleString('en-IN')}
                 </span>
                 <span className="text-[9px] text-gray-500 block">Total Payable</span>
               </div>
             </div>
+
+            {/* Quick Sizing Pill Switcher on Details Page */}
+            {selectedProductType === 'flacon' && selectedRecipe && (
+              <div className="pt-2 border-t border-[#1e2536] flex items-center justify-between gap-1">
+                <span className="text-[10px] text-gray-400 uppercase font-bold shrink-0">Flacon Size:</span>
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+                  {(selectedRecipe.sizes || getDefaultRecipeSizes(selectedRecipe.manualPrice)).map(size => {
+                    const isSelected = size.sizeMl === selectedSizeMl;
+                    return (
+                      <button
+                        key={size.sizeMl}
+                        type="button"
+                        onClick={() => setSelectedSizeMl(size.sizeMl)}
+                        className={`px-2 py-1 rounded-lg text-xs font-bold transition shrink-0 ${
+                          isSelected
+                            ? 'bg-amber-400 text-black border border-amber-300 shadow-sm'
+                            : 'bg-[#080a0f] text-gray-400 border border-[#1e2536] hover:text-white'
+                        }`}
+                      >
+                        {size.sizeMl}ml (₹{size.price.toLocaleString('en-IN')})
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* If Discovery Box, show the 3 sample slots selector */}
             {selectedProductType === 'discovery' && (
@@ -607,7 +725,7 @@ export const CustomerStorefront: React.FC = () => {
             {/* Bill Summary */}
             <div className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-1.5 text-xs">
               <div className="flex justify-between text-gray-400">
-                <span>Subtotal ({selectedProductType === 'discovery' ? 'Discovery Box' : '50ml Flacon'}):</span>
+                <span>Subtotal ({selectedProductType === 'discovery' ? 'Discovery Box' : activeSelectedSizeObj.label}):</span>
                 <span className="font-bold text-white">{profile.currency}{payablePrice.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-gray-400">

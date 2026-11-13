@@ -12,8 +12,17 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
   const { recipes, profile } = useApp();
   const recipe = recipes.find(r => r.id === batch.recipeId);
   const [selectedBottleNum, setSelectedBottleNum] = useState<number>(1);
+  const [selectedSizeMl, setSelectedSizeMl] = useState<number>(50);
   const totalBottles = batch.bottlesPlanned || 10;
 
+  const sizeOptions = [
+    { sizeMl: 15, label: '15ml', oz: '0.5 FL. OZ.' },
+    { sizeMl: 30, label: '30ml', oz: '1.0 FL. OZ.' },
+    { sizeMl: 50, label: '50ml', oz: '1.7 FL. OZ.' },
+    { sizeMl: 100, label: '100ml', oz: '3.4 FL. OZ.' }
+  ];
+
+  const currentSizeOption = sizeOptions.find(s => s.sizeMl === selectedSizeMl) || sizeOptions[2];
   const currentSerial = `Bottle ${String(selectedBottleNum).padStart(2, '0')} of ${String(totalBottles).padStart(2, '0')}`;
 
   const handlePrint = () => {
@@ -46,23 +55,44 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
           </button>
         </div>
 
-        {/* Bottle Serial Selector Bar */}
-        <div className="flex items-center justify-between bg-[#121622] p-2.5 rounded-xl border border-[#1e2536] text-xs font-mono">
-          <span className="text-gray-400">Select Bottle Edition:</span>
-          <div className="flex items-center gap-1.5 overflow-x-auto max-w-[220px] py-0.5">
-            {Array.from({ length: totalBottles }, (_, i) => i + 1).map(num => (
-              <button
-                key={num}
-                onClick={() => setSelectedBottleNum(num)}
-                className={`w-7 h-7 rounded-lg text-xs font-bold transition shrink-0 ${
-                  selectedBottleNum === num
-                    ? 'bg-amber-400 text-black border border-amber-300 shadow-sm'
-                    : 'bg-[#181f2d] text-gray-400 hover:text-white'
-                }`}
-              >
-                {num}
-              </button>
-            ))}
+        {/* Bottle Serial & Size Selector Bar */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between bg-[#121622] p-2.5 rounded-xl border border-[#1e2536] text-xs font-mono">
+            <span className="text-gray-400">Bottle Number:</span>
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-[220px] py-0.5 no-scrollbar">
+              {Array.from({ length: totalBottles }, (_, i) => i + 1).map(num => (
+                <button
+                  key={num}
+                  onClick={() => setSelectedBottleNum(num)}
+                  className={`w-7 h-7 rounded-lg text-xs font-bold transition shrink-0 ${
+                    selectedBottleNum === num
+                      ? 'bg-amber-400 text-black border border-amber-300 shadow-sm'
+                      : 'bg-[#181f2d] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between bg-[#121622] p-2.5 rounded-xl border border-[#1e2536] text-xs font-mono">
+            <span className="text-gray-400">Flacon Size:</span>
+            <div className="flex items-center gap-1.5">
+              {sizeOptions.map(opt => (
+                <button
+                  key={opt.sizeMl}
+                  onClick={() => setSelectedSizeMl(opt.sizeMl)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                    selectedSizeMl === opt.sizeMl
+                      ? 'bg-amber-400 text-black border border-amber-300 shadow-sm'
+                      : 'bg-[#181f2d] text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {opt.sizeMl}ml
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -123,7 +153,7 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
               <div className="text-[10px] text-gray-400 flex justify-center gap-3 mt-1 pt-1 border-t border-[#1a2130]">
                 <span>{batch.batchNumber}</span>
                 <span>•</span>
-                <span>50ml Flacon</span>
+                <span>{selectedSizeMl}ml Flacon ({currentSizeOption.oz})</span>
                 <span>•</span>
                 <span>{batch.targetDays} Days Matured</span>
               </div>

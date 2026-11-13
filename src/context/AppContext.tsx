@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage } from '../types';
-import { initialMaterials, initialRecipes, initialBatches, initialOrders, initialProfile, initialDiscoveryConfig, defaultProductionStages } from '../data/initialData';
+import { RawMaterial, Recipe, Batch, Order, PerfumerProfile, DiscoveryConfig, ProductionStage, BottleSizeOption } from '../types';
+import { initialMaterials, initialRecipes, initialBatches, initialOrders, initialProfile, initialDiscoveryConfig, defaultProductionStages, getDefaultRecipeSizes } from '../data/initialData';
 
 export type ActiveTab = 'dashboard' | 'aging' | 'recipes' | 'pricing' | 'orders' | 'inventory';
 
@@ -26,6 +26,8 @@ interface AppContextType {
   advanceBatchStage: (batchId: string, nextStageId: string, notes?: string) => void;
   shareBatchReminder: (batchId: string) => Promise<{ text: string; shared: boolean }>;
   updateRecipePrice: (recipeId: string, newPrice: number) => void;
+  updateRecipeSizePrice: (recipeId: string, sizeMl: number, newPrice: number) => void;
+  updateRecipeSizeStock: (recipeId: string, sizeMl: number, delta: number) => void;
   addRecipe: (recipe: Omit<Recipe, 'id' | 'inStockBottles'>) => void;
   updateRecipe: (recipeId: string, updates: Partial<Recipe>) => void;
   deleteRecipe: (recipeId: string) => void;
@@ -93,7 +95,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [recipes, setRecipes] = useState<Recipe[]>(() => {
     const saved = localStorage.getItem('ostia_v3_recipes');
-    return saved ? JSON.parse(saved) : initialRecipes;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Recipe[];
+        return parsed.map(r => ({
+          ...r,
+          sizes: r.sizes && r.sizes.length > 0 ? r.sizes : getDefaultRecipeSizes(r.manualPrice)
+        }));
+      } catch (e) {
+        return initialRecipes;
+      }
+    }
+    return initialRecipes;
   });
 
   const [batches, setBatches] = useState<Batch[]>(() => {
@@ -203,14 +216,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateRecipePrice = (recipeId: string, newPrice: number) => {
-    setRecipes(prev => prev.map(r => r.id === recipeId ? { ...r, manualPrice: newPrice } : r));
+    setRecipes(prev => prev.map(r => {
+      if (r.id !== recipeId) return r;
+      const currentSizes = r.sizes || getDefaultRecipeSizes(newPrice);
+      const updatedSizes = currentSizes.map(s => s.sizeMl === 50 ? { ...s, price: newPrice } : s);
+      return { ...r, manualPrice: newPrice, sizes: updatedSizes };
+    }));
+  };
+
+  const updateRecipeSizePrice = (recipeId: string, sizeMl: number, newPrice: number) => {
+    setRecipes(prev => prev.map(r => {
+      if (r.id !== recipeId) return r;
+      const currentSizes = r.sizes || getDefaultRecipeSizes(r.manualPrice);
+      const updatedSizes = currentSizes.map(s => s.sizeMl === sizeMl ? { ...s, price: newPrice } : s);
+      const is50 = sizeMl === 50;
+      return {
+        ...r,
+        manualPrice: is50 ? newPrice : r.manualPrice,
+        sizes: updatedSizes
+      };
+    }));
+  };
+
+  const updateRecipeSizeStock = (recipeId: string, sizeMl: number, delta: number) => {
+    setRecipes(prev => prev.map(r => {
+      if (r.id !== recipeId) return r;
+      const currentSizes = r.sizes || getDefaultRecipeSizes(r.manualPrice);
+      const updatedSizes = currentSizes.map(s => s.sizeMl === sizeMl ? { ...s, inStock: Math.max(0, s.inStock + delta) } : s);
+      const totalStock = updatedSizes.reduce((sum, s) => sum + s.inStock, 0);
+      return {
+        ...r,
+        inStockBottles: totalStock,
+        sizes: updatedSizes
+      };
+    }));
   };
 
   const addRecipe = (recipeData: Omit<Recipe, 'id' | 'inStockBottles'>) => {
+    const basePrice = recipeData.manualPrice || 2899;
+    const sizes = recipeData.sizes || getDefaultRecipeSizes(basePrice);
+    const totalInStock = sizes.reduce((sum, s) => sum + s.inStock, 0);
+
     const newRecipe: Recipe = {
       ...recipeData,
       id: 'rec-' + Date.now(),
-      inStockBottles: 0,
+      manualPrice: basePrice,
+      inStockBottles: totalInStock,
+      sizes,
       createdAt: new Date().toISOString()
     };
     setRecipes(prev => [newRecipe, ...prev]);
@@ -331,8 +383,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }));
     } else {
       setRecipes(prev => prev.map(r => {
-        if (r.id === orderData.recipeId && r.inStockBottles > 0) {
-          return { ...r, inStockBottles: r.inStockBottles - 1 };
+        if (r.id === orderData.recipeId) {
+          const sizeMl = orderData.bottleSizeMl || 50;
+          const currentSizes = r.sizes || getDefaultRecipeSizes(r.manualPrice);
+          const updatedSizes = currentSizes.map(s => s.sizeMl === sizeMl ? { ...s, inStock: Math.max(0, s.inStock - 1) } : s);
+          return {
+            ...r,
+            inStockBottles: Math.max(0, r.inStockBottles - 1),
+            sizes: updatedSizes
+          };
         }
         return r;
       }));
@@ -420,6 +479,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       advanceBatchStage,
       shareBatchReminder,
       updateRecipePrice,
+      updateRecipeSizePrice,
+      updateRecipeSizeStock,
       addRecipe,
       updateRecipe,
       deleteRecipe,
