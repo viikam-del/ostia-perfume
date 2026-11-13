@@ -12,6 +12,69 @@
   font-family: 'Cinzel', serif;
 }
 
+/* Atmospheric Horizon Glow (from Reference 2) */
+.bg-horizon-amber {
+  background: radial-gradient(ellipse 130% 60% at 50% -10%, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.08) 50%, rgba(10, 8, 6, 0) 80%), #0a0806;
+}
+
+.bg-horizon-warm {
+  background: radial-gradient(ellipse 140% 70% at 50% -15%, rgba(249, 115, 22, 0.25) 0%, rgba(245, 158, 11, 0.10) 45%, rgba(9, 8, 7, 0) 80%), #090807;
+}
+
+/* Subtle micro-dot pattern overlay */
+.bg-subtle-mesh {
+  background-image: radial-gradient(rgba(245, 158, 11, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Dark Luxury Card (Reference 1 & Reference 3) */
+.card-luxury {
+  background: rgba(18, 15, 12, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.14);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(245, 158, 11, 0.12);
+}
+
+.card-luxury-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-luxury-hover:hover {
+  border-color: rgba(245, 158, 11, 0.30);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+/* Luminous Glow Button (Reference 1 & Reference 2) */
+.btn-glow-amber {
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35), 0 0 12px rgba(234, 88, 12, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-glow-amber:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  box-shadow: 0 6px 28px rgba(245, 158, 11, 0.50), 0 0 18px rgba(234, 88, 12, 0.40);
+  transform: translateY(-1px);
+}
+.btn-glow-amber:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Emerald Profit Badge (Reference 1) */
+.badge-profit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  color: #34d399;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+}
+
 /* Hide scrollbars for horizontal pill tracks */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -30,11 +93,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #232a38;
+  background: #231c16;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374258;
+  background: #382d23;
 }
 
 /* Mobile safe area */

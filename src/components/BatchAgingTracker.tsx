@@ -98,10 +98,9 @@ export const BatchAgingTracker: React.FC = () => {
     const currentIndex = productionStages.findIndex(s => s.id === advanceModalBatch.currentStageId);
     if (currentIndex < productionStages.length - 1) {
       const nextStage = productionStages[currentIndex + 1];
-      advanceBatchStage(advanceModalBatch.id, nextStage.id, stageNotes);
-      showToast('success', `${advanceModalBatch.batchNumber} advanced to [${nextStage.name}]!`);
+      const res = advanceBatchStage(advanceModalBatch.id, nextStage.id, stageNotes.trim() || undefined);
+      showToast('success', res.message);
     }
-
     setAdvanceModalBatch(null);
     setStageNotes('');
   };
@@ -114,51 +113,51 @@ export const BatchAgingTracker: React.FC = () => {
   });
 
   return (
-    <div className="space-y-4 pb-20 font-mono">
+    <div className="space-y-4 pb-20 select-none">
       {/* 4 PRODUCTION TELEMETRY TILES (Symmetrical 2x2 Mobile Grid) */}
       <div className="grid grid-cols-2 gap-2 text-center">
-        <div className="bg-[#10141e] border border-[#1e2536] p-3 rounded-2xl">
-          <span className="text-[10px] text-gray-400 uppercase font-bold block">Total Made</span>
-          <div className="text-xl font-extrabold text-white mt-1">
+        <div className="card-luxury rounded-3xl p-3">
+          <span className="text-[9px] text-stone-400 uppercase font-bold block font-mono">Total Made</span>
+          <div className="text-xl font-extrabold text-white mt-1 font-mono">
             {productionStats.totalMadeAllTime}
           </div>
-          <span className="text-[9px] text-gray-500 block">All-Time Yield</span>
+          <span className="text-[9px] text-stone-500 block font-sans">All-Time Yield</span>
         </div>
 
-        <div className="bg-[#10141e] border border-amber-500/30 p-3 rounded-2xl">
-          <span className="text-[10px] text-amber-400 uppercase font-bold block">In Production</span>
-          <div className="text-xl font-extrabold text-amber-400 mt-1">
+        <div className="card-luxury rounded-3xl p-3 border-amber-500/30">
+          <span className="text-[9px] text-amber-400 uppercase font-bold block font-mono">In Production</span>
+          <div className="text-xl font-extrabold text-amber-300 mt-1 font-mono">
             {productionStats.inProductionCount}
           </div>
-          <span className="text-[9px] text-amber-500/70 block">WIP Flacons</span>
+          <span className="text-[9px] text-amber-500/70 block font-sans">WIP Flacons</span>
         </div>
 
-        <div className="bg-[#10141e] border border-cyan-500/30 p-3 rounded-2xl">
-          <span className="text-[10px] text-cyan-400 uppercase font-bold block">Ready Stock</span>
-          <div className="text-xl font-extrabold text-cyan-400 mt-1">
+        <div className="card-luxury rounded-3xl p-3 border-orange-500/30">
+          <span className="text-[9px] text-orange-400 uppercase font-bold block font-mono">Ready Stock</span>
+          <div className="text-xl font-extrabold text-white mt-1 font-mono">
             {productionStats.finishedStockCount}
           </div>
-          <span className="text-[9px] text-cyan-500/70 block">On-Shelf Bottles</span>
+          <span className="text-[9px] text-stone-400 block font-sans">On-Shelf Bottles</span>
         </div>
 
-        <div className="bg-[#10141e] border border-emerald-500/30 p-3 rounded-2xl">
-          <span className="text-[10px] text-emerald-400 uppercase font-bold block">Delivered</span>
-          <div className="text-xl font-extrabold text-emerald-400 mt-1">
+        <div className="card-luxury rounded-3xl p-3 border-emerald-500/30">
+          <span className="text-[9px] text-emerald-400 uppercase font-bold block font-mono">Delivered</span>
+          <div className="text-xl font-extrabold text-emerald-400 mt-1 font-mono">
             {productionStats.bottlesSoldCount}
           </div>
-          <span className="text-[9px] text-emerald-500/70 block">Sold & Shipped</span>
+          <span className="text-[9px] text-emerald-500/70 block font-sans">Sold & Shipped</span>
         </div>
       </div>
 
       {/* Main Header with Actions */}
-      <div className="flex justify-between items-center bg-[#10141e] border border-[#1e2536] rounded-2xl p-3.5 shadow-sm">
+      <div className="card-luxury rounded-3xl p-4 flex justify-between items-center shadow-sm">
         <div>
-          <h2 className="text-sm font-extrabold text-white flex items-center gap-1.5 uppercase tracking-wide">
+          <h2 className="text-sm font-extrabold text-white flex items-center gap-1.5 uppercase tracking-wide font-mono">
             <Hourglass className="w-4 h-4 text-amber-400" />
-            Production Stages & Stock Tracker
+            Maturation Pipeline & Stock
           </h2>
-          <p className="text-[11px] text-gray-400">
-            Multi-stage pipeline, stage due reminders & stock counts
+          <p className="text-[11px] text-stone-400 font-sans mt-0.5">
+            7-stage artisan timeline & maceration progress
           </p>
         </div>
 
@@ -166,17 +165,17 @@ export const BatchAgingTracker: React.FC = () => {
           <button
             onClick={() => setShowStageSettings(true)}
             title="Configure Production Stages"
-            className="p-2 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-gray-300 border border-[#222a3d] text-xs flex items-center gap-1"
+            className="p-2 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] text-stone-300 border border-amber-500/20 text-xs flex items-center gap-1 active:scale-95 transition"
           >
-            <Settings className="w-3.5 h-3.5 text-gray-400" />
-            <span className="text-[10px] hidden sm:inline">Set Stages</span>
+            <Settings className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[10px] hidden sm:inline font-mono">Stages</span>
           </button>
 
           <button
             onClick={() => setShowNewModal(true)}
-            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-bold flex items-center gap-1 shadow-md shadow-amber-500/20 active:scale-95 transition"
+            className="btn-glow-amber px-3.5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <Plus className="w-4 h-4 stroke-[3]" />
             <span>New Batch</span>
           </button>
         </div>
@@ -185,7 +184,7 @@ export const BatchAgingTracker: React.FC = () => {
       {/* Toast Feedback */}
       {feedback && (
         <div
-          className={`p-3 rounded-xl border text-xs font-bold text-center animate-fadeIn ${
+          className={`p-3 rounded-2xl border text-xs font-bold text-center font-mono animate-fadeIn ${
             feedback.type === 'success'
               ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
               : 'bg-amber-500/15 border-amber-500/30 text-amber-300'
@@ -196,15 +195,15 @@ export const BatchAgingTracker: React.FC = () => {
       )}
 
       {/* Visual Production Pipeline Stepper Bar */}
-      <div className="bg-[#0b0e14] border border-[#1c2230] p-2.5 rounded-2xl overflow-x-auto no-scrollbar space-y-1.5">
-        <div className="flex justify-between items-center text-[10px] px-1 text-gray-400">
+      <div className="card-luxury rounded-3xl p-3.5 space-y-2">
+        <div className="flex justify-between items-center text-[10px] px-1 text-stone-400 font-mono">
           <span className="uppercase font-bold text-amber-400 flex items-center gap-1">
-            <Layers className="w-3 h-3" /> 7 Production Milestones
+            <Layers className="w-3.5 h-3.5" /> 7 Production Milestones
           </span>
-          <span>Tap to filter batches</span>
+          <span>Tap to filter</span>
         </div>
 
-        <div className="flex items-center gap-1 min-w-[580px] py-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
           {productionStages.map((stage, idx) => {
             const countInStage = batches.filter(b => b.currentStageId === stage.id).length;
             const isSelected = filterStage === stage.id;
@@ -213,27 +212,27 @@ export const BatchAgingTracker: React.FC = () => {
               <button
                 key={stage.id}
                 onClick={() => setFilterStage(isSelected ? 'all' : stage.id)}
-                className={`flex-1 p-2 rounded-xl border text-left transition relative ${
+                className={`p-2.5 rounded-2xl border text-left transition-all shrink-0 min-w-20 ${
                   isSelected
-                    ? 'bg-amber-400 text-black border-amber-300 shadow-md font-bold'
+                    ? 'bg-gradient-to-b from-amber-400/25 to-amber-500/10 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.25)] font-bold'
                     : countInStage > 0
-                    ? 'bg-[#141926] border-amber-500/40 text-gray-200'
-                    : 'bg-[#0e121a] border-[#1e2536] text-gray-500'
+                    ? 'bg-[#18130e] border-amber-500/30 text-stone-200'
+                    : 'bg-[#120e0a] border-[#221a14] text-stone-500'
                 }`}
               >
-                <div className="flex justify-between items-center text-[9px]">
+                <div className="flex justify-between items-center text-[9px] font-mono">
                   <span>0{idx + 1}</span>
                   {countInStage > 0 && (
                     <span
-                      className={`px-1.5 rounded-full text-[8px] font-bold ${
-                        isSelected ? 'bg-black text-amber-400' : 'bg-amber-500/20 text-amber-300'
+                      className={`px-1.5 py-0.2 rounded-full text-[8px] font-bold ${
+                        isSelected ? 'bg-black text-amber-300' : 'bg-amber-500/20 text-amber-300'
                       }`}
                     >
                       {countInStage}
                     </span>
                   )}
                 </div>
-                <div className="text-[10px] font-bold truncate mt-0.5">
+                <div className="text-[10px] font-bold font-mono truncate mt-0.5">
                   {stage.shortCode}
                 </div>
               </button>
@@ -243,27 +242,27 @@ export const BatchAgingTracker: React.FC = () => {
       </div>
 
       {/* Filter Mode Selector */}
-      <div className="flex gap-1.5 bg-[#10141e] p-1.5 rounded-xl border border-[#1e2536] text-xs">
+      <div className="flex gap-1.5 bg-[#14100d] p-1.5 rounded-full border border-amber-500/20 text-xs font-mono">
         <button
           onClick={() => setFilterStage('all')}
-          className={`flex-1 py-1 rounded-lg font-bold transition ${
-            filterStage === 'all' ? 'bg-amber-400 text-black shadow-sm' : 'text-gray-400 hover:text-white'
+          className={`flex-1 py-1.5 rounded-full font-bold transition-all text-xs ${
+            filterStage === 'all' ? 'btn-glow-amber text-white' : 'text-stone-400 hover:text-white'
           }`}
         >
-          All Batches ({batches.length})
+          All ({batches.length})
         </button>
         <button
           onClick={() => setFilterStage('active')}
-          className={`flex-1 py-1 rounded-lg font-bold transition ${
-            filterStage === 'active' ? 'bg-amber-400 text-black shadow-sm' : 'text-gray-400 hover:text-white'
+          className={`flex-1 py-1.5 rounded-full font-bold transition-all text-xs ${
+            filterStage === 'active' ? 'btn-glow-amber text-white' : 'text-stone-400 hover:text-white'
           }`}
         >
           In Progress ({batches.filter(b => b.currentStageId !== 'stocked').length})
         </button>
         <button
           onClick={() => setFilterStage('stocked')}
-          className={`flex-1 py-1 rounded-lg font-bold transition ${
-            filterStage === 'stocked' ? 'bg-amber-400 text-black shadow-sm' : 'text-gray-400 hover:text-white'
+          className={`flex-1 py-1.5 rounded-full font-bold transition-all text-xs ${
+            filterStage === 'stocked' ? 'btn-glow-amber text-white' : 'text-stone-400 hover:text-white'
           }`}
         >
           Stocked ({batches.filter(b => b.currentStageId === 'stocked').length})
@@ -271,9 +270,9 @@ export const BatchAgingTracker: React.FC = () => {
       </div>
 
       {/* Batches Cards in Production */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="space-y-3.5">
         {filteredBatches.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 bg-[#10141e] rounded-2xl border border-[#1e2536] text-xs">
+          <div className="p-8 text-center text-stone-500 card-luxury rounded-3xl border-dashed text-xs">
             No batches at this production stage.
           </div>
         ) : (
@@ -286,52 +285,52 @@ export const BatchAgingTracker: React.FC = () => {
             return (
               <div
                 key={batch.id}
-                className={`p-4 rounded-2xl border transition-all ${
+                className={`card-luxury rounded-3xl p-4 transition-all space-y-3 ${
                   isCompletedStock
-                    ? 'bg-[#0c0f16] border-[#181e2b] opacity-85'
-                    : 'bg-[#10141e] border-amber-500/30 shadow-md'
+                    ? 'border-[#221a14] opacity-85'
+                    : 'border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
                 }`}
               >
                 {/* Header */}
-                <div className="flex justify-between items-start mb-2">
-                  <div>
+                <div className="flex justify-between items-start gap-2">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-extrabold text-sm text-white">{batch.batchNumber}</span>
+                      <span className="font-extrabold text-sm text-white font-mono">{batch.batchNumber}</span>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${currentStage.color}`}
+                        className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border ${currentStage.color}`}
                       >
                         Stage {currentStageIndex + 1}/7: {currentStage.name}
                       </span>
                     </div>
-                    <h3 className="text-xs font-bold text-gray-200 mt-1">{batch.recipeName}</h3>
+                    <h3 className="text-xs font-bold text-amber-200 mt-1 font-serif-luxury truncate">{batch.recipeName}</h3>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-sm font-extrabold text-amber-400">
+                  <div className="text-right shrink-0">
+                    <span className="text-sm font-extrabold text-amber-300 font-mono">
                       {batch.bottlesPlanned} Flacons
                     </span>
-                    <span className="text-[10px] text-gray-400 block font-mono">
+                    <span className="text-[10px] text-stone-400 block font-mono">
                       Yield: {batch.bottlesPlanned * 50}ml
                     </span>
                   </div>
                 </div>
 
                 {/* Production Stage Stepper Bar */}
-                <div className="space-y-1 my-2">
-                  <div className="flex justify-between text-[10px] text-gray-400">
-                    <span>Pipeline Progress: {progressPercent}%</span>
+                <div className="space-y-1 my-1">
+                  <div className="flex justify-between text-[10px] text-stone-400 font-mono">
+                    <span>Progress: {progressPercent}%</span>
                     <span>
                       {isCompletedStock
                         ? '100% In Stock'
                         : batch.stageDueDate
                         ? `Due: ${batch.stageDueDate}`
-                        : 'Action Pending'}
+                        : 'Active Milestone'}
                     </span>
                   </div>
-                  <div className="w-full bg-[#080a0f] h-2 rounded-full overflow-hidden flex border border-[#1a2130]">
+                  <div className="w-full bg-[#14100d] h-2 rounded-full overflow-hidden flex border border-[#221a14]">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isCompletedStock ? 'bg-emerald-400' : 'bg-gradient-to-r from-amber-400 to-amber-500'
+                        isCompletedStock ? 'bg-emerald-400' : 'bg-gradient-to-r from-amber-500 to-orange-500'
                       }`}
                       style={{ width: `${progressPercent}%` }}
                     />
@@ -339,34 +338,34 @@ export const BatchAgingTracker: React.FC = () => {
                 </div>
 
                 {/* Stage Info & Notes */}
-                <div className="p-2.5 rounded-xl bg-[#080a0f] border border-[#181f2d] text-[11px] space-y-1">
-                  <div className="flex justify-between text-gray-300">
-                    <span className="text-gray-400">Current Milestone:</span>
+                <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 text-[11px] space-y-1">
+                  <div className="flex justify-between text-stone-300">
+                    <span className="text-stone-400 font-mono">Current Task:</span>
                     <strong className="text-amber-300">{currentStage.description}</strong>
                   </div>
                   {batch.stageNotes && (
-                    <div className="text-gray-400 italic pt-1 border-t border-[#181f2d] font-sans">
+                    <div className="text-stone-400 italic pt-1 border-t border-[#221a14] font-sans">
                       "{batch.stageNotes}"
                     </div>
                   )}
                 </div>
 
                 {/* Action Bar: Advance Stage, Share Reminder, Print Tags */}
-                <div className="pt-3 mt-3 border-t border-[#1c2230] space-y-2">
+                <div className="pt-2 border-t border-[#221a14] space-y-2">
                   <div className="grid grid-cols-2 gap-2">
                     {/* Share Reminder Button */}
                     <button
                       onClick={() => handleShareReminder(batch.id)}
-                      className="w-full py-2 px-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-gray-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-[#222a3d] active:scale-95 transition"
+                      className="w-full py-2 px-2.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] text-stone-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-amber-500/20 active:scale-95 transition font-mono"
                     >
                       <Bell className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Alert</span>
+                      <span>Reminder</span>
                     </button>
 
                     {/* Print Tags Button */}
                     <button
                       onClick={() => setActiveTagBatch(batch)}
-                      className="w-full py-2 px-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-amber-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-amber-500/30 active:scale-95 transition"
+                      className="w-full py-2 px-2.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] text-amber-300 text-[11px] font-bold flex items-center justify-center gap-1.5 border border-amber-500/30 active:scale-95 transition font-mono"
                     >
                       <Printer className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                       <span>Bottle Tags</span>
@@ -377,14 +376,14 @@ export const BatchAgingTracker: React.FC = () => {
                   {!isCompletedStock ? (
                     <button
                       onClick={() => setAdvanceModalBatch(batch)}
-                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition"
+                      className="w-full btn-glow-amber py-2.5 px-3 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 uppercase font-mono"
                     >
                       <span>
                         Advance to {productionStages[currentStageIndex + 1]?.name || 'Next Stage'} &rarr;
                       </span>
                     </button>
                   ) : (
-                    <div className="w-full py-2 text-center text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                    <div className="w-full py-2 text-center text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl font-mono">
                       <CheckCircle2 className="w-4 h-4" /> Ready in Stock ({batch.bottlesPlanned} Flacons)
                     </div>
                   )}
@@ -397,26 +396,26 @@ export const BatchAgingTracker: React.FC = () => {
 
       {/* Modal: Advance Stage */}
       {advanceModalBatch && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl animate-scaleUp">
-            <div className="flex justify-between items-center border-b border-[#1c2230] pb-2">
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3">
+          <div className="card-luxury rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl border-amber-500/30">
+            <div className="flex justify-between items-center border-b border-[#221a14] pb-2">
+              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase font-mono">
                 <ArrowRight className="w-4 h-4 text-amber-400" />
                 Advance Production Stage
               </h3>
               <button
                 onClick={() => setAdvanceModalBatch(null)}
-                className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1"
+                className="text-stone-400 hover:text-white text-xs font-bold px-2 py-1"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleConfirmAdvance} className="space-y-3 text-xs">
-              <div className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-1">
-                <div className="text-gray-400 text-[10px] uppercase">Batch:</div>
-                <div className="text-white font-bold">{advanceModalBatch.batchNumber} • {advanceModalBatch.recipeName}</div>
-                <div className="text-amber-400 text-[11px] pt-1">
+              <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 space-y-1">
+                <div className="text-stone-400 text-[10px] uppercase font-mono">Batch:</div>
+                <div className="text-white font-bold font-serif-luxury">{advanceModalBatch.batchNumber} • {advanceModalBatch.recipeName}</div>
+                <div className="text-amber-300 text-[11px] pt-1 font-mono">
                   Moving from [
                   {productionStages.find(s => s.id === advanceModalBatch.currentStageId)?.name}
                   ] &rarr; [
@@ -426,13 +425,13 @@ export const BatchAgingTracker: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-gray-400 block mb-1">Stage Tasting & QC Notes</label>
+                <label className="text-stone-400 block mb-1 font-mono">Stage Tasting & QC Notes</label>
                 <textarea
                   rows={2}
                   value={stageNotes}
                   onChange={(e) => setStageNotes(e.target.value)}
                   placeholder="e.g. Filtered crystal clear. Chilled for 24h. No precipitate."
-                  className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
+                  className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
                 />
               </div>
 
@@ -440,13 +439,13 @@ export const BatchAgingTracker: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setAdvanceModalBatch(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#141824] text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-2xl bg-[#14100d] text-stone-300 font-bold border border-amber-500/15 font-mono"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold shadow-md shadow-amber-500/20"
+                  className="flex-1 btn-glow-amber py-2.5 rounded-2xl font-extrabold uppercase font-mono"
                 >
                   Confirm Transition
                 </button>
@@ -456,24 +455,24 @@ export const BatchAgingTracker: React.FC = () => {
         </div>
       )}
 
-      {/* Modal: Customize Stages ("Stages can be set") */}
+      {/* Modal: Customize Stages */}
       {showStageSettings && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl my-6 animate-scaleUp">
-            <div className="flex justify-between items-center border-b border-[#1c2230] pb-2">
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase">
+          <div className="card-luxury rounded-3xl p-5 max-w-md w-full space-y-4 shadow-2xl my-6 border-amber-500/30">
+            <div className="flex justify-between items-center border-b border-[#221a14] pb-2">
+              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase font-mono">
                 <Settings className="w-4 h-4 text-amber-400" />
                 Customize Production Stages
               </h3>
               <button
                 onClick={() => setShowStageSettings(false)}
-                className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1"
+                className="text-stone-400 hover:text-white text-xs font-bold px-2 py-1"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-[11px] text-gray-400">
+            <p className="text-[11px] text-stone-400 font-sans">
               Configure your bespoke studio workflow stages and typical maturation durations:
             </p>
 
@@ -481,13 +480,13 @@ export const BatchAgingTracker: React.FC = () => {
               {productionStages.map((stage, idx) => (
                 <div
                   key={stage.id}
-                  className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-2 text-xs"
+                  className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 space-y-2 text-xs"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-amber-400">
+                    <span className="font-bold text-amber-400 font-mono">
                       0{idx + 1}. {stage.shortCode}
                     </span>
-                    <div className="flex items-center gap-1 text-[11px] text-gray-400">
+                    <div className="flex items-center gap-1 text-[11px] text-stone-400 font-mono">
                       <span>Duration:</span>
                       <input
                         type="number"
@@ -495,7 +494,7 @@ export const BatchAgingTracker: React.FC = () => {
                         max="90"
                         value={stage.typicalDays}
                         onChange={(e) => updateProductionStage(stage.id, { typicalDays: parseInt(e.target.value) || 0 })}
-                        className="w-12 bg-[#141824] border border-[#222a3d] rounded-lg px-1.5 py-0.5 text-center text-white font-bold"
+                        className="w-12 bg-[#1b1510] border border-amber-500/30 rounded-xl px-1.5 py-0.5 text-center text-white font-bold"
                       />
                       <span>days</span>
                     </div>
@@ -505,13 +504,13 @@ export const BatchAgingTracker: React.FC = () => {
                     type="text"
                     value={stage.name}
                     onChange={(e) => updateProductionStage(stage.id, { name: e.target.value })}
-                    className="w-full bg-[#141824] border border-[#222a3d] rounded-lg px-2 py-1 text-white text-[11px]"
+                    className="w-full bg-[#1b1510] border border-amber-500/20 rounded-xl px-2.5 py-1 text-white text-[11px]"
                   />
                   <input
                     type="text"
                     value={stage.description}
                     onChange={(e) => updateProductionStage(stage.id, { description: e.target.value })}
-                    className="w-full bg-[#141824] border border-[#222a3d] rounded-lg px-2 py-1 text-gray-400 text-[10px] font-sans"
+                    className="w-full bg-[#1b1510] border border-amber-500/20 rounded-xl px-2.5 py-1 text-stone-400 text-[10px] font-sans"
                   />
                 </div>
               ))}
@@ -522,7 +521,7 @@ export const BatchAgingTracker: React.FC = () => {
                 setShowStageSettings(false);
                 showToast('success', 'Production stages and durations updated!');
               }}
-              className="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs shadow-md shadow-amber-500/20"
+              className="w-full btn-glow-amber py-2.5 rounded-2xl font-extrabold text-xs uppercase font-mono"
             >
               Done & Save Stages
             </button>
@@ -532,16 +531,16 @@ export const BatchAgingTracker: React.FC = () => {
 
       {/* New Batch Brew Modal */}
       {showNewModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl animate-scaleUp">
-            <div className="flex justify-between items-center border-b border-[#1c2230] pb-2">
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3">
+          <div className="card-luxury rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl border-amber-500/30">
+            <div className="flex justify-between items-center border-b border-[#221a14] pb-2">
+              <h3 className="text-sm font-bold text-white flex items-center gap-1.5 uppercase font-mono">
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 Initiate Production Batch
               </h3>
               <button
                 onClick={() => setShowNewModal(false)}
-                className="text-gray-400 hover:text-white text-xs font-bold px-2 py-1"
+                className="text-stone-400 hover:text-white text-xs font-bold px-2 py-1"
               >
                 ✕
               </button>
@@ -549,22 +548,22 @@ export const BatchAgingTracker: React.FC = () => {
 
             <form onSubmit={handleStartBrew} className="space-y-3 text-xs">
               <div>
-                <label className="text-gray-400 block mb-1">Batch Code</label>
+                <label className="text-stone-400 block mb-1 font-mono">Batch Code</label>
                 <input
                   type="text"
                   value={batchNum}
                   onChange={(e) => setBatchNum(e.target.value)}
-                  className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400"
+                  className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-gray-400 block mb-1">Select Fragrance Formulation</label>
+                <label className="text-stone-400 block mb-1 font-mono">Fragrance Formulation</label>
                 <select
                   value={selectedRecipeId}
                   onChange={(e) => setSelectedRecipeId(e.target.value)}
-                  className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-bold"
+                  className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-bold"
                 >
                   {recipes.map(r => (
                     <option key={r.id} value={r.id}>
@@ -576,24 +575,24 @@ export const BatchAgingTracker: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-gray-400 block mb-1">Planned Bottles</label>
+                  <label className="text-stone-400 block mb-1 font-mono">Planned Bottles</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
                     value={bottlesPlanned}
                     onChange={(e) => setBottlesPlanned(parseInt(e.target.value) || 1)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-bold"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-bold font-mono"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-gray-400 block mb-1">Starting Stage</label>
+                  <label className="text-stone-400 block mb-1 font-mono">Starting Stage</label>
                   <select
                     value={initialStageId}
                     onChange={(e) => setInitialStageId(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-2 text-white outline-none focus:border-amber-400 text-[11px]"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-2 py-2 text-white outline-none focus:border-amber-400 text-[11px]"
                   >
                     {productionStages.slice(0, 3).map(s => (
                       <option key={s.id} value={s.id}>{s.name}</option>
@@ -603,13 +602,13 @@ export const BatchAgingTracker: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-gray-400 block mb-1">Batch Formulation Notes</label>
+                <label className="text-stone-400 block mb-1 font-mono">Batch Formulation Notes</label>
                 <textarea
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g. Cold extraction batch. Stored in dark amber jug."
-                  className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
+                  className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
                 />
               </div>
 
@@ -617,15 +616,15 @@ export const BatchAgingTracker: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowNewModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#141824] text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-2xl bg-[#14100d] text-stone-300 font-bold border border-amber-500/15 font-mono"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold shadow-md shadow-amber-500/20"
+                  className="flex-1 btn-glow-amber py-2.5 rounded-2xl font-extrabold uppercase font-mono"
                 >
-                  Start Production
+                  Start Batch
                 </button>
               </div>
             </form>

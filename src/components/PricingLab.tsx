@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { getDefaultRecipeSizes } from '../data/initialData';
-import { Calculator, TrendingUp, Percent, Info, Check, Sparkles, Box, Sliders, Layers } from 'lucide-react';
+import { TrendingUp, Percent, Info, Check, Sparkles, Box, Layers, IndianRupee } from 'lucide-react';
 
 export const PricingLab: React.FC = () => {
   const {
@@ -54,24 +54,24 @@ export const PricingLab: React.FC = () => {
   };
 
   const getMarginBadge = (margin: number) => {
-    if (margin >= 75) return { label: 'Optimal Artisan Margin (>75%)', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' };
-    if (margin >= 55) return { label: 'Healthy Commercial Margin (55-75%)', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' };
-    if (margin >= 30) return { label: 'Discount / Thin Margin (30-55%)', color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' };
-    return { label: 'Negative / Loss-Making (<30%)', color: 'text-red-400 bg-red-500/10 border-red-500/30' };
+    if (margin >= 75) return { label: 'Optimal Artisan Margin (>75%)', color: 'badge-profit' };
+    if (margin >= 55) return { label: 'Healthy Commercial Margin (55-75%)', color: 'text-amber-300 bg-amber-500/15 border border-amber-500/30 rounded-full px-2.5 py-1 font-bold' };
+    if (margin >= 30) return { label: 'Discount / Thin Margin (30-55%)', color: 'text-orange-300 bg-orange-500/15 border border-orange-500/30 rounded-full px-2.5 py-1 font-bold' };
+    return { label: 'Negative / Loss-Making (<30%)', color: 'text-rose-400 bg-rose-500/15 border border-rose-500/30 rounded-full px-2.5 py-1 font-bold' };
   };
 
   const marginBadge = getMarginBadge(marginPercent);
 
   return (
-    <div className="space-y-4 pb-20 font-mono">
+    <div className="space-y-4 pb-20 select-none">
       {/* Scent Selector */}
-      <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-4 shadow-sm">
-        <div className="flex justify-between items-center mb-2">
-          <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+      <div className="card-luxury rounded-3xl p-4 space-y-2.5">
+        <div className="flex justify-between items-center">
+          <label className="text-[11px] font-bold text-stone-400 uppercase tracking-wider flex items-center gap-1.5 font-mono">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             Active Fragrance Formulation
           </label>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25">
+          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25">
             {currentRecipe?.concentration}
           </span>
         </div>
@@ -79,218 +79,157 @@ export const PricingLab: React.FC = () => {
         <select
           value={selectedRecipeId}
           onChange={(e) => setSelectedRecipeId(e.target.value)}
-          className="w-full bg-[#080a0f] border border-[#222a3d] text-white text-sm font-bold rounded-xl px-3 py-2.5 outline-none focus:border-amber-400 transition"
+          className="w-full bg-[#14100d] border border-amber-500/25 text-white text-sm font-bold rounded-2xl px-3.5 py-2.5 outline-none focus:border-amber-400 transition font-sans"
         >
           {recipes.map(r => (
             <option key={r.id} value={r.id}>
-              {r.name} — Current Price: {profile.currency}{r.manualPrice.toLocaleString('en-IN')} ({r.inStockBottles} in stock)
+              {r.name} — Current Price: ₹{r.manualPrice.toLocaleString('en-IN')} ({r.inStockBottles} in stock)
             </option>
           ))}
         </select>
-        <p className="text-xs text-gray-400 mt-2 italic font-sans">
+        <p className="text-xs text-stone-400 italic font-sans">
           "{currentRecipe?.tagline}"
         </p>
       </div>
 
-      {/* Responsive 2-column SaaS Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-        {/* Left Column: Direct Manual Pricing in INR */}
-        <div className="bg-gradient-to-br from-[#131722] to-[#0c0f17] border-2 border-amber-500/30 rounded-2xl p-4 shadow-xl space-y-3 relative overflow-hidden">
-          <div className="flex justify-between items-start">
-            <div>
-              <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase">
-                Direct Retail Price ({profile.currency} INR)
-                {saveToast && (
-                  <span className="text-[10px] text-emerald-400 font-normal flex items-center gap-0.5 animate-pulse">
-                    <Check className="w-3 h-3" /> Updated
-                  </span>
-                )}
-              </span>
-              <p className="text-[11px] text-gray-400 font-sans">
-                Overrides default price. Synchronizes with public order link instantly.
-              </p>
-            </div>
-            <span className="text-[10px] font-bold text-amber-400 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/25">
-              Manual Override
+      {/* Direct Retail Price (50ml Master) */}
+      <div className="card-luxury rounded-3xl p-4.5 space-y-3.5 relative overflow-hidden border-amber-500/35">
+        <div className="flex justify-between items-start gap-2">
+          <div>
+            <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono">
+              Direct Retail Price (50ml Flacon)
+              {saveToast && (
+                <span className="text-[10px] text-emerald-400 font-normal flex items-center gap-0.5 animate-pulse font-mono">
+                  <Check className="w-3 h-3" /> Updated
+                </span>
+              )}
             </span>
+            <p className="text-[11px] text-stone-400 font-sans mt-0.5">
+              Live retail rate. Updates customer storefront and UPI checkout instantaneously.
+            </p>
           </div>
+          <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/25 shrink-0">
+            Active Rate
+          </span>
+        </div>
 
-          {/* Big Input in INR */}
-          <div className="relative">
-            <span className="absolute left-3.5 top-2.5 text-2xl font-bold text-amber-400">
-              {profile.currency}
+        {/* Big Input in INR */}
+        <div className="relative">
+          <span className="absolute left-4 top-3 text-2xl font-bold text-amber-400 font-mono">
+            ₹
+          </span>
+          <input
+            type="number"
+            step="50"
+            value={currentPrice}
+            onChange={(e) => handlePriceChange(parseFloat(e.target.value) || 0)}
+            className="w-full bg-[#14100d] border border-amber-500/35 text-amber-300 text-2xl font-extrabold rounded-2xl pl-10 pr-4 py-2.5 outline-none focus:border-amber-400 font-mono tracking-wide"
+          />
+        </div>
+
+        {/* Preset Pricing Shortcuts in INR */}
+        <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+          <button
+            onClick={() => handlePriceChange(1999)}
+            className="p-2.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] border border-amber-500/15 text-center active:scale-95 transition"
+          >
+            <div className="text-[9px] text-stone-400 leading-tight font-sans">Friends & Family</div>
+            <div className="font-extrabold text-xs text-white mt-0.5 font-mono">₹1,999</div>
+          </button>
+          <button
+            onClick={() => handlePriceChange(2899)}
+            className="p-2.5 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-center active:scale-95 transition shadow-[0_0_12px_rgba(245,158,11,0.15)]"
+          >
+            <div className="text-[9px] text-amber-300 font-bold leading-tight font-sans">Signature Standard</div>
+            <div className="font-black text-xs text-amber-300 mt-0.5 font-mono">₹2,899</div>
+          </button>
+          <button
+            onClick={() => handlePriceChange(3499)}
+            className="p-2.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] border border-amber-500/15 text-center active:scale-95 transition"
+          >
+            <div className="text-[9px] text-stone-400 leading-tight font-sans">Collector Reserve</div>
+            <div className="font-extrabold text-xs text-white mt-0.5 font-mono">₹3,499</div>
+          </button>
+        </div>
+
+        {/* Financial Metrics in INR */}
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#221a14]">
+          <div className="bg-[#14100d] p-3 rounded-2xl border border-amber-500/15">
+            <span className="text-[10px] text-stone-400 uppercase font-bold flex items-center gap-1 font-mono">
+              <TrendingUp className="w-3 h-3 text-emerald-400" />
+              Net Profit / Flacon
             </span>
-            <input
-              type="number"
-              step="50"
-              value={currentPrice}
-              onChange={(e) => handlePriceChange(parseFloat(e.target.value) || 0)}
-              className="w-full bg-[#080a0f] border border-amber-500/40 text-amber-300 text-2xl font-extrabold rounded-xl pl-9 pr-4 py-2 outline-none focus:border-amber-400 font-mono tracking-wide"
-            />
-          </div>
-
-          {/* Preset Pricing Shortcuts in INR */}
-          <div className="grid grid-cols-3 gap-1.5 pt-1">
-            <button
-              onClick={() => handlePriceChange(1999)}
-              className="p-2 rounded-xl bg-[#0b0e14] hover:bg-[#141824] border border-[#1e2536] text-center active:scale-95 transition"
-            >
-              <div className="text-[9px] text-gray-400 leading-tight">Friends & Fam</div>
-              <div className="font-bold text-xs text-white mt-0.5">{profile.currency}1,999</div>
-            </button>
-            <button
-              onClick={() => handlePriceChange(2899)}
-              className="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-center active:scale-95 transition"
-            >
-              <div className="text-[9px] text-amber-400 font-bold leading-tight">Standard</div>
-              <div className="font-bold text-xs text-amber-300 mt-0.5">{profile.currency}2,899</div>
-            </button>
-            <button
-              onClick={() => handlePriceChange(3499)}
-              className="p-2 rounded-xl bg-[#0b0e14] hover:bg-[#141824] border border-[#1e2536] text-center active:scale-95 transition"
-            >
-              <div className="text-[9px] text-gray-400 leading-tight">Collector</div>
-              <div className="font-bold text-xs text-white mt-0.5">{profile.currency}3,499</div>
-            </button>
-          </div>
-
-          {/* Financial Metrics in INR */}
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1e2536]">
-            <div className="bg-[#080a0f] p-2.5 rounded-xl border border-[#1c2230]">
-              <span className="text-[10px] text-gray-400 uppercase font-bold flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-emerald-400" />
-                Net Profit / Bottle
-              </span>
-              <div className={`text-xl font-extrabold mt-1 ${netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                {profile.currency}{Math.round(netProfit).toLocaleString('en-IN')}
-              </div>
-            </div>
-
-            <div className="bg-[#080a0f] p-2.5 rounded-xl border border-[#1c2230]">
-              <span className="text-[10px] text-gray-400 uppercase font-bold flex items-center gap-1">
-                <Percent className="w-3 h-3 text-emerald-400" />
-                Gross Margin
-              </span>
-              <div className={`text-xl font-extrabold mt-1 ${marginPercent >= 55 ? 'text-emerald-400' : marginPercent > 0 ? 'text-amber-400' : 'text-red-400'}`}>
-                {marginPercent.toFixed(1)}%
-              </div>
+            <div className={`text-xl font-extrabold font-mono mt-1 ${netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              ₹{Math.round(netProfit).toLocaleString('en-IN')}
             </div>
           </div>
 
-          <div className={`text-center py-2 px-3 rounded-xl border text-[11px] font-bold ${marginBadge.color}`}>
-            {marginBadge.label}
+          <div className="bg-[#14100d] p-3 rounded-2xl border border-amber-500/15">
+            <span className="text-[10px] text-stone-400 uppercase font-bold flex items-center gap-1 font-mono">
+              <Percent className="w-3 h-3 text-amber-400" />
+              Gross Margin
+            </span>
+            <div className={`text-xl font-extrabold font-mono mt-1 ${marginPercent >= 55 ? 'text-emerald-400' : marginPercent > 0 ? 'text-amber-300' : 'text-rose-400'}`}>
+              {marginPercent.toFixed(1)}%
+            </div>
           </div>
         </div>
 
-        {/* Right Column: COGS Breakdown + Discovery Box Economics */}
-        <div className="space-y-4">
-          {/* Production Cost Breakdown in INR */}
-          <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-4 shadow-sm space-y-3">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-gray-400" />
-                50ml Unit Cost Breakdown (COGS)
-              </h3>
-              <span className="text-xs font-bold text-amber-400">
-                Total {profile.currency}{Math.round(totalCogs)} / flacon
-              </span>
-            </div>
+        <div className="text-center pt-1">
+          <span className={marginBadge.color}>
+            {marginBadge.label}
+          </span>
+        </div>
+      </div>
 
-            <div className="space-y-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-[#080a0f] border border-[#1c2230] flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-gray-200">Raw Oil Concentrate & ENA Alcohol</span>
-                  <p className="text-[10px] text-gray-500 font-sans">
-                    {currentRecipe?.ingredients.length} formula oils ({concentrationPercent.toFixed(1)}% dilution)
-                  </p>
-                </div>
-                <span className="font-bold text-white">{profile.currency}{Math.round(oilCost)}</span>
-              </div>
+      {/* Production Cost Breakdown in INR */}
+      <div className="card-luxury rounded-3xl p-4 space-y-3">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <Info className="w-3.5 h-3.5 text-amber-400" />
+            50ml Unit Cost Breakdown (COGS)
+          </h3>
+          <span className="text-xs font-bold text-amber-300 font-mono">
+            Total ₹{Math.round(totalCogs)} / flacon
+          </span>
+        </div>
 
-              <div className="p-2.5 rounded-xl bg-[#080a0f] border border-[#1c2230] flex justify-between items-center">
-                <div>
-                  <span className="font-bold text-gray-200">French Glass Bottle, Atomizer & Collar Tag</span>
-                  <p className="text-[10px] text-gray-500 font-sans">
-                    Heavy base 50ml flacon + gold magnetic pump + collar card
-                  </p>
-                </div>
-                <span className="font-bold text-white">{profile.currency}{packCost}</span>
-              </div>
+        <div className="space-y-2 text-xs">
+          <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 flex justify-between items-center">
+            <div>
+              <span className="font-bold text-stone-200">Raw Oil Concentrate & Perfumer's Alcohol</span>
+              <p className="text-[10px] text-stone-500 font-sans">
+                {currentRecipe?.ingredients.length} formula oils ({concentrationPercent.toFixed(1)}% dilution)
+              </p>
             </div>
+            <span className="font-bold text-white font-mono">₹{Math.round(oilCost)}</span>
           </div>
 
-          {/* DISCOVERY SAMPLE BOX ECONOMICS & PRICING */}
-          <div className="bg-gradient-to-br from-[#121622] to-[#0c0f17] border border-amber-500/40 rounded-2xl p-4 shadow-sm space-y-3">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <Box className="w-3.5 h-3.5 text-amber-400" />
-                Discovery Sampler Set Economics (3 × 5ml)
-              </h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                {discoveryMargin.toFixed(0)}% Margin
-              </span>
+          <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 flex justify-between items-center">
+            <div>
+              <span className="font-bold text-stone-200">French Glass Flacon, Atomizer & Tag</span>
+              <p className="text-[10px] text-stone-500 font-sans">
+                Heavy base 50ml flacon + magnetic atomizer + metallic neck label
+              </p>
             </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div>
-                <label className="text-[10px] text-gray-400 uppercase font-bold block mb-1">
-                  Sample Box Price ({profile.currency})
-                </label>
-                <input
-                  type="number"
-                  step="50"
-                  value={discoveryConfig.price}
-                  onChange={(e) => updateDiscoveryConfig({ price: parseFloat(e.target.value) || 0 })}
-                  className="w-full bg-[#080a0f] border border-amber-500/40 text-amber-300 font-bold rounded-xl px-3 py-1.5 text-sm outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] text-gray-400 uppercase font-bold block mb-1">
-                  Packaging (3 Vials + Box)
-                </label>
-                <input
-                  type="number"
-                  value={discoveryConfig.boxCost}
-                  onChange={(e) => updateDiscoveryConfig({ boxCost: parseFloat(e.target.value) || 0 })}
-                  className="w-full bg-[#080a0f] border border-[#222a3d] text-white font-bold rounded-xl px-3 py-1.5 text-sm outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-[#080a0f] border border-[#1a2130] flex justify-between items-center text-xs">
-              <div>
-                <span className="text-gray-400 text-[11px]">Net Profit / Discovery Box:</span>
-                <div className="text-sm font-extrabold text-emerald-400">
-                  {profile.currency}{discoveryProfit.toLocaleString('en-IN')}
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-gray-400 text-[11px]">Total Sample COGS:</span>
-                <div className="text-sm font-bold text-white font-mono">
-                  {profile.currency}{discoveryTotalCogs}
-                </div>
-              </div>
-            </div>
+            <span className="font-bold text-white font-mono">₹{packCost}</span>
           </div>
         </div>
       </div>
 
-      {/* ------------------------------------------------------------- */}
-      {/* MULTI-SIZE FLACON PRICING & MARGIN MATRIX                     */}
-      {/* ------------------------------------------------------------- */}
-      <div className="bg-[#10141e] border border-[#1e2536] rounded-2xl p-4 shadow-sm space-y-3">
+      {/* MULTI-SIZE FLACON PRICING & MARGIN MATRIX */}
+      <div className="card-luxury rounded-3xl p-4 space-y-3.5 border-amber-500/30">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5 font-mono">
               <Layers className="w-3.5 h-3.5 text-amber-400" />
-              Flacon Sizing & Pricing Matrix
+              Multi-Size Pricing & Margin Matrix
             </h3>
-            <p className="text-[10px] text-gray-400 font-sans mt-0.5">
-              Configure retail prices across 15ml, 30ml, 50ml, & 100ml tiers
+            <p className="text-[10px] text-stone-400 font-sans mt-0.5">
+              Configure rates across 15ml, 30ml, 50ml, & 100ml tiers
             </p>
           </div>
-          <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+          <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-full">
             4 Sizing Tiers
           </span>
         </div>
@@ -306,16 +245,16 @@ export const PricingLab: React.FC = () => {
             return (
               <div
                 key={size.sizeMl}
-                className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-2"
+                className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 space-y-2.5"
               >
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-lg bg-amber-400/15 text-amber-300 font-bold flex items-center justify-center text-xs border border-amber-500/25 font-mono">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-300 font-extrabold flex items-center justify-center text-xs border border-amber-500/25 font-mono">
                       {size.sizeMl}m
                     </span>
                     <div>
                       <span className="text-xs font-bold text-white block">{size.label}</span>
-                      <span className="text-[10px] text-gray-500 font-mono">Stock: {size.inStock} bottles</span>
+                      <span className="text-[10px] text-stone-400 font-mono">Allocated Stock: {size.inStock} bottles</span>
                     </div>
                   </div>
 
@@ -326,20 +265,20 @@ export const PricingLab: React.FC = () => {
                       step="50"
                       value={size.price}
                       onChange={(e) => handleSizePriceChange(size.sizeMl, parseFloat(e.target.value) || 0)}
-                      className="w-24 bg-[#121622] border border-amber-500/40 text-amber-300 font-extrabold text-sm rounded-lg px-2 py-1 text-right outline-none focus:border-amber-400 font-mono"
+                      className="w-24 bg-[#1b1510] border border-amber-500/40 text-amber-300 font-extrabold text-sm rounded-xl px-2.5 py-1 text-right outline-none focus:border-amber-400 font-mono"
                     />
                   </div>
                 </div>
 
-                {/* Sizing Telemetry: Liquid + Packaging = COGS -> Net Profit & Margin */}
-                <div className="grid grid-cols-4 gap-1.5 p-2 rounded-xl bg-[#0e121a] border border-[#1a2130] text-center font-mono text-[10px]">
+                {/* Sizing Telemetry: Juice + Packaging = COGS -> Net Profit & Margin */}
+                <div className="grid grid-cols-4 gap-1.5 p-2 rounded-xl bg-[#0e0b08] border border-amber-500/10 text-center font-mono text-[10px]">
                   <div>
-                    <span className="text-[8px] text-gray-500 block uppercase">Juice ({size.sizeMl}ml)</span>
-                    <span className="font-bold text-gray-300">₹{sizeLiquidCost}</span>
+                    <span className="text-[8px] text-stone-500 block uppercase">Juice ({size.sizeMl}ml)</span>
+                    <span className="font-bold text-stone-300">₹{sizeLiquidCost}</span>
                   </div>
                   <div>
-                    <span className="text-[8px] text-gray-500 block uppercase">Pack Cost</span>
-                    <span className="font-bold text-gray-300">₹{sizePackCost}</span>
+                    <span className="text-[8px] text-stone-500 block uppercase">Packaging</span>
+                    <span className="font-bold text-stone-300">₹{sizePackCost}</span>
                   </div>
                   <div>
                     <span className="text-[8px] text-amber-500/80 block uppercase">Unit COGS</span>
@@ -355,6 +294,61 @@ export const PricingLab: React.FC = () => {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* DISCOVERY SAMPLE BOX ECONOMICS & PRICING */}
+      <div className="card-luxury rounded-3xl p-4.5 space-y-3.5 border-amber-500/30">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <Box className="w-3.5 h-3.5 text-amber-400" />
+            Discovery Coffret Economics (3 × 5ml)
+          </h3>
+          <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            {discoveryMargin.toFixed(0)}% Margin
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1 font-mono">
+              Sample Box Price (₹)
+            </label>
+            <input
+              type="number"
+              step="50"
+              value={discoveryConfig.price}
+              onChange={(e) => updateDiscoveryConfig({ price: parseFloat(e.target.value) || 0 })}
+              className="w-full bg-[#14100d] border border-amber-500/30 text-amber-300 font-bold rounded-2xl px-3 py-2 text-sm outline-none font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] text-stone-400 uppercase font-bold block mb-1 font-mono">
+              Packaging Cost (3 Vials + Box)
+            </label>
+            <input
+              type="number"
+              value={discoveryConfig.boxCost}
+              onChange={(e) => updateDiscoveryConfig({ boxCost: parseFloat(e.target.value) || 0 })}
+              className="w-full bg-[#14100d] border border-amber-500/30 text-white font-bold rounded-2xl px-3 py-2 text-sm outline-none font-mono"
+            />
+          </div>
+        </div>
+
+        <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 flex justify-between items-center text-xs font-mono">
+          <div>
+            <span className="text-stone-400 text-[11px]">Net Profit / Discovery Box:</span>
+            <div className="text-sm font-extrabold text-emerald-400">
+              ₹{discoveryProfit.toLocaleString('en-IN')}
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-stone-400 text-[11px]">Total Sample COGS:</span>
+            <div className="text-sm font-bold text-white font-mono">
+              ₹{discoveryTotalCogs}
+            </div>
+          </div>
         </div>
       </div>
     </div>

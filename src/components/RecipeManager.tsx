@@ -111,35 +111,35 @@ export const RecipeManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 pb-20">
+    <div className="space-y-4 pb-20 select-none">
       {/* Top Banner */}
-      <div className="flex justify-between items-center bg-[#10141e] border border-[#1e2536] rounded-2xl p-4 shadow-sm">
+      <div className="card-luxury rounded-3xl p-4 flex justify-between items-center shadow-sm">
         <div>
           <h2 className="text-sm font-extrabold text-white flex items-center gap-1.5 font-mono uppercase tracking-wide">
             <FlaskConical className="w-4 h-4 text-amber-400" />
             Formula & Recipe Lab
           </h2>
-          <p className="text-[11px] text-gray-400 font-mono">
-            Create, store, scale, and cost artisan perfume recipes
+          <p className="text-[11px] text-stone-400 font-sans mt-0.5">
+            Bespoke formulations, note pyramids & batch scaling
           </p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-bold font-mono flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition"
+          className="btn-glow-amber px-3.5 py-2 rounded-2xl text-xs font-bold font-mono flex items-center gap-1.5 shrink-0"
         >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <Plus className="w-4 h-4 stroke-[3]" />
           <span>New Perfume</span>
         </button>
       </div>
 
       {toast && (
-        <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono text-center font-bold animate-fadeIn">
+        <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono text-center font-bold animate-fadeIn">
           {toast}
         </div>
       )}
 
       {/* Recipe Cards List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="space-y-3.5">
         {recipes.map(recipe => {
           const { oilCost, packCost, totalCogs, concentrationPercent } = calculateRecipeCogs(recipe);
           const profit = recipe.manualPrice - totalCogs;
@@ -148,65 +148,65 @@ export const RecipeManager: React.FC = () => {
           return (
             <div
               key={recipe.id}
-              className="bg-[#10141e] border border-[#1e2536] hover:border-[#2b354d] rounded-2xl p-4 space-y-3 transition shadow-sm"
+              className="card-luxury card-luxury-hover rounded-3xl p-4.5 space-y-3.5"
             >
               {/* Card Header */}
-              <div className="flex justify-between items-start">
-                <div>
+              <div className="flex justify-between items-start gap-2">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-extrabold text-white font-mono tracking-tight">
+                    <h3 className="text-sm font-extrabold text-white font-serif-luxury tracking-wide truncate">
                       {recipe.name}
                     </h3>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-bold border border-amber-500/25">
+                    <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-bold border border-amber-500/25 shrink-0">
                       {recipe.concentration}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 italic mt-0.5 font-sans">
+                  <p className="text-xs text-stone-400 italic mt-0.5 font-sans truncate">
                     "{recipe.tagline}"
                   </p>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-base font-bold font-mono text-emerald-400">
-                    {profile.currency}{recipe.manualPrice.toLocaleString('en-IN')}
+                <div className="text-right shrink-0">
+                  <div className="text-base font-extrabold font-mono text-amber-300">
+                    ₹{recipe.manualPrice.toLocaleString('en-IN')}
                   </div>
-                  <span className="text-[10px] font-mono text-gray-400">
-                    MSRP / 50ml Flacon
+                  <span className="text-[10px] font-mono text-stone-400">
+                    50ml Standard
                   </span>
                 </div>
               </div>
 
-              {/* Scent Pyramid Breakdown (Clean Mobile-First Stack) */}
-              <div className="bg-[#0b0e14] p-2.5 rounded-xl border border-[#1a2130] space-y-1.5 text-[11px] font-mono">
+              {/* Scent Pyramid Breakdown */}
+              <div className="bg-[#14100d] p-3 rounded-2xl border border-amber-500/15 space-y-1.5 text-xs font-mono">
                 <div className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Top:</span>
-                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.top.join(', ')}</span>
+                  <span className="text-amber-400 font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Top:</span>
+                  <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.top.join(' • ')}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-pink-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Heart:</span>
-                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(', ')}</span>
+                  <span className="text-pink-400 font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Heart:</span>
+                  <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(' • ')}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-amber-500 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Base:</span>
-                  <span className="text-gray-200 font-sans text-xs leading-tight">{recipe.pyramid.base.join(', ')}</span>
+                  <span className="text-orange-400 font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Base:</span>
+                  <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.base.join(' • ')}</span>
                 </div>
               </div>
 
-              {/* Financial & Formulation Telemetry (Symmetrical 2x2 Mobile Grid) */}
-              <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-[#0b0e14] border border-[#1a2130] text-center font-mono">
-                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
-                  <span className="text-[9px] text-gray-500 block uppercase">Liquid Cost</span>
-                  <span className="text-xs font-bold text-gray-200">{profile.currency}{Math.round(oilCost)}</span>
+              {/* Financial & Formulation Telemetry (2x2 Grid) */}
+              <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 text-center font-mono">
+                <div className="bg-[#1b1510] p-2 rounded-xl border border-amber-500/10">
+                  <span className="text-[9px] text-stone-500 block uppercase">Liquid Cost</span>
+                  <span className="text-xs font-bold text-stone-200">₹{Math.round(oilCost)}</span>
                 </div>
-                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
-                  <span className="text-[9px] text-gray-500 block uppercase">Pack Cost</span>
-                  <span className="text-xs font-bold text-gray-200">{profile.currency}{packCost}</span>
+                <div className="bg-[#1b1510] p-2 rounded-xl border border-amber-500/10">
+                  <span className="text-[9px] text-stone-500 block uppercase">Pack Cost</span>
+                  <span className="text-xs font-bold text-stone-200">₹{packCost}</span>
                 </div>
-                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
+                <div className="bg-[#1b1510] p-2 rounded-xl border border-amber-500/10">
                   <span className="text-[9px] text-amber-500/80 block uppercase">Unit COGS</span>
-                  <span className="text-xs font-bold text-amber-400">{profile.currency}{Math.round(totalCogs)}</span>
+                  <span className="text-xs font-bold text-amber-400">₹{Math.round(totalCogs)}</span>
                 </div>
-                <div className="bg-[#121622]/60 p-2 rounded-lg border border-[#1a2130]">
+                <div className="bg-[#1b1510] p-2 rounded-xl border border-amber-500/10">
                   <span className="text-[9px] text-emerald-500/80 block uppercase">Net Margin</span>
                   <span className="text-xs font-bold text-emerald-400">{margin.toFixed(0)}%</span>
                 </div>
@@ -214,7 +214,7 @@ export const RecipeManager: React.FC = () => {
 
               {/* Sizing Tiers Available */}
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[10px] font-mono">
-                <span className="text-gray-500 uppercase text-[9px] font-bold shrink-0">Sizes:</span>
+                <span className="text-stone-500 uppercase text-[9px] font-bold shrink-0">Sizes:</span>
                 {(recipe.sizes && recipe.sizes.length > 0 ? recipe.sizes : [
                   { sizeMl: 15, price: Math.round(recipe.manualPrice * 0.42 / 50) * 50 - 1 },
                   { sizeMl: 30, price: Math.round(recipe.manualPrice * 0.68 / 50) * 50 - 1 },
@@ -223,32 +223,32 @@ export const RecipeManager: React.FC = () => {
                 ]).map(size => (
                   <span
                     key={size.sizeMl}
-                    className="px-2 py-0.5 rounded-lg bg-[#080a0f] text-gray-300 border border-[#1a2130] shrink-0"
+                    className="px-2.5 py-1 rounded-full bg-[#14100d] text-stone-300 border border-amber-500/20 shrink-0"
                   >
-                    <strong className="text-amber-400 font-bold">{size.sizeMl}ml</strong>: ₹{size.price.toLocaleString('en-IN')}
+                    <strong className="text-amber-300 font-bold">{size.sizeMl}ml</strong>: ₹{size.price.toLocaleString('en-IN')}
                   </span>
                 ))}
               </div>
 
               {/* Formulation Ingredients Summary */}
-              <div className="text-[11px] text-gray-400 flex items-center justify-between border-t border-[#1c2230] pt-2 font-mono">
+              <div className="text-[11px] text-stone-400 flex items-center justify-between border-t border-[#221a14] pt-2 font-mono">
                 <span>{recipe.ingredients.length} formula oils • {recipe.maturationDaysNeeded}d aging</span>
-                <span className="text-cyan-400 font-semibold">{recipe.inStockBottles} flacons ready</span>
+                <span className="text-amber-300 font-semibold">{recipe.inStockBottles} flacons ready</span>
               </div>
 
               {/* Batch Scaler & Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#1a2130]">
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#221a14]">
                 <div className="flex items-center gap-1.5 font-mono text-[10px]">
-                  <Scale className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-                  <span className="text-gray-500">Scale:</span>
+                  <Scale className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+                  <span className="text-stone-500">Scale:</span>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => {
                         scaleRecipe(recipe.id, 50);
                         showNotification(`Scaled ${recipe.name} to 50ml trial blend`);
                       }}
-                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
-                        recipe.batchVolumeMl === 50 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      className={`px-2 py-0.5 rounded-lg border transition text-[10px] ${
+                        recipe.batchVolumeMl === 50 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-amber-500/20 text-stone-400 hover:text-white'
                       }`}
                     >
                       50ml
@@ -258,8 +258,8 @@ export const RecipeManager: React.FC = () => {
                         scaleRecipe(recipe.id, 500);
                         showNotification(`Scaled ${recipe.name} to 500ml (10 bottles)`);
                       }}
-                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
-                        recipe.batchVolumeMl === 500 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      className={`px-2 py-0.5 rounded-lg border transition text-[10px] ${
+                        recipe.batchVolumeMl === 500 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-amber-500/20 text-stone-400 hover:text-white'
                       }`}
                     >
                       500ml
@@ -269,8 +269,8 @@ export const RecipeManager: React.FC = () => {
                         scaleRecipe(recipe.id, 1000);
                         showNotification(`Scaled ${recipe.name} to 1000ml (20 bottles)`);
                       }}
-                      className={`px-2 py-0.5 rounded border transition text-[10px] ${
-                        recipe.batchVolumeMl === 1000 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-[#222a3d] text-gray-400 hover:text-white'
+                      className={`px-2 py-0.5 rounded-lg border transition text-[10px] ${
+                        recipe.batchVolumeMl === 1000 ? 'bg-amber-400 text-black border-amber-400 font-bold' : 'border-amber-500/20 text-stone-400 hover:text-white'
                       }`}
                     >
                       1000ml
@@ -283,9 +283,9 @@ export const RecipeManager: React.FC = () => {
                     setSelectedRecipeId(recipe.id);
                     setActiveTab('pricing');
                   }}
-                  className="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-amber-400 text-xs font-mono font-semibold border border-[#222a3d] flex items-center justify-center gap-1 active:scale-95 transition"
+                  className="px-3 py-1.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] text-amber-300 text-xs font-mono font-semibold border border-amber-500/25 flex items-center justify-center gap-1 active:scale-95 transition"
                 >
-                  <span>Pricing & Margins</span>
+                  <span>Pricing</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -294,28 +294,28 @@ export const RecipeManager: React.FC = () => {
         })}
       </div>
 
-      {/* Full Modal: Create New Perfume / Formula */}
+      {/* Full Modal: Create New Perfume */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
-          <div className="bg-[#0e121a] border border-[#222a3d] rounded-3xl p-5 max-w-md w-full max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl my-auto animate-scaleUp no-scrollbar">
+          <div className="card-luxury rounded-3xl p-5 max-w-md w-full max-h-[92vh] overflow-y-auto space-y-4 shadow-2xl my-auto animate-scaleUp no-scrollbar border-amber-500/30">
             {/* Modal Header */}
-            <div className="flex justify-between items-center border-b border-[#1c2230] pb-3">
+            <div className="flex justify-between items-center border-b border-[#221a14] pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white font-mono uppercase">
                     New Perfume Formulation
                   </h3>
-                  <p className="text-[10px] text-gray-400 font-mono">
-                    Store recipe, ingredients & calculate unit cost in INR
+                  <p className="text-[10px] text-stone-400 font-sans">
+                    Store recipe, ingredients & calculate unit COGS in INR
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-white text-xs font-mono font-bold px-2 py-1 rounded-lg bg-[#161a26]"
+                className="text-stone-400 hover:text-white text-xs font-mono font-bold px-2 py-1 rounded-xl bg-[#14100d]"
               >
                 ✕
               </button>
@@ -325,25 +325,25 @@ export const RecipeManager: React.FC = () => {
               {/* Perfume Identity */}
               <div className="space-y-2">
                 <div>
-                  <label className="text-gray-400 text-[11px] block mb-1">Perfume Name</label>
+                  <label className="text-stone-400 text-[11px] block mb-1">Perfume Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Oudh & Cashmere Noir"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
                   />
                 </div>
 
                 <div>
-                  <label className="text-gray-400 text-[11px] block mb-1">Fragrance Tagline / Description</label>
+                  <label className="text-stone-400 text-[11px] block mb-1">Fragrance Tagline / Description</label>
                   <input
                     type="text"
                     placeholder="e.g. Smoky Assam oud with creamy cashmere and bourbon vanilla"
                     value={tagline}
                     onChange={(e) => setTagline(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans"
                   />
                 </div>
               </div>
@@ -351,11 +351,11 @@ export const RecipeManager: React.FC = () => {
               {/* Concentration & Batch Setup */}
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="text-gray-400 text-[10px] block mb-1">Concentration</label>
+                  <label className="text-stone-400 text-[10px] block mb-1">Concentration</label>
                   <select
                     value={concentration}
                     onChange={(e) => setConcentration(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400"
                   >
                     <option value="Extrait de Parfum (24%)">Extrait (24%)</option>
                     <option value="Extrait de Parfum (20%)">Extrait (20%)</option>
@@ -366,11 +366,11 @@ export const RecipeManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-gray-400 text-[10px] block mb-1">Batch Volume</label>
+                  <label className="text-stone-400 text-[10px] block mb-1">Batch Volume</label>
                   <select
                     value={batchVolumeMl}
                     onChange={(e) => setBatchVolumeMl(parseInt(e.target.value))}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400"
                   >
                     <option value="50">50ml (1 bottle)</option>
                     <option value="250">250ml (5 bottles)</option>
@@ -380,12 +380,12 @@ export const RecipeManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-gray-400 text-[10px] block mb-1">Aging Days</label>
+                  <label className="text-stone-400 text-[10px] block mb-1">Aging Days</label>
                   <input
                     type="number"
                     value={maturationDays}
                     onChange={(e) => setMaturationDays(parseInt(e.target.value) || 30)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-2 py-2 text-white text-[11px] outline-none focus:border-amber-400 font-mono"
                   />
                 </div>
               </div>
@@ -395,14 +395,14 @@ export const RecipeManager: React.FC = () => {
                 <div className="flex justify-between items-center">
                   <label className="text-[11px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
                     <FlaskConical className="w-3.5 h-3.5" />
-                    Formula Composition ({ingredients.length} items)
+                    Composition ({ingredients.length} items)
                   </label>
                   <button
                     type="button"
                     onClick={handleAddIngredientRow}
-                    className="text-[10px] text-black font-bold bg-amber-400 hover:bg-amber-300 px-2 py-0.5 rounded-lg flex items-center gap-0.5"
+                    className="text-[10px] text-black font-bold bg-amber-400 hover:bg-amber-300 px-2.5 py-0.5 rounded-full flex items-center gap-0.5"
                   >
-                    + Add Oil / Solvent
+                    + Add Material
                   </button>
                 </div>
 
@@ -410,17 +410,17 @@ export const RecipeManager: React.FC = () => {
                   {ingredients.map((ing, idx) => (
                     <div
                       key={idx}
-                      className="p-2 rounded-xl bg-[#080a0f] border border-[#1e2536] flex items-center gap-1.5 text-[11px]"
+                      className="p-2.5 rounded-2xl bg-[#14100d] border border-amber-500/15 flex items-center gap-1.5 text-[11px]"
                     >
                       {/* Material Selector */}
                       <select
                         value={ing.materialId}
                         onChange={(e) => handleIngredientChange(idx, 'materialId', e.target.value)}
-                        className="flex-1 bg-[#121622] border border-[#222a3d] rounded-lg px-2 py-1 text-white text-[11px] truncate outline-none"
+                        className="flex-1 bg-[#1b1510] border border-amber-500/20 rounded-xl px-2 py-1 text-white text-[11px] truncate outline-none"
                       >
                         {materials.map(m => (
                           <option key={m.id} value={m.id}>
-                            {m.name} ({profile.currency}{m.costPerUnit}/{m.unit})
+                            {m.name} (₹{m.costPerUnit}/{m.unit})
                           </option>
                         ))}
                       </select>
@@ -433,7 +433,7 @@ export const RecipeManager: React.FC = () => {
                           placeholder="g"
                           value={ing.amountGrams}
                           onChange={(e) => handleIngredientChange(idx, 'amountGrams', parseFloat(e.target.value) || 0)}
-                          className="w-full bg-[#121622] border border-[#222a3d] rounded-lg px-1.5 py-1 text-white text-center text-[11px] outline-none font-bold"
+                          className="w-full bg-[#1b1510] border border-amber-500/20 rounded-xl px-1.5 py-1 text-white text-center text-[11px] outline-none font-bold font-mono"
                         />
                       </div>
 
@@ -441,7 +441,7 @@ export const RecipeManager: React.FC = () => {
                       <select
                         value={ing.noteType}
                         onChange={(e) => handleIngredientChange(idx, 'noteType', e.target.value)}
-                        className="w-20 bg-[#121622] border border-[#222a3d] rounded-lg px-1 py-1 text-gray-300 text-[10px] outline-none"
+                        className="w-20 bg-[#1b1510] border border-amber-500/20 rounded-xl px-1 py-1 text-stone-300 text-[10px] outline-none"
                       >
                         <option value="top">Top Note</option>
                         <option value="heart">Heart Note</option>
@@ -453,7 +453,7 @@ export const RecipeManager: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredientRow(idx)}
-                        className="p-1 text-gray-500 hover:text-red-400"
+                        className="p-1 text-stone-500 hover:text-red-400"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -464,28 +464,28 @@ export const RecipeManager: React.FC = () => {
 
               {/* Scent Pyramid Breakdown */}
               <div className="space-y-1.5 pt-1">
-                <span className="text-[10px] text-gray-400 uppercase font-bold">Olfactory Pyramid (For Storefront)</span>
+                <span className="text-[10px] text-stone-400 uppercase font-bold">Olfactory Pyramid (For Storefront)</span>
                 <div className="grid grid-cols-3 gap-1.5">
                   <input
                     type="text"
                     placeholder="Top (e.g. Bergamot)"
                     value={topNotes}
                     onChange={(e) => setTopNotes(e.target.value)}
-                    className="bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-1.5 text-[11px] text-white outline-none"
+                    className="bg-[#14100d] border border-amber-500/20 rounded-2xl px-2.5 py-1.5 text-[11px] text-white outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Heart (e.g. Rose)"
                     value={heartNotes}
                     onChange={(e) => setHeartNotes(e.target.value)}
-                    className="bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-1.5 text-[11px] text-white outline-none"
+                    className="bg-[#14100d] border border-amber-500/20 rounded-2xl px-2.5 py-1.5 text-[11px] text-white outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Base (e.g. Amber)"
                     value={baseNotes}
                     onChange={(e) => setBaseNotes(e.target.value)}
-                    className="bg-[#080a0f] border border-[#1e2536] rounded-xl px-2 py-1.5 text-[11px] text-white outline-none"
+                    className="bg-[#14100d] border border-amber-500/20 rounded-2xl px-2.5 py-1.5 text-[11px] text-white outline-none"
                   />
                 </div>
               </div>
@@ -493,46 +493,46 @@ export const RecipeManager: React.FC = () => {
               {/* Packaging & Direct Selling Price in INR */}
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <div>
-                  <label className="text-gray-400 text-[10px] block mb-1">Packaging Cost / Bottle</label>
+                  <label className="text-stone-400 text-[10px] block mb-1">Packaging Cost / Bottle</label>
                   <div className="relative">
-                    <span className="absolute left-2.5 top-1.5 text-gray-500 text-xs">{profile.currency}</span>
+                    <span className="absolute left-3 top-2 text-stone-500 text-xs font-mono">₹</span>
                     <input
                       type="number"
                       value={bottleMaterialCost}
                       onChange={(e) => setBottleMaterialCost(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl pl-6 pr-2 py-1.5 text-white outline-none font-bold"
+                      className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl pl-7 pr-2 py-1.5 text-white outline-none font-bold font-mono"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-amber-400 text-[10px] block mb-1 font-bold">Selling Price ({profile.currency})</label>
+                  <label className="text-amber-400 text-[10px] block mb-1 font-bold">Selling Price (₹)</label>
                   <div className="relative">
-                    <span className="absolute left-2.5 top-1.5 text-amber-400 font-bold text-xs">{profile.currency}</span>
+                    <span className="absolute left-3 top-2 text-amber-400 font-bold text-xs font-mono">₹</span>
                     <input
                       type="number"
                       value={manualPrice}
                       onChange={(e) => setManualPrice(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-[#080a0f] border border-amber-500/50 rounded-xl pl-6 pr-2 py-1.5 text-amber-300 outline-none font-bold text-sm"
+                      className="w-full bg-[#14100d] border border-amber-500/40 rounded-2xl pl-7 pr-2 py-1.5 text-amber-300 outline-none font-bold text-sm font-mono"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Live Formulation Telemetry Box */}
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-[#121622] to-[#0c0f17] border border-[#222a3d] space-y-1.5">
+              <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/20 space-y-1.5">
                 <div className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-400">Total Concentrate / Dilution:</span>
-                  <span className="text-amber-400 font-bold">{concentrateGrams}g ({calculatedConcentration.toFixed(1)}%)</span>
+                  <span className="text-stone-400">Total Concentrate:</span>
+                  <span className="text-amber-300 font-bold">{concentrateGrams}g ({calculatedConcentration.toFixed(1)}%)</span>
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-400">Unit COGS (Liquid + Packaging):</span>
-                  <span className="text-white font-bold">{profile.currency}{Math.round(estimatedUnitCogs)} / flacon</span>
+                  <span className="text-stone-400">Unit COGS:</span>
+                  <span className="text-white font-bold font-mono">₹{Math.round(estimatedUnitCogs)} / flacon</span>
                 </div>
-                <div className="flex justify-between items-center text-[11px] pt-1 border-t border-[#1e2536]">
+                <div className="flex justify-between items-center text-[11px] pt-1 border-t border-[#221a14]">
                   <span className="text-emerald-400 font-bold">Net Profit per Flacon:</span>
                   <span className="text-emerald-400 font-bold font-mono">
-                    {profile.currency}{Math.round(netProfit)} ({grossMargin.toFixed(1)}% margin)
+                    ₹{Math.round(netProfit)} ({grossMargin.toFixed(1)}% margin)
                   </span>
                 </div>
               </div>
@@ -542,13 +542,13 @@ export const RecipeManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-2xl bg-[#14100d] hover:bg-[#1e1711] text-stone-300 font-bold border border-amber-500/15"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold shadow-lg shadow-amber-500/20 active:scale-95 transition"
+                  className="flex-1 btn-glow-amber py-2.5 rounded-2xl font-extrabold uppercase"
                 >
                   Save Formulation
                 </button>

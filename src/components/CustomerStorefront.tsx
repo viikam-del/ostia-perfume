@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { QRCodeSVG } from 'qrcode.react';
-import { Order, BottleSizeOption } from '../types';
+import { Order } from '../types';
 import { getDefaultRecipeSizes } from '../data/initialData';
 import {
   Sparkles,
@@ -20,7 +20,9 @@ import {
   Banknote,
   Clock,
   RotateCcw,
-  Layers
+  Layers,
+  ShieldCheck,
+  Award
 } from 'lucide-react';
 
 export const CustomerStorefront: React.FC = () => {
@@ -98,16 +100,7 @@ export const CustomerStorefront: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Helper to get active size for a recipe
-  const getRecipeActiveSize = (recipe: typeof recipes[0]) => {
-    const currentSizeMl = recipeSelectedSizes[recipe.id] || 50;
-    const availableSizes = recipe.sizes && recipe.sizes.length > 0
-      ? recipe.sizes
-      : getDefaultRecipeSizes(recipe.manualPrice);
-    return availableSizes.find(s => s.sizeMl === currentSizeMl) || availableSizes.find(s => s.sizeMl === 50) || availableSizes[0];
-  };
-
-  // 1. Choose product from catalog and move to details page
+  // Choose product from catalog and move to details page
   const handleSelectFlacon = (recipeId: string, sizeMl?: number) => {
     const chosenSize = sizeMl || recipeSelectedSizes[recipeId] || 50;
     setSelectedRecipeId(recipeId);
@@ -139,7 +132,7 @@ export const CustomerStorefront: React.FC = () => {
     }
   };
 
-  // 2. Submit form on details page and move to confirmation/payment page
+  // Submit form on details page and move to confirmation/payment page
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim()) return;
@@ -213,7 +206,7 @@ export const CustomerStorefront: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 3. User chooses payment method: Paid via UPI vs Pay with Cash
+  // User chooses payment method: Paid via UPI vs Pay with Cash
   const handlePaymentConfirm = (method: 'UPI' | 'Cash') => {
     if (!submittedOrder) return;
 
@@ -260,26 +253,40 @@ export const CustomerStorefront: React.FC = () => {
     : '';
 
   return (
-    <div className="w-full space-y-4 pb-20 pt-1 font-mono">
-      {/* Brand Hero (Shown on catalog & details) */}
+    <div className="w-full space-y-4 pb-20 pt-1 select-none">
+      {/* ------------------------------------------------------------- */}
+      {/* BRAND HERO SECTION (Reference 2 Atmospheric Glow)             */}
+      {/* ------------------------------------------------------------- */}
       {checkoutStep !== 'confirmation' && checkoutStep !== 'order_received' && (
-        <div className="text-center space-y-2 py-3 px-2">
-          <div className="w-24 h-24 mx-auto rounded-3xl p-1 flex items-center justify-center">
-            <img
-              src="/ostia-logo.png"
-              alt="OSTIA Logo"
-              className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(217,119,6,0.3)]"
-            />
+        <div className="relative text-center space-y-2.5 py-4 px-2">
+          {/* Subtle Ambient Glow behind logo */}
+          <div className="w-24 h-24 mx-auto relative group">
+            <div className="absolute inset-0 bg-amber-500/25 rounded-3xl blur-xl" />
+            <div className="relative w-full h-full rounded-3xl bg-[#14100c]/90 border border-amber-500/35 p-2 flex items-center justify-center shadow-[0_0_25px_rgba(245,158,11,0.25)]">
+              <img
+                src="/ostia-logo.png"
+                alt="OSTIA Logo"
+                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(245,158,11,0.4)]"
+              />
+            </div>
           </div>
+
           <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-[10px] font-mono font-bold tracking-wider uppercase mb-1">
+              <Award className="w-3 h-3 text-amber-400" />
+              <span>Haute Parfumerie • Micro-Batch</span>
+            </div>
+
             <h2 className="text-2xl font-extrabold text-white tracking-[0.25em] font-serif-luxury uppercase">
               {profile.businessName}
             </h2>
-            <div className="text-[10px] text-amber-400 font-bold uppercase tracking-widest mt-0.5">
-              Haute Parfumerie • Master Perfumer {profile.perfumerName}
-            </div>
-            <p className="text-[11px] text-gray-400 max-w-xs mx-auto italic font-sans mt-1">
-              {profile.tagline}
+
+            <p className="text-[11px] text-amber-200/90 font-medium tracking-wide font-sans mt-0.5">
+              By Master Perfumer <span className="text-amber-400 font-serif-luxury font-bold">{profile.perfumerName}</span>
+            </p>
+
+            <p className="text-xs text-stone-400 max-w-xs mx-auto italic font-sans mt-1">
+              "{profile.tagline}"
             </p>
           </div>
         </div>
@@ -289,36 +296,36 @@ export const CustomerStorefront: React.FC = () => {
       {/* PAGE 1: SCENT CATALOG & PRODUCT SELECTION                     */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'catalog' && (
-        <div className="space-y-4 animate-fadeIn">
-          {/* Category Pills: 50ml Flacons vs Discovery Box */}
-          <div className="flex gap-2 bg-[#10141e] p-1.5 rounded-2xl border border-[#1e2536] text-xs">
+        <div className="space-y-4">
+          {/* Category Pill Switcher (Ref 1 & 2 Style) */}
+          <div className="flex gap-1.5 bg-[#14100c] p-1.5 rounded-full border border-amber-500/20 text-xs">
             <button
               onClick={() => setCatalogCategory('flacons')}
-              className={`flex-1 py-2 px-2 rounded-xl font-bold flex items-center justify-center gap-1.5 transition ${
+              className={`flex-1 py-2 px-3 rounded-full font-bold flex items-center justify-center gap-1.5 transition-all text-xs ${
                 catalogCategory === 'flacons'
-                  ? 'bg-amber-400 text-black shadow-md'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'btn-glow-amber text-white font-extrabold'
+                  : 'text-stone-400 hover:text-white'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>50ml Flacons</span>
+              <span>Bespoke Flacons</span>
             </button>
             <button
               onClick={() => setCatalogCategory('discovery')}
-              className={`flex-1 py-2 px-2 rounded-xl font-bold flex items-center justify-center gap-1.5 transition ${
+              className={`flex-1 py-2 px-3 rounded-full font-bold flex items-center justify-center gap-1.5 transition-all text-xs ${
                 catalogCategory === 'discovery'
-                  ? 'bg-amber-400 text-black shadow-md'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'btn-glow-amber text-white font-extrabold'
+                  : 'text-stone-400 hover:text-white'
               }`}
             >
               <Box className="w-3.5 h-3.5" />
-              <span>Discovery Box ({profile.currency}{discoveryConfig.price})</span>
+              <span>Discovery Set (₹{discoveryConfig.price})</span>
             </button>
           </div>
 
-          {/* 50ml Flacons List */}
+          {/* Bespoke Flacons Single-Column Feed */}
           {catalogCategory === 'flacons' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div className="space-y-4">
               {recipes.map(recipe => {
                 const availableSizes = recipe.sizes && recipe.sizes.length > 0
                   ? recipe.sizes
@@ -331,55 +338,60 @@ export const CustomerStorefront: React.FC = () => {
                 return (
                   <div
                     key={recipe.id}
-                    className="bg-[#10141e] border border-[#1e2536] hover:border-[#2f3950] rounded-3xl p-4.5 space-y-3 transition shadow-sm"
+                    className="card-luxury card-luxury-hover rounded-3xl p-4.5 space-y-3.5 relative overflow-hidden"
                   >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25">
+                    {/* Top Header: Concentration, Name, Price & Stock */}
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 uppercase">
                           {recipe.concentration}
                         </span>
-                        <h3 className="text-base font-extrabold text-white mt-1.5 font-serif-luxury tracking-wide">
+                        <h3 className="text-base font-extrabold text-white mt-1 font-serif-luxury tracking-wide truncate">
                           {recipe.name}
                         </h3>
-                        <p className="text-xs text-gray-400 italic mt-0.5 font-sans">
+                        <p className="text-xs text-stone-400 italic mt-0.5 font-sans truncate">
                           "{recipe.tagline}"
                         </p>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className="text-lg font-extrabold text-amber-300 font-mono">
-                          {profile.currency}{activeSize.price.toLocaleString('en-IN')}
+                        <div className="text-xl font-extrabold text-amber-300 font-mono tracking-tight">
+                          ₹{activeSize.price.toLocaleString('en-IN')}
                         </div>
-                        <span className={`text-[10px] font-bold ${isAvailable ? 'text-emerald-400' : 'text-red-400'}`}>
-                          {isAvailable ? `${activeSize.inStock} in stock` : 'Sold Out'}
+                        <span className={`text-[10px] font-mono font-bold inline-block mt-0.5 px-2 py-0.2 rounded-full ${
+                          isAvailable
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
+                            : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'
+                        }`}>
+                          {isAvailable ? `${activeSize.inStock} Available` : 'Sold Out'}
                         </span>
                       </div>
                     </div>
 
-                    {/* Scent Pyramid Breakdown */}
-                    <div className="pt-2 border-t border-[#1c2230] space-y-1 text-[11px]">
-                      <div className="flex items-start gap-1.5">
-                        <span className="text-amber-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Top:</span>
-                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.top.join(', ')}</span>
+                    {/* Scent Pyramid Notes */}
+                    <div className="pt-2.5 border-t border-[#221a14] space-y-1.5 text-xs">
+                      <div className="flex items-start gap-2">
+                        <span className="text-amber-400 font-mono font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Top:</span>
+                        <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.top.join(' • ')}</span>
                       </div>
-                      <div className="flex items-start gap-1.5">
-                        <span className="text-pink-400 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Heart:</span>
-                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(', ')}</span>
+                      <div className="flex items-start gap-2">
+                        <span className="text-pink-400 font-mono font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Heart:</span>
+                        <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.heart.join(' • ')}</span>
                       </div>
-                      <div className="flex items-start gap-1.5">
-                        <span className="text-amber-500 font-bold text-[9px] uppercase tracking-wider w-11 shrink-0 pt-0.5">Base:</span>
-                        <span className="text-gray-300 font-sans text-xs leading-tight">{recipe.pyramid.base.join(', ')}</span>
+                      <div className="flex items-start gap-2">
+                        <span className="text-orange-400 font-mono font-bold text-[9px] uppercase tracking-wider w-12 shrink-0 pt-0.5">Base:</span>
+                        <span className="text-stone-300 font-sans text-xs leading-tight">{recipe.pyramid.base.join(' • ')}</span>
                       </div>
                     </div>
 
-                    {/* Flacon Sizing Options Selector */}
-                    <div className="pt-2.5 border-t border-[#1c2230] space-y-1.5">
+                    {/* Flacon Sizing Selector (4-Option Pills) */}
+                    <div className="pt-2.5 border-t border-[#221a14] space-y-2">
                       <div className="flex justify-between items-center text-[10px]">
-                        <span className="text-gray-400 uppercase font-bold tracking-wider flex items-center gap-1">
+                        <span className="text-stone-400 uppercase font-bold tracking-wider flex items-center gap-1 font-mono">
                           <Layers className="w-3 h-3 text-amber-400" />
-                          Choose Flacon Size:
+                          Select Size:
                         </span>
-                        <span className="text-amber-400 font-bold">{activeSize.label}</span>
+                        <span className="text-amber-300 font-mono font-bold">{activeSize.label}</span>
                       </div>
 
                       <div className="grid grid-cols-4 gap-1.5">
@@ -393,16 +405,16 @@ export const CustomerStorefront: React.FC = () => {
                               onClick={() => {
                                 setRecipeSelectedSizes(prev => ({ ...prev, [recipe.id]: size.sizeMl }));
                               }}
-                              className={`py-2 px-1 rounded-xl text-center border transition relative ${
+                              className={`py-2 px-1 rounded-2xl text-center border transition-all relative ${
                                 isSelected
-                                  ? 'bg-amber-400 text-black border-amber-300 font-extrabold shadow-md shadow-amber-500/20'
+                                  ? 'bg-gradient-to-b from-amber-400/25 to-amber-500/10 border-amber-400 text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)] font-bold'
                                   : hasStock
-                                  ? 'bg-[#080a0f] hover:bg-[#141926] text-gray-300 border-[#1e2536]'
-                                  : 'bg-[#06080c] text-gray-600 border-[#141824] opacity-50'
+                                  ? 'bg-[#15110d] hover:bg-[#1e1813] text-stone-300 border-amber-500/15'
+                                  : 'bg-[#100d0a] text-stone-600 border-[#1c1611] opacity-40'
                               }`}
                             >
-                              <div className="text-[11px] leading-tight font-bold">{size.sizeMl}ml</div>
-                              <div className={`text-[9px] leading-tight mt-0.5 font-mono ${isSelected ? 'text-black font-black' : 'text-amber-300/80'}`}>
+                              <div className="text-xs font-mono font-extrabold">{size.sizeMl}ml</div>
+                              <div className={`text-[9px] mt-0.5 font-mono ${isSelected ? 'text-amber-300 font-black' : 'text-stone-400'}`}>
                                 ₹{size.price.toLocaleString('en-IN')}
                               </div>
                             </button>
@@ -411,18 +423,18 @@ export const CustomerStorefront: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Product Action Button -> Opens Details Page */}
+                    {/* CTA Button -> Opens Details Funnel */}
                     <button
                       onClick={() => handleSelectFlacon(recipe.id, activeSize.sizeMl)}
                       disabled={!isAvailable}
-                      className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-md shadow-amber-500/20 active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide disabled:opacity-50"
+                      className="w-full btn-glow-amber py-3.5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider disabled:opacity-40"
                     >
                       <span>
                         {isAvailable
-                          ? `Select ${activeSize.sizeMl}ml Flacon & Proceed (${profile.currency}${activeSize.price.toLocaleString('en-IN')})`
+                          ? `Acquire ${activeSize.sizeMl}ml Flacon (₹${activeSize.price.toLocaleString('en-IN')})`
                           : `${activeSize.sizeMl}ml Sold Out`}
                       </span>
-                      <ChevronRight className="w-4 h-4 stroke-[3]" />
+                      <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                     </button>
                   </div>
                 );
@@ -430,46 +442,46 @@ export const CustomerStorefront: React.FC = () => {
             </div>
           ) : (
             /* Discovery Box Option */
-            <div className="bg-gradient-to-br from-[#121622] to-[#0c0f17] border border-amber-500/40 rounded-3xl p-5 space-y-4 shadow-xl">
-              <div className="flex justify-between items-start">
+            <div className="card-luxury rounded-3xl p-5 space-y-4 relative overflow-hidden border-amber-500/30">
+              <div className="flex justify-between items-start gap-2">
                 <div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 uppercase">
-                    Boutique Sampler Set
+                  <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 uppercase">
+                    Boutique Sampler Coffret
                   </span>
                   <h3 className="text-base font-extrabold text-white mt-1.5 font-serif-luxury">
                     Custom Discovery Box (3 × 5ml)
                   </h3>
-                  <p className="text-xs text-gray-400 italic mt-0.5 font-sans">
-                    Sample 3 different handcrafted botanical perfumes in fine-mist 5ml flacons before choosing your full bottle.
+                  <p className="text-xs text-stone-400 italic mt-0.5 font-sans">
+                    Sample 3 handcrafted micro-batch perfumes in fine-mist flacons before commissioning your full bespoke bottle.
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-xl font-extrabold text-amber-400">
-                    {profile.currency}{discoveryConfig.price}
+                  <span className="text-xl font-extrabold text-amber-300 font-mono">
+                    ₹{discoveryConfig.price.toLocaleString('en-IN')}
                   </span>
-                  <span className="text-[9px] text-emerald-400 block font-bold">Free Handcrafted Shipping</span>
+                  <span className="text-[9px] text-emerald-400 block font-bold font-mono">Free Insured Courier</span>
                 </div>
               </div>
 
-              <div className="bg-[#080a0f] p-3 rounded-2xl border border-[#1e2536] text-[11px] space-y-1.5">
-                <div className="flex items-center gap-2 text-gray-200">
-                  <span className="text-amber-400">✓</span> 3 × 5ml heavy glass travel sprayers
+              <div className="bg-[#14100c] p-3.5 rounded-2xl border border-amber-500/15 text-xs space-y-2">
+                <div className="flex items-center gap-2 text-stone-300 font-sans">
+                  <span className="text-amber-400 font-bold">✓</span> 3 × 5ml heavy Italian glass spray vials
                 </div>
-                <div className="flex items-center gap-2 text-gray-200">
-                  <span className="text-amber-400">✓</span> Custom luxury linen slide box with foam insert
+                <div className="flex items-center gap-2 text-stone-300 font-sans">
+                  <span className="text-amber-400 font-bold">✓</span> Custom luxury linen slide box with foam insert
                 </div>
-                <div className="flex items-center gap-2 text-gray-200">
-                  <span className="text-amber-400">✓</span> Pick any 3 fragrances from the collection
+                <div className="flex items-center gap-2 text-stone-300 font-sans">
+                  <span className="text-amber-400 font-bold">✓</span> Select any 3 formulations from Faisal Parvez
                 </div>
               </div>
 
               {/* Action Button -> Opens Details Page */}
               <button
                 onClick={handleSelectDiscovery}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide"
+                className="w-full btn-glow-amber py-3.5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider"
               >
-                <span>Customize 3 Samples & Proceed ({profile.currency}{discoveryConfig.price})</span>
-                <ChevronRight className="w-4 h-4 stroke-[3]" />
+                <span>Customize 3 Samples & Proceed (₹{discoveryConfig.price.toLocaleString('en-IN')})</span>
+                <ChevronRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             </div>
           )}
@@ -477,24 +489,24 @@ export const CustomerStorefront: React.FC = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* PAGE 2: DETAILS & CHECKOUT PAGE (OPENS AFTER PRODUCT SELECTION) */}
+      {/* PAGE 2: DETAILS & CHECKOUT PAGE (CLIENT RESERVATION)          */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'details' && (
-        <div className="space-y-4 animate-scaleUp">
+        <div className="space-y-4">
           {/* Back Button */}
           <button
             onClick={() => setCheckoutStep('catalog')}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition py-1"
+            className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-white transition py-1 font-mono"
           >
             <ArrowLeft className="w-4 h-4 text-amber-400" />
             <span>Back to Scent Collection</span>
           </button>
 
           {/* Selected Product Summary Card */}
-          <div className="bg-gradient-to-r from-[#141926] to-[#0e121a] border border-amber-500/40 rounded-2xl p-4 shadow-md space-y-2">
-            <div className="flex justify-between items-start">
+          <div className="card-luxury rounded-3xl p-4 space-y-3 border-amber-500/30">
+            <div className="flex justify-between items-start gap-2">
               <div>
-                <span className="text-[10px] text-amber-400 uppercase font-bold tracking-wider">
+                <span className="text-[9px] text-amber-400 uppercase font-mono font-bold tracking-wider">
                   Selected Item
                 </span>
                 <h3 className="text-base font-extrabold text-white font-serif-luxury mt-0.5">
@@ -504,15 +516,15 @@ export const CustomerStorefront: React.FC = () => {
                 </h3>
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                   {selectedProductType === 'discovery' ? (
-                    <span className="text-[11px] text-gray-400 italic font-sans">
-                      Handcrafted 3-piece trial set
+                    <span className="text-[11px] text-stone-400 italic font-sans">
+                      Handcrafted 3-piece trial coffret
                     </span>
                   ) : (
                     <>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                         {activeSelectedSizeObj.label}
                       </span>
-                      <span className="text-[10px] text-gray-400">
+                      <span className="text-[10px] text-stone-400 font-mono">
                         {selectedRecipe?.concentration}
                       </span>
                     </>
@@ -520,19 +532,22 @@ export const CustomerStorefront: React.FC = () => {
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="text-lg font-extrabold text-emerald-400 font-mono">
-                  {profile.currency}{payablePrice.toLocaleString('en-IN')}
+              <div className="text-right shrink-0">
+                <span className="text-xl font-extrabold text-emerald-400 font-mono">
+                  ₹{payablePrice.toLocaleString('en-IN')}
                 </span>
-                <span className="text-[9px] text-gray-500 block">Total Payable</span>
+                <span className="text-[9px] text-stone-500 block font-mono">Total Payable</span>
               </div>
             </div>
 
-            {/* Quick Sizing Pill Switcher on Details Page */}
+            {/* Quick Sizing Switcher on Details Page */}
             {selectedProductType === 'flacon' && selectedRecipe && (
-              <div className="pt-2 border-t border-[#1e2536] flex items-center justify-between gap-1">
-                <span className="text-[10px] text-gray-400 uppercase font-bold shrink-0">Flacon Size:</span>
-                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+              <div className="pt-2.5 border-t border-[#221a14] space-y-1.5">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-stone-400 uppercase font-bold tracking-wider font-mono">Switch Flacon Size:</span>
+                  <span className="text-amber-300 font-mono font-bold">{selectedSizeMl}ml</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5">
                   {(selectedRecipe.sizes || getDefaultRecipeSizes(selectedRecipe.manualPrice)).map(size => {
                     const isSelected = size.sizeMl === selectedSizeMl;
                     return (
@@ -540,13 +555,16 @@ export const CustomerStorefront: React.FC = () => {
                         key={size.sizeMl}
                         type="button"
                         onClick={() => setSelectedSizeMl(size.sizeMl)}
-                        className={`px-2 py-1 rounded-lg text-xs font-bold transition shrink-0 ${
+                        className={`py-2 px-1 rounded-2xl text-center border transition-all ${
                           isSelected
-                            ? 'bg-amber-400 text-black border border-amber-300 shadow-sm'
-                            : 'bg-[#080a0f] text-gray-400 border border-[#1e2536] hover:text-white'
+                            ? 'bg-gradient-to-b from-amber-400/25 to-amber-500/10 border-amber-400 text-amber-200 font-bold shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                            : 'bg-[#14100d] text-stone-400 border-amber-500/15 hover:text-white'
                         }`}
                       >
-                        {size.sizeMl}ml (₹{size.price.toLocaleString('en-IN')})
+                        <div className="text-xs font-mono font-extrabold">{size.sizeMl}ml</div>
+                        <div className={`text-[9px] mt-0.5 font-mono ${isSelected ? 'text-amber-300 font-black' : 'text-stone-400'}`}>
+                          ₹{size.price.toLocaleString('en-IN')}
+                        </div>
                       </button>
                     );
                   })}
@@ -556,8 +574,8 @@ export const CustomerStorefront: React.FC = () => {
 
             {/* If Discovery Box, show the 3 sample slots selector */}
             {selectedProductType === 'discovery' && (
-              <div className="pt-2 border-t border-[#1e2536] space-y-2">
-                <div className="flex justify-between items-center text-[10px] text-gray-400">
+              <div className="pt-2.5 border-t border-[#221a14] space-y-2">
+                <div className="flex justify-between items-center text-[10px] text-stone-400 font-mono">
                   <span className="uppercase font-bold text-amber-400">
                     Choose Your 3 Sample Vials ({selectedDiscoveryIds.length}/3):
                   </span>
@@ -571,14 +589,14 @@ export const CustomerStorefront: React.FC = () => {
                     return (
                       <div
                         key={slotIdx}
-                        className={`p-2 rounded-xl border text-center text-[10px] ${
+                        className={`p-2 rounded-2xl border text-center text-[10px] ${
                           rec
-                            ? 'bg-[#181f2e] border-amber-500/50 text-white font-bold'
-                            : 'bg-[#080a0f] border-dashed border-[#222a3d] text-gray-500'
+                            ? 'bg-[#18130f] border-amber-500/40 text-white font-bold'
+                            : 'bg-[#120e0a] border-dashed border-[#241c14] text-stone-500'
                         }`}
                       >
-                        <span className="text-[8px] text-amber-400 block uppercase">Vial 0{slotIdx + 1}</span>
-                        <span className="truncate block mt-0.5">{rec ? rec.name.split('&')[0] : 'Choose'}</span>
+                        <span className="text-[8px] text-amber-400 block uppercase font-mono">Vial 0{slotIdx + 1}</span>
+                        <span className="truncate block mt-0.5 font-serif-luxury">{rec ? rec.name.split('&')[0] : 'Empty Slot'}</span>
                       </div>
                     );
                   })}
@@ -592,14 +610,14 @@ export const CustomerStorefront: React.FC = () => {
                         type="button"
                         key={rec.id}
                         onClick={() => toggleDiscoveryItem(rec.id)}
-                        className={`w-full p-2 rounded-xl border flex items-center justify-between text-left text-xs transition ${
+                        className={`w-full p-2.5 rounded-2xl border flex items-center justify-between text-left text-xs transition ${
                           isSelected
                             ? 'bg-amber-400/10 border-amber-400 text-white font-bold'
-                            : 'bg-[#080a0f] border-[#1e2536] text-gray-400 hover:text-white'
+                            : 'bg-[#14100d] border-amber-500/15 text-stone-400 hover:text-white'
                         }`}
                       >
-                        <span className="truncate">{rec.name}</span>
-                        <span className="text-[10px] text-amber-400">{isSelected ? '✓ In Box' : '+ Add'}</span>
+                        <span className="truncate font-serif-luxury">{rec.name}</span>
+                        <span className="text-[10px] text-amber-400 font-mono font-bold">{isSelected ? '✓ In Coffret' : '+ Select'}</span>
                       </button>
                     );
                   })}
@@ -609,67 +627,67 @@ export const CustomerStorefront: React.FC = () => {
           </div>
 
           {/* Customer Details Form */}
-          <form onSubmit={handleSubmitOrder} className="bg-[#10141e] border border-[#1e2536] rounded-3xl p-5 space-y-4 shadow-lg">
+          <form onSubmit={handleSubmitOrder} className="card-luxury rounded-3xl p-5 space-y-4">
             <div>
-              <h3 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+              <h3 className="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5 font-mono">
                 <User className="w-4 h-4 text-amber-400" />
-                Your Delivery & Contact Details
+                Delivery & Contact Details
               </h3>
-              <p className="text-[11px] text-gray-400 font-sans mt-0.5">
-                The maker will pack and allocate your bespoke serial flacon immediately.
+              <p className="text-[11px] text-stone-400 font-sans mt-0.5">
+                The atelier will pack and allocate your bespoke serial flacon immediately.
               </p>
             </div>
 
             <div className="space-y-3 text-xs">
               {/* Full Name */}
               <div>
-                <label className="text-gray-400 text-[11px] block mb-1 font-bold">
-                  Full Name <span className="text-amber-400">*</span>
+                <label className="text-stone-300 text-[11px] block mb-1 font-bold">
+                  Collector / Client Name <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-500 absolute left-3 top-2.5" />
+                  <User className="w-4 h-4 text-stone-500 absolute left-3.5 top-3" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Vikram Singhania"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl pl-9 pr-3 py-2 text-white outline-none focus:border-amber-400 font-sans text-xs"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl pl-10 pr-3.5 py-2.5 text-white outline-none focus:border-amber-400 font-sans text-xs transition"
                   />
                 </div>
               </div>
 
               {/* Phone */}
               <div>
-                <label className="text-gray-400 text-[11px] block mb-1 font-bold">
-                  Phone / WhatsApp Number <span className="text-amber-400">*</span>
+                <label className="text-stone-300 text-[11px] block mb-1 font-bold">
+                  WhatsApp / Phone Number <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-gray-500 absolute left-3 top-2.5" />
+                  <Phone className="w-4 h-4 text-stone-500 absolute left-3.5 top-3" />
                   <input
                     type="tel"
                     required
                     placeholder="+91 98765 43210"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl pl-9 pr-3 py-2 text-white outline-none focus:border-amber-400 text-xs font-mono"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl pl-10 pr-3.5 py-2.5 text-white outline-none focus:border-amber-400 text-xs font-mono transition"
                   />
                 </div>
               </div>
 
-              {/* Delivery Method Choice */}
+              {/* Handover Method Choice */}
               <div>
-                <label className="text-gray-400 text-[11px] block mb-1 font-bold">
-                  Handover Method
+                <label className="text-stone-300 text-[11px] block mb-1 font-bold">
+                  Handover Preference
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('delivery')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                       deliveryMethod === 'delivery'
-                        ? 'bg-amber-400 text-black border-amber-400 shadow-sm'
-                        : 'bg-[#080a0f] border-[#1e2536] text-gray-400 hover:text-white'
+                        ? 'btn-glow-amber text-white'
+                        : 'bg-[#14100d] border-amber-500/15 text-stone-400 hover:text-white'
                     }`}
                   >
                     <span>Doorstep Courier</span>
@@ -677,81 +695,81 @@ export const CustomerStorefront: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setDeliveryMethod('pickup')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    className={`py-2 px-3 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                       deliveryMethod === 'pickup'
-                        ? 'bg-amber-400 text-black border-amber-400 shadow-sm'
-                        : 'bg-[#080a0f] border-[#1e2536] text-gray-400 hover:text-white'
+                        ? 'btn-glow-amber text-white'
+                        : 'bg-[#14100d] border-amber-500/15 text-stone-400 hover:text-white'
                     }`}
                   >
-                    <span>Personal Handover</span>
+                    <span>Studio Handover</span>
                   </button>
                 </div>
               </div>
 
               {/* Delivery Address */}
               <div>
-                <label className="text-gray-400 text-[11px] block mb-1 font-bold">
-                  {deliveryMethod === 'delivery' ? 'Full Shipping Address' : 'Pickup / Location Note'} <span className="text-amber-400">*</span>
+                <label className="text-stone-300 text-[11px] block mb-1 font-bold">
+                  {deliveryMethod === 'delivery' ? 'Shipping Address' : 'Studio Pickup / Location Note'} <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
-                  <MapPin className="w-4 h-4 text-gray-500 absolute left-3 top-2.5" />
+                  <MapPin className="w-4 h-4 text-stone-500 absolute left-3.5 top-3" />
                   <textarea
                     rows={2}
                     required
-                    placeholder={deliveryMethod === 'delivery' ? 'Flat/House No, Building, Street, City, Pincode' : 'e.g. Bangalore office handover / Meet in Indiranagar'}
+                    placeholder={deliveryMethod === 'delivery' ? 'Flat/House No, Building, Street, City, Pincode' : 'e.g. Indiranagar Bangalore Studio handover / In-person meetup'}
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
-                    className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl pl-9 pr-3 py-2 text-white outline-none focus:border-amber-400 font-sans text-xs"
+                    className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl pl-10 pr-3.5 py-2.5 text-white outline-none focus:border-amber-400 font-sans text-xs transition"
                   />
                 </div>
               </div>
 
               {/* Optional Gift Note */}
               <div>
-                <label className="text-gray-400 text-[11px] block mb-1 font-bold flex items-center gap-1">
+                <label className="text-stone-300 text-[11px] block mb-1 font-bold flex items-center gap-1">
                   <Gift className="w-3.5 h-3.5 text-amber-400" />
-                  Gift Packaging or Custom Note (Optional)
+                  Gift Presentation / Handwritten Note (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Please handwrite a birthday note: 'To Ananya, with love'"
+                  placeholder="e.g. Please handwrite note: 'To Ananya, Happy Anniversary'"
                   value={giftNote}
                   onChange={(e) => setGiftNote(e.target.value)}
-                  className="w-full bg-[#080a0f] border border-[#1e2536] rounded-xl px-3 py-2 text-white outline-none focus:border-amber-400 font-sans text-xs"
+                  className="w-full bg-[#14100d] border border-amber-500/20 rounded-2xl px-3.5 py-2.5 text-white outline-none focus:border-amber-400 font-sans text-xs transition"
                 />
               </div>
             </div>
 
             {/* Bill Summary */}
-            <div className="p-3 rounded-2xl bg-[#080a0f] border border-[#1e2536] space-y-1.5 text-xs">
-              <div className="flex justify-between text-gray-400">
+            <div className="p-3.5 rounded-2xl bg-[#14100d] border border-amber-500/15 space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between text-stone-400">
                 <span>Subtotal ({selectedProductType === 'discovery' ? 'Discovery Box' : activeSelectedSizeObj.label}):</span>
-                <span className="font-bold text-white">{profile.currency}{payablePrice.toLocaleString('en-IN')}</span>
+                <span className="font-bold text-white">₹{payablePrice.toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
-                <span>Handcrafted Linen Presentation:</span>
-                <span className="font-bold text-emerald-400">FREE</span>
+              <div className="flex justify-between text-stone-400">
+                <span>Linen Presentation Coffret:</span>
+                <span className="font-bold text-emerald-400 font-sans">COMPLIMENTARY</span>
               </div>
-              <div className="flex justify-between text-gray-400">
-                <span>Insured Fragrance Shipping:</span>
-                <span className="font-bold text-emerald-400">FREE</span>
+              <div className="flex justify-between text-stone-400">
+                <span>Insured White-Glove Dispatch:</span>
+                <span className="font-bold text-emerald-400 font-sans">COMPLIMENTARY</span>
               </div>
-              <div className="flex justify-between text-white font-extrabold text-sm pt-1.5 border-t border-[#1a2130]">
+              <div className="flex justify-between text-white font-extrabold text-sm pt-2 border-t border-[#221a14]">
                 <span>Total Amount:</span>
-                <span className="text-emerald-400 font-mono">{profile.currency}{payablePrice.toLocaleString('en-IN')}</span>
+                <span className="text-emerald-400 font-mono">₹{payablePrice.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
-            {/* Prominent Payment / Order Button */}
+            {/* Prominent Proceed Button */}
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-1.5 uppercase tracking-wide"
+              className="w-full btn-glow-amber py-3.5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 uppercase tracking-wider"
             >
-              <span>Confirm Details & Proceed to Payment ({profile.currency}{payablePrice.toLocaleString('en-IN')})</span>
-              <ChevronRight className="w-4 h-4 stroke-[3]" />
+              <span>Confirm & Proceed to Payment (₹{payablePrice.toLocaleString('en-IN')})</span>
+              <ChevronRight className="w-4 h-4 stroke-[2.5]" />
             </button>
-            <p className="text-[10px] text-gray-500 text-center font-sans">
-              Instant on-screen UPI QR Code appears immediately on the next page.
+            <p className="text-[10px] text-stone-500 text-center font-sans">
+              Direct UPI QR Code and Cash options appear on the confirmation screen.
             </p>
           </form>
         </div>
@@ -761,58 +779,58 @@ export const CustomerStorefront: React.FC = () => {
       {/* PAGE 3: ORDER CONFIRMED & ON-SCREEN UPI/CASH PAYMENT PAGE     */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'confirmation' && submittedOrder && (
-        <div className="bg-[#10141e] border-2 border-emerald-500/40 rounded-3xl p-5 shadow-2xl space-y-4 animate-scaleUp">
-          <div className="text-center space-y-1">
-            <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+        <div className="card-luxury rounded-3xl p-5 space-y-4 border-emerald-500/40">
+          <div className="text-center space-y-1.5">
+            <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-1 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
               <CheckCircle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-extrabold text-white uppercase tracking-wider">
+            <h3 className="text-base font-extrabold text-white uppercase tracking-wider font-mono">
               {submittedOrder.discoveryItems ? 'Discovery Box Reserved!' : 'Flacon Reserved!'}
             </h3>
-            <p className="text-xs text-gray-300 font-sans">
-              Order Logged: <strong className="text-amber-400 font-mono">{submittedOrder.orderNumber}</strong>
+            <p className="text-xs text-stone-300 font-sans">
+              Order Reference: <strong className="text-amber-300 font-mono">{submittedOrder.orderNumber}</strong>
             </p>
           </div>
 
           {/* Order Details Badge */}
-          <div className="bg-[#080a0f] p-3.5 rounded-2xl border border-[#1e2536] space-y-2 text-xs">
-            <div className="flex justify-between text-gray-300">
-              <span className="text-gray-400">Fragrance:</span>
-              <strong className="text-amber-300">{submittedOrder.recipeName}</strong>
+          <div className="bg-[#14100d] p-3.5 rounded-2xl border border-amber-500/15 space-y-2 text-xs">
+            <div className="flex justify-between text-stone-300">
+              <span className="text-stone-400">Fragrance:</span>
+              <strong className="text-amber-300 font-serif-luxury">{submittedOrder.recipeName}</strong>
             </div>
 
             {submittedOrder.discoveryItems ? (
-              <div className="pt-1.5 border-t border-[#1a2130]">
-                <span className="text-[10px] text-gray-500 uppercase block mb-1 font-bold">Selected 5ml Samples:</span>
+              <div className="pt-1.5 border-t border-[#221a14]">
+                <span className="text-[10px] text-stone-500 uppercase block mb-1 font-bold font-mono">Selected 5ml Samples:</span>
                 <ul className="space-y-0.5 text-white font-semibold">
                   {submittedOrder.discoveryItems.map((item, i) => (
-                    <li key={i} className="flex items-center gap-1 text-[11px]">
+                    <li key={i} className="flex items-center gap-1.5 text-[11px] font-sans">
                       <span className="text-amber-400">✦</span> {item}
                     </li>
                   ))}
                 </ul>
               </div>
             ) : (
-              <div className="flex justify-between text-gray-300">
-                <span className="text-gray-400">Assigned Edition:</span>
-                <span className="font-bold text-white">{submittedOrder.bottleSerial}</span>
+              <div className="flex justify-between text-stone-300">
+                <span className="text-stone-400">Allocated Edition:</span>
+                <span className="font-bold text-white font-mono">{submittedOrder.bottleSerial}</span>
               </div>
             )}
 
-            <div className="flex justify-between text-gray-300 pt-1.5 border-t border-[#1a2130] font-bold text-sm">
-              <span>Total Payable:</span>
-              <span className="text-emerald-400 font-mono">{profile.currency}{submittedOrder.price.toLocaleString('en-IN')}</span>
+            <div className="flex justify-between text-stone-300 pt-1.5 border-t border-[#221a14] font-bold text-sm">
+              <span>Payable Amount:</span>
+              <span className="text-emerald-400 font-mono">₹{submittedOrder.price.toLocaleString('en-IN')}</span>
             </div>
           </div>
 
           {/* On-Screen Direct UPI QR Code Terminal */}
-          <div className="bg-white p-4.5 rounded-2xl text-center space-y-3 text-black shadow-md">
+          <div className="bg-white p-4.5 rounded-3xl text-center space-y-3 text-black shadow-2xl">
             <div className="space-y-0.5">
-              <div className="text-[11px] font-black uppercase tracking-wider text-gray-900">
-                Scan with Any UPI App to Complete Payment
+              <div className="text-[11px] font-black uppercase tracking-wider text-gray-900 font-mono">
+                Scan with Any UPI App to Complete
               </div>
               <p className="text-[10px] text-gray-600 font-sans">
-                Google Pay • PhonePe • Paytm • BHIM • Cred • Mobile Banking
+                Google Pay • PhonePe • Paytm • BHIM • Cred • Banking Apps
               </p>
             </div>
             
@@ -830,13 +848,13 @@ export const CustomerStorefront: React.FC = () => {
             {/* UPI ID & Copy Button */}
             <div className="bg-gray-100 rounded-xl p-2.5 flex items-center justify-between border border-gray-200">
               <div className="text-left">
-                <span className="text-[9px] text-gray-500 uppercase block font-bold">Beneficiary UPI ID</span>
+                <span className="text-[9px] text-gray-500 uppercase block font-bold font-mono">Atelier UPI ID</span>
                 <span className="text-xs font-bold text-gray-800 font-mono">{profile.upiId}</span>
               </div>
               <button
                 type="button"
                 onClick={copyUpi}
-                className="px-2.5 py-1.5 rounded-lg bg-black text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition hover:bg-gray-800"
+                className="px-2.5 py-1.5 rounded-lg bg-black text-white text-[10px] font-bold flex items-center gap-1 active:scale-95 transition hover:bg-gray-800 font-mono"
               >
                 {copiedUpi ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                 {copiedUpi ? 'Copied' : 'Copy UPI'}
@@ -847,13 +865,13 @@ export const CustomerStorefront: React.FC = () => {
             <div className="space-y-1">
               <a
                 href={upiUri}
-                className="w-full py-3 rounded-xl bg-[#121622] hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition"
+                className="w-full py-3 rounded-xl bg-gray-950 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition"
               >
                 <span>Tap to Open UPI App (Mobile Only)</span>
                 <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
               </a>
               <span className="text-[9px] text-gray-500 block font-sans">
-                (Tapping above triggers installed UPI apps on smartphones)
+                (Tapping opens installed UPI apps directly on mobile devices)
               </span>
             </div>
 
@@ -865,16 +883,16 @@ export const CustomerStorefront: React.FC = () => {
 
           {/* Payment Method Action Buttons: UPI Complete vs Cash Payment */}
           <div className="space-y-2 pt-1">
-            <div className="text-[10px] text-gray-400 text-center font-bold uppercase tracking-wider">
-              Choose Payment Confirmation:
+            <div className="text-[10px] text-stone-400 text-center font-bold uppercase tracking-wider font-mono">
+              Confirm Payment Method:
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-2">
               {/* Option 1: Paid via UPI */}
               <button
                 type="button"
                 onClick={() => handlePaymentConfirm('UPI')}
-                className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/25 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide"
+                className="w-full py-3.5 px-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/25 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide font-mono"
               >
                 <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                 <span>I Have Paid via UPI</span>
@@ -884,10 +902,10 @@ export const CustomerStorefront: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handlePaymentConfirm('Cash')}
-                className="w-full py-3.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide"
+                className="w-full py-3.5 px-3 rounded-2xl bg-[#18130f] hover:bg-[#201914] text-amber-300 font-bold text-xs border border-amber-500/30 active:scale-95 transition flex items-center justify-center gap-2 uppercase tracking-wide font-mono"
               >
-                <Banknote className="w-4 h-4 stroke-[2.5]" />
-                <span>Pay with Cash (Delivery/Handover)</span>
+                <Banknote className="w-4 h-4 stroke-[2]" />
+                <span>Pay Cash on Delivery / Studio Pickup</span>
               </button>
             </div>
           </div>
@@ -895,7 +913,7 @@ export const CustomerStorefront: React.FC = () => {
           <button
             type="button"
             onClick={() => setCheckoutStep('details')}
-            className="w-full text-center text-xs text-gray-400 hover:text-white pt-1 flex items-center justify-center gap-1"
+            className="w-full text-center text-xs text-stone-400 hover:text-white pt-1 flex items-center justify-center gap-1 font-mono"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Edit Delivery Details</span>
@@ -907,44 +925,46 @@ export const CustomerStorefront: React.FC = () => {
       {/* PAGE 4: ORDER RECEIVED & AUTO-REDIRECT SCREEN                 */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'order_received' && orderCompleteData && (
-        <div className="bg-[#10141e] border-2 border-emerald-500/50 rounded-3xl p-6 shadow-2xl space-y-5 animate-scaleUp text-center">
-          {/* Brand Logo & Animated Success Badge */}
+        <div className="card-luxury rounded-3xl p-6 space-y-5 text-center border-emerald-500/50">
+          {/* Brand Logo & Success Badge */}
           <div className="flex flex-col items-center justify-center gap-2">
-            <img src="/ostia-logo.png" alt="OSTIA" className="w-16 h-16 object-contain filter drop-shadow" />
+            <div className="w-14 h-14 rounded-2xl bg-[#18130f] border border-amber-500/30 p-2 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.25)]">
+              <img src="/ostia-logo.png" alt="OSTIA" className="w-full h-full object-contain filter drop-shadow" />
+            </div>
             <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/10 border border-emerald-500/30">
               <CheckCircle2 className="w-7 h-7 stroke-[2.5]" />
             </div>
           </div>
 
           <div className="space-y-1">
-            <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-extrabold block">
+            <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-extrabold block font-mono">
               Order Confirmed & Received
             </span>
             <h3 className="text-xl font-extrabold text-white font-serif-luxury">
               Thank You, {orderCompleteData.customerName}!
             </h3>
-            <p className="text-xs text-gray-400 font-sans">
-              Your bespoke fragrance reservation is logged with Master Perfumer <strong className="text-amber-300 font-serif-luxury">{profile.perfumerName}</strong>.
+            <p className="text-xs text-stone-300 font-sans">
+              Your bespoke fragrance allocation is logged with Master Perfumer <strong className="text-amber-300 font-serif-luxury">{profile.perfumerName}</strong>.
             </p>
           </div>
 
           {/* Receipt Card */}
-          <div className="bg-[#080a0f] p-4 rounded-2xl border border-[#1e2536] text-left text-xs space-y-3">
-            <div className="flex justify-between items-center pb-2.5 border-b border-[#1e2536]">
-              <span className="text-gray-400">Order Reference:</span>
-              <span className="text-amber-400 font-mono font-extrabold text-sm">{orderCompleteData.orderNumber}</span>
+          <div className="bg-[#14100d] p-4 rounded-2xl border border-amber-500/15 text-left text-xs space-y-3 font-mono">
+            <div className="flex justify-between items-center pb-2.5 border-b border-[#221a14]">
+              <span className="text-stone-400">Order Reference:</span>
+              <span className="text-amber-300 font-bold text-sm">{orderCompleteData.orderNumber}</span>
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] text-gray-500 uppercase block font-bold">Fragrance / Edition:</span>
-              <span className="text-white font-bold block">{orderCompleteData.recipeName}</span>
-              <span className="text-[11px] text-gray-400 font-mono block">({orderCompleteData.bottleSerial})</span>
+              <span className="text-[10px] text-stone-500 uppercase block font-bold">Fragrance / Edition:</span>
+              <span className="text-white font-bold block font-serif-luxury">{orderCompleteData.recipeName}</span>
+              <span className="text-[11px] text-stone-400 block font-mono">({orderCompleteData.bottleSerial})</span>
             </div>
 
             {orderCompleteData.discoveryItems && (
-              <div className="pt-2 border-t border-[#1e2536] space-y-1">
-                <span className="text-[10px] text-gray-500 uppercase block font-bold">3 Included Vials (5ml):</span>
-                <ul className="text-gray-300 text-[11px] space-y-0.5 font-sans">
+              <div className="pt-2 border-t border-[#221a14] space-y-1">
+                <span className="text-[10px] text-stone-500 uppercase block font-bold">Included 5ml Vials:</span>
+                <ul className="text-stone-300 text-[11px] space-y-0.5 font-sans">
                   {orderCompleteData.discoveryItems.map((item, idx) => (
                     <li key={idx} className="flex items-center gap-1.5">
                       <span className="text-amber-400">✦</span> {item}
@@ -954,9 +974,9 @@ export const CustomerStorefront: React.FC = () => {
               </div>
             )}
 
-            <div className="flex justify-between items-center pt-2.5 border-t border-[#1e2536]">
-              <span className="text-gray-400">Payment Method:</span>
-              <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 ${
+            <div className="flex justify-between items-center pt-2.5 border-t border-[#221a14]">
+              <span className="text-stone-400">Payment:</span>
+              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 ${
                 orderCompleteData.paymentMethod === 'UPI'
                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                   : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
@@ -964,41 +984,41 @@ export const CustomerStorefront: React.FC = () => {
                 {orderCompleteData.paymentMethod === 'UPI' ? (
                   <>
                     <CheckCircle className="w-3 h-3 text-emerald-400" />
-                    <span>Paid via UPI (Transfer Recorded)</span>
+                    <span>Paid via UPI (Transfer Logged)</span>
                   </>
                 ) : (
                   <>
                     <Banknote className="w-3 h-3 text-amber-400" />
-                    <span>Pay with Cash on Delivery / Handover</span>
+                    <span>Pay Cash on Delivery / Handover</span>
                   </>
                 )}
               </span>
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-[#1e2536]">
-              <span className="text-gray-400">Total Payable:</span>
+            <div className="flex justify-between items-center pt-2 border-t border-[#221a14]">
+              <span className="text-stone-400">Total Payable:</span>
               <span className="text-emerald-400 font-mono font-extrabold text-sm">
-                {profile.currency}{orderCompleteData.price.toLocaleString('en-IN')}
+                ₹{orderCompleteData.price.toLocaleString('en-IN')}
               </span>
             </div>
           </div>
 
           {/* Handover Notice */}
-          <div className="p-3 rounded-xl bg-[#141a27] border border-[#222c42] text-[11px] text-gray-300 leading-relaxed font-sans">
-            ✨ Handcrafted preparation and packaging has started. You will receive handover and dispatch updates on your phone.
+          <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/20 text-[11px] text-stone-300 leading-relaxed font-sans">
+            ✨ Handcrafted preparation has begun in the atelier. You will receive dispatch updates on WhatsApp/Phone.
           </div>
 
           {/* Auto-redirect countdown & manual back button */}
-          <div className="space-y-2.5 pt-2">
-            <div className="flex items-center justify-center gap-2 text-xs text-amber-400 font-bold bg-amber-400/10 py-2.5 px-3 rounded-xl border border-amber-400/20">
-              <Clock className="w-4 h-4 animate-spin" />
-              <span>Redirecting back to storefront in {redirectCountdown}s...</span>
+          <div className="space-y-2.5 pt-1">
+            <div className="flex items-center justify-center gap-2 text-xs text-amber-300 font-bold bg-amber-500/10 py-2.5 px-3 rounded-2xl border border-amber-500/25 font-mono">
+              <Clock className="w-4 h-4 animate-spin text-amber-400" />
+              <span>Returning to collection in {redirectCountdown}s...</span>
             </div>
 
             <button
               type="button"
               onClick={resetToCatalog}
-              className="w-full py-3 rounded-xl bg-[#181f2e] hover:bg-[#222b3e] text-white text-xs font-bold transition flex items-center justify-center gap-2 border border-[#2a3449] active:scale-95"
+              className="w-full py-3 rounded-2xl bg-[#18130f] hover:bg-[#201914] text-white text-xs font-bold transition flex items-center justify-center gap-2 border border-amber-500/20 active:scale-95 font-mono"
             >
               <RotateCcw className="w-4 h-4 text-amber-400" />
               <span>Return to Scent Collection Now</span>

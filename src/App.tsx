@@ -22,9 +22,14 @@ export const App: React.FC = () => {
   }, [setViewMode]);
 
   return (
-    <div className="min-h-screen bg-[#030407] text-[#f1f3f7] flex justify-center selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="min-h-screen bg-[#050403] text-[#f4efe8] flex justify-center selection:bg-amber-500/30 selection:text-amber-200 antialiased relative overflow-x-hidden">
+      {/* Ambient background glow for large screens */}
+      <div className="fixed inset-0 pointer-events-none hidden sm:block">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-amber-600/15 via-orange-600/5 to-transparent blur-3xl opacity-60" />
+      </div>
+
       {/* Strict Mobile-First App Container */}
-      <div className="w-full max-w-md min-h-screen bg-[#07090e] sm:border-x border-[#182030]/60 flex flex-col relative shadow-2xl">
+      <div className="w-full max-w-md min-h-screen bg-[#090807] bg-horizon-amber sm:border-x border-[#231d17]/90 flex flex-col relative shadow-[0_0_80px_rgba(0,0,0,0.95)] overflow-x-hidden">
         {/* Mobile Sticky Header */}
         <Header />
 
