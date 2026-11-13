@@ -46,8 +46,13 @@ A mobile-first, zero-overhead management software designed specifically for solo
    - Luxury client-facing fragrance menu (`?mode=store`) with Top/Heart/Base scent pyramids.
    - Instant on-screen UPI QR Code with exact payable amount in ₹, VPA copy button, and self-verification with zero WhatsApp dependency.
 
-8. **Interactive Capabilities & Roadmap Tracker (`RoadmapTracker.tsx`)**
-   - In-app interactive checklist tracking completed, active, and upcoming capabilities.
+8. **Comprehensive Artisan Studio Dashboard (`Dashboard.tsx`)**
+   - Executive financial telemetry: Realized Revenue, Net Gross Profit, Realized Margin %, and Finished Bottled Stock Valuation in ₹.
+   - Monthly Artisan Target Tracker (15 bespoke bottles/month) with live progress bar.
+   - 7-Stage Production Pipeline Radar with batch distribution across aging milestones.
+   - Action Required Alert Hub: Low raw materials, pending customer payments, and batches ready for bottling.
+   - Fragrance Portfolio Matrix with formula COGS, gross margin, and stock health indicators.
+   - Live Order Stream & Quick Studio Launchpad shortcuts.
 
 ---
 
