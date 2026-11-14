@@ -14,6 +14,9 @@ interface AppContextType {
   discoveryConfig: DiscoveryConfig;
   productionStages: ProductionStage[];
   viewMode: 'maker' | 'storefront';
+  theme: 'dark' | 'light';
+  setTheme: (theme: 'dark' | 'light') => void;
+  toggleTheme: () => void;
   activeTab: ActiveTab;
   selectedRecipeId: string;
   tagModalBatch: Batch | null;
@@ -123,6 +126,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [viewMode, setViewMode] = useState<'maker' | 'storefront'>('maker');
+  const [theme, setThemeState] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('ostia_theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+    return 'dark';
+  });
+
+  const setTheme = (newTheme: 'dark' | 'light') => {
+    setThemeState(newTheme);
+    localStorage.setItem('ostia_theme', newTheme);
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    }
+  }, [theme]);
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>(recipes[0]?.id || 'rec-1');
   const [tagModalBatch, setTagModalBatch] = useState<Batch | null>(null);
@@ -740,6 +768,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       discoveryConfig,
       productionStages,
       viewMode,
+      theme,
+      setTheme,
+      toggleTheme,
       activeTab,
       selectedRecipeId,
       tagModalBatch,

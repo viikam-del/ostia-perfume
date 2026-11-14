@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Eye, Share2, Check, SlidersHorizontal, Sparkles, TrendingUp, Hourglass, Package } from 'lucide-react';
+import { Eye, Share2, Check, SlidersHorizontal, Sparkles, TrendingUp, Hourglass, Package, Sun, Moon } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const { profile, viewMode, setViewMode, recipes, batches, orders } = useApp();
+  const { profile, viewMode, setViewMode, recipes, batches, orders, theme, toggleTheme } = useApp();
   const [copied, setCopied] = useState(false);
 
   const copyStoreLink = () => {
@@ -53,6 +53,23 @@ export const Header: React.FC = () => {
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-1.5 shrink-0">
+            {/* Appearance Toggle (Light/Dark) */}
+            <button
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to Alabaster Light Atelier' : 'Switch to Noir Dark Studio'}
+              className={`p-2 rounded-full border transition active:scale-95 shadow-sm ${
+                theme === 'dark'
+                  ? 'bg-[#15110d] hover:bg-[#1d1712] text-amber-300 border-amber-500/25'
+                  : 'bg-[#f4efe6] hover:bg-[#eae3d5] text-amber-700 border-amber-600/30'
+              }`}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-amber-600" />
+              )}
+            </button>
+
             {/* View Mode Toggle Pill */}
             <button
               onClick={() => setViewMode(viewMode === 'maker' ? 'storefront' : 'maker')}

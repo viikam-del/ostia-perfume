@@ -14,7 +14,9 @@ import {
   Sparkles,
   ArrowUpRight,
   Target,
-  CheckCircle2
+  CheckCircle2,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
@@ -26,7 +28,9 @@ export const Dashboard: React.FC = () => {
     materials,
     productionStages,
     setActiveTab,
-    calculateRecipeCogs
+    calculateRecipeCogs,
+    theme,
+    toggleTheme
   } = useApp();
 
   // ---------------------------------------------------------------------------
@@ -148,13 +152,31 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => setActiveTab('aging')}
-            className="btn-glow-amber py-2 px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shrink-0"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span>Brew</span>
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Switch to Alabaster Light theme' : 'Switch to Noir Dark theme'}
+              className={`p-2 rounded-2xl border transition active:scale-95 shadow-xs ${
+                theme === 'dark'
+                  ? 'bg-[#15110d] hover:bg-[#1d1712] text-amber-300 border-amber-500/25'
+                  : 'bg-[#f4efe6] hover:bg-[#eae3d5] text-amber-700 border-amber-600/30'
+              }`}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-amber-600" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('aging')}
+              className="btn-glow-amber py-2 px-3.5 rounded-2xl text-xs font-bold flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Brew</span>
+            </button>
+          </div>
         </div>
       </div>
 

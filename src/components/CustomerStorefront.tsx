@@ -22,11 +22,13 @@ import {
   RotateCcw,
   Layers,
   ShieldCheck,
-  Award
+  Award,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export const CustomerStorefront: React.FC = () => {
-  const { profile, recipes, addOrder, updateOrderStatus, discoveryConfig } = useApp();
+  const { profile, recipes, addOrder, updateOrderStatus, discoveryConfig, theme, toggleTheme } = useApp();
 
   // Multi-step checkout funnel state
   const [checkoutStep, setCheckoutStep] = useState<'catalog' | 'details' | 'confirmation' | 'order_received'>('catalog');
@@ -296,7 +298,36 @@ export const CustomerStorefront: React.FC = () => {
       {/* PAGE 1: SCENT CATALOG & PRODUCT SELECTION                     */}
       {/* ------------------------------------------------------------- */}
       {checkoutStep === 'catalog' && (
-        <div className="space-y-4">
+        <div className="space-y-3.5">
+          {/* Catalog Top Meta Bar with Appearance Switcher */}
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-stone-400 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              Bespoke Catalog
+            </span>
+            
+            <button
+              onClick={toggleTheme}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold border transition active:scale-95 shadow-xs ${
+                theme === 'dark'
+                  ? 'bg-[#14100c] text-amber-300 border-amber-500/25 hover:bg-[#1c1611]'
+                  : 'bg-[#f4efe6] text-amber-800 border-amber-600/30 hover:bg-[#eae3d5]'
+              }`}
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="w-3 h-3 text-amber-400" />
+                  <span>Light Theme</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3 h-3 text-amber-700" />
+                  <span>Dark Theme</span>
+                </>
+              )}
+            </button>
+          </div>
+
           {/* Category Pill Switcher (Ref 1 & 2 Style) */}
           <div className="flex gap-1.5 bg-[#14100c] p-1.5 rounded-full border border-amber-500/20 text-xs">
             <button
