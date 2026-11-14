@@ -62,6 +62,24 @@ export const PricingLab: React.FC = () => {
 
   const marginBadge = getMarginBadge(marginPercent);
 
+  if (recipes.length === 0) {
+    return (
+      <div className="space-y-4 pb-20 select-none">
+        <div className="card-luxury rounded-3xl p-8 text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+            <TrendingUp className="w-6 h-6 text-amber-400" />
+          </div>
+          <h3 className="text-base font-extrabold text-white font-serif-luxury uppercase tracking-wider">
+            Pricing Lab Awaiting Formulations
+          </h3>
+          <p className="text-xs text-stone-400 max-w-xs mx-auto font-sans leading-relaxed">
+            Create your first fragrance formulation in the Formulas tab to model gross profit margins, COGS, and bottle sizing tiers.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 pb-20 select-none">
       {/* Scent Selector */}

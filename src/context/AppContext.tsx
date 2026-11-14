@@ -63,6 +63,15 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Ensure legacy cached mock data is cleared for fresh clean slate
+  if (typeof window !== 'undefined' && !localStorage.getItem('ostia_clean_slate_v1')) {
+    localStorage.removeItem('ostia_v3_orders');
+    localStorage.removeItem('ostia_v3_batches');
+    localStorage.removeItem('ostia_v3_recipes');
+    localStorage.removeItem('ostia_v3_materials');
+    localStorage.setItem('ostia_clean_slate_v1', 'true');
+  }
+
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'offline'>('syncing');
 
   const [profile, setProfile] = useState<PerfumerProfile>(() => {
@@ -180,7 +189,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (!orderErr && dbOrders && dbOrders.length > 0 && isMounted) {
+        if (!orderErr && dbOrders && isMounted) {
           const mappedOrders: Order[] = dbOrders.map(row => ({
             id: row.id,
             orderNumber: row.order_number,
@@ -207,7 +216,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           .from('recipes')
           .select('*');
 
-        if (!recErr && dbRecipes && dbRecipes.length > 0 && isMounted) {
+        if (!recErr && dbRecipes && isMounted) {
           const mappedRecipes: Recipe[] = dbRecipes.map(row => ({
             id: row.id,
             name: row.name,
@@ -232,7 +241,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (!batchErr && dbBatches && dbBatches.length > 0 && isMounted) {
+        if (!batchErr && dbBatches && isMounted) {
           const mappedBatches: Batch[] = dbBatches.map(row => ({
             id: row.id,
             batchNumber: row.batch_number,
@@ -248,6 +257,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             bottlesBottled: row.status === 'bottled' ? row.bottles_planned : 0
           }));
           setBatches(mappedBatches);
+        }
+
+        // 4. Fetch Materials
+        const { data: dbMaterials, error: matErr } = await supabase
+          .from('materials')
+          .select('*');
+
+        if (!matErr && dbMaterials && isMounted) {
+          const mappedMaterials: RawMaterial[] = dbMaterials.map(row => ({
+            id: row.id,
+            name: row.name,
+            category: row.category as any,
+            unit: row.unit as any,
+            costPerUnit: Number(row.cost_per_unit),
+            stockQty: Number(row.stock_qty),
+            reorderPoint: Number(row.reorder_point),
+            supplier: row.supplier
+          }));
+          setMaterials(mappedMaterials);
         }
 
         if (isMounted) setCloudSyncStatus('synced');

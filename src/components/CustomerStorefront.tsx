@@ -357,7 +357,20 @@ export const CustomerStorefront: React.FC = () => {
           {/* Bespoke Flacons Single-Column Feed */}
           {catalogCategory === 'flacons' ? (
             <div className="space-y-4">
-              {recipes.map(recipe => {
+              {recipes.length === 0 ? (
+                <div className="card-luxury rounded-3xl p-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+                    <Sparkles className="w-6 h-6 text-amber-400" />
+                  </div>
+                  <h3 className="text-base font-extrabold text-white font-serif-luxury uppercase tracking-wider">
+                    Private Reserve in Curation
+                  </h3>
+                  <p className="text-xs text-stone-400 max-w-xs mx-auto font-sans leading-relaxed">
+                    Master Perfumer Faisal Parvez is currently formulating the next micro-batch collection. Please check back shortly or connect directly with the atelier.
+                  </p>
+                </div>
+              ) : (
+                recipes.map(recipe => {
                 const availableSizes = recipe.sizes && recipe.sizes.length > 0
                   ? recipe.sizes
                   : getDefaultRecipeSizes(recipe.manualPrice);
@@ -469,7 +482,8 @@ export const CustomerStorefront: React.FC = () => {
                     </button>
                   </div>
                 );
-              })}
+              })
+            )}
             </div>
           ) : (
             /* Discovery Box Option */

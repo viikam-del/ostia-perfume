@@ -87,7 +87,7 @@ export const Dashboard: React.FC = () => {
   const alerts: { id: string; type: 'warning' | 'urgent' | 'info'; message: string; actionTab: 'aging' | 'orders' | 'inventory'; actionLabel: string }[] = [];
 
   materials.forEach(m => {
-    if (m.stockQty <= m.reorderThreshold) {
+    if (m.stockQty <= (m.reorderPoint ?? 25)) {
       alerts.push({
         id: `mat-${m.id}`,
         type: 'warning',
@@ -414,7 +414,12 @@ export const Dashboard: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          {recipes.map(recipe => {
+          {recipes.length === 0 ? (
+            <div className="text-center py-6 bg-[#14100c] rounded-2xl border border-dashed border-[#282018] text-xs text-stone-500">
+              No formulas created yet. Compose your first fragrance in the Formulas tab.
+            </div>
+          ) : (
+            recipes.map(recipe => {
             const cogs = calculateRecipeCogs(recipe);
             const unitProfit = Math.max(0, recipe.manualPrice - cogs.totalCogs);
             const margin = Math.round((unitProfit / recipe.manualPrice) * 100);
@@ -474,7 +479,8 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
             );
-          })}
+          })
+        )}
         </div>
       </div>
 

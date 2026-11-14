@@ -140,7 +140,20 @@ export const RecipeManager: React.FC = () => {
 
       {/* Recipe Cards List */}
       <div className="space-y-3.5">
-        {recipes.map(recipe => {
+        {recipes.length === 0 ? (
+          <div className="card-luxury rounded-3xl p-8 text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+              <FlaskConical className="w-6 h-6 text-amber-400" />
+            </div>
+            <h3 className="text-base font-extrabold text-white font-serif-luxury uppercase tracking-wider">
+              No Formulas Created Yet
+            </h3>
+            <p className="text-xs text-stone-400 max-w-xs mx-auto font-sans leading-relaxed">
+              Your formulation laboratory is ready. Tap "+ New Recipe" above to compose your first fragrance pyramid, oils, and pricing.
+            </p>
+          </div>
+        ) : (
+          recipes.map(recipe => {
           const { oilCost, packCost, totalCogs, concentrationPercent } = calculateRecipeCogs(recipe);
           const profit = recipe.manualPrice - totalCogs;
           const margin = recipe.manualPrice > 0 ? (profit / recipe.manualPrice) * 100 : 0;
@@ -291,7 +304,8 @@ export const RecipeManager: React.FC = () => {
               </div>
             </div>
           );
-        })}
+        })
+      )}
       </div>
 
       {/* Full Modal: Create New Perfume */}

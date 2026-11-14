@@ -73,13 +73,27 @@ export const StockInventory: React.FC = () => {
       )}
 
       {/* Packaging & Hardware Section */}
-      <div className="space-y-2.5">
-        <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider flex items-center gap-1.5 px-1 font-mono">
-          <Box className="w-3.5 h-3.5 text-amber-400" />
-          Bottling Hardware & Packaging ({packagingHardware.length} items)
-        </h3>
+      {materials.length === 0 ? (
+        <div className="card-luxury rounded-3xl p-8 text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+            <Layers className="w-6 h-6 text-amber-400" />
+          </div>
+          <h3 className="text-base font-extrabold text-white font-serif-luxury uppercase tracking-wider">
+            Studio Inventory Ready
+          </h3>
+          <p className="text-xs text-stone-400 max-w-xs mx-auto font-sans leading-relaxed">
+            No materials registered yet. Tap "+ Add Stock" above to log your raw oils, alcohol carrier, flacons, pumps, and packaging boxes.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-2.5">
+            <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider flex items-center gap-1.5 px-1 font-mono">
+              <Box className="w-3.5 h-3.5 text-amber-400" />
+              Bottling Hardware & Packaging ({packagingHardware.length} items)
+            </h3>
 
-        <div className="space-y-2">
+            <div className="space-y-2">
           {packagingHardware.map(item => {
             const isLow = item.stockQty <= item.reorderPoint;
             return (
@@ -180,6 +194,8 @@ export const StockInventory: React.FC = () => {
           })}
         </div>
       </div>
+    </>
+  )}
 
       {/* Add Modal */}
       {showAddModal && (
