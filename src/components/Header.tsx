@@ -129,7 +129,7 @@ export const Header: React.FC = () => {
             <div className="bg-[#130f0c]/90 border border-amber-500/15 py-1.5 px-2 rounded-2xl shadow-sm">
               <span className="text-[8px] text-stone-400 block uppercase font-bold tracking-wider flex items-center justify-center gap-1">
                 <Package className="w-2.5 h-2.5 text-orange-400" />
-                Flacons
+                Bottles
               </span>
               <span className="text-xs font-extrabold text-white font-mono block mt-0.5">
                 {totalStockBottles} Ready

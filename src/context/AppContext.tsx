@@ -419,7 +419,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!b) return { text: '', shared: false };
 
     const stage = productionStages.find(s => s.id === b.currentStageId) || { name: b.currentStageId };
-    const text = `🔔 Ostia Production Alert:\n${b.batchNumber} (${b.recipeName}) is currently at [Stage: ${stage.name}].\nTarget Due Date: ${b.stageDueDate || 'Action Required'}.\nBottles: ${b.bottlesPlanned} flacons (50ml).\nNotes: ${b.stageNotes || b.notes || 'Proceed to next check'}.`;
+    const text = `🔔 Ostia Production Alert:\n${b.batchNumber} (${b.recipeName}) is currently at [Stage: ${stage.name}].\nTarget Due Date: ${b.stageDueDate || 'Action Required'}.\nBottles: ${b.bottlesPlanned} bottles (50ml).\nNotes: ${b.stageNotes || b.notes || 'Proceed to next check'}.`;
 
     if (navigator.share) {
       try {
@@ -639,7 +639,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     return {
       success: true,
-      message: `Successfully bottled ${count} flacons of ${batch.recipeName}! Finished stock updated.`
+      message: `Successfully bottled ${count} bottles of ${batch.recipeName}! Finished stock updated.`
     };
   };
 

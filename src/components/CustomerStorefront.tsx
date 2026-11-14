@@ -173,7 +173,7 @@ export const CustomerStorefront: React.FC = () => {
       const activeSize = (selectedRecipe.sizes && selectedRecipe.sizes.length > 0
         ? selectedRecipe.sizes
         : getDefaultRecipeSizes(selectedRecipe.manualPrice))
-        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Flacon', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles };
+        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Bottle', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles };
 
       const totalYield = selectedRecipe.bottlesYield || 10;
       const remaining = activeSize.inStock;
@@ -244,8 +244,8 @@ export const CustomerStorefront: React.FC = () => {
     ? ((selectedRecipe.sizes && selectedRecipe.sizes.length > 0
         ? selectedRecipe.sizes
         : getDefaultRecipeSizes(selectedRecipe.manualPrice))
-        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Flacon', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles })
-    : { sizeMl: 50, label: '50ml Signature Flacon', price: 2899, inStock: 5 };
+        .find(s => s.sizeMl === selectedSizeMl) || { sizeMl: 50, label: '50ml Signature Bottle', price: selectedRecipe.manualPrice, inStock: selectedRecipe.inStockBottles })
+    : { sizeMl: 50, label: '50ml Signature Bottle', price: 2899, inStock: 5 };
 
   const payablePrice = selectedProductType === 'discovery' ? discoveryConfig.price : activeSelectedSizeObj.price;
 
@@ -339,7 +339,7 @@ export const CustomerStorefront: React.FC = () => {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Bespoke Flacons</span>
+              <span>Bespoke Bottles</span>
             </button>
             <button
               onClick={() => setCatalogCategory('discovery')}
@@ -354,7 +354,7 @@ export const CustomerStorefront: React.FC = () => {
             </button>
           </div>
 
-          {/* Bespoke Flacons Single-Column Feed */}
+          {/* Bespoke Bottles Single-Column Feed */}
           {catalogCategory === 'flacons' ? (
             <div className="space-y-4">
               {recipes.length === 0 ? (
@@ -428,7 +428,7 @@ export const CustomerStorefront: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Flacon Sizing Selector (4-Option Pills) */}
+                    {/* Bottle Sizing Selector (4-Option Pills) */}
                     <div className="pt-2.5 border-t border-[#221a14] space-y-2">
                       <div className="flex justify-between items-center text-[10px]">
                         <span className="text-stone-400 uppercase font-bold tracking-wider flex items-center gap-1 font-mono">
@@ -475,7 +475,7 @@ export const CustomerStorefront: React.FC = () => {
                     >
                       <span>
                         {isAvailable
-                          ? `Acquire ${activeSize.sizeMl}ml Flacon (₹${activeSize.price.toLocaleString('en-IN')})`
+                          ? `Acquire ${activeSize.sizeMl}ml Bottle (₹${activeSize.price.toLocaleString('en-IN')})`
                           : `${activeSize.sizeMl}ml Sold Out`}
                       </span>
                       <ChevronRight className="w-4 h-4 stroke-[2.5]" />
@@ -497,7 +497,7 @@ export const CustomerStorefront: React.FC = () => {
                     Custom Discovery Box (3 × 5ml)
                   </h3>
                   <p className="text-xs text-stone-400 italic mt-0.5 font-sans">
-                    Sample 3 handcrafted micro-batch perfumes in fine-mist flacons before commissioning your full bespoke bottle.
+                    Sample 3 handcrafted micro-batch perfumes in fine-mist spray vials before commissioning your full bespoke bottle.
                   </p>
                 </div>
                 <div className="text-right shrink-0">
@@ -589,7 +589,7 @@ export const CustomerStorefront: React.FC = () => {
             {selectedProductType === 'flacon' && selectedRecipe && (
               <div className="pt-2.5 border-t border-[#221a14] space-y-1.5">
                 <div className="flex justify-between items-center text-[10px]">
-                  <span className="text-stone-400 uppercase font-bold tracking-wider font-mono">Switch Flacon Size:</span>
+                  <span className="text-stone-400 uppercase font-bold tracking-wider font-mono">Switch Bottle Size:</span>
                   <span className="text-amber-300 font-mono font-bold">{selectedSizeMl}ml</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -679,7 +679,7 @@ export const CustomerStorefront: React.FC = () => {
                 Delivery & Contact Details
               </h3>
               <p className="text-[11px] text-stone-400 font-sans mt-0.5">
-                The atelier will pack and allocate your bespoke serial flacon immediately.
+                The atelier will pack and allocate your bespoke serial bottle immediately.
               </p>
             </div>
 
@@ -830,7 +830,7 @@ export const CustomerStorefront: React.FC = () => {
               <CheckCircle className="w-6 h-6" />
             </div>
             <h3 className="text-base font-extrabold text-white uppercase tracking-wider font-mono">
-              {submittedOrder.discoveryItems ? 'Discovery Box Reserved!' : 'Flacon Reserved!'}
+              {submittedOrder.discoveryItems ? 'Discovery Box Reserved!' : 'Bottle Reserved!'}
             </h3>
             <p className="text-xs text-stone-300 font-sans">
               Order Reference: <strong className="text-amber-300 font-mono">{submittedOrder.orderNumber}</strong>

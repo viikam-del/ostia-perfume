@@ -4,9 +4,9 @@ export const getDefaultRecipeSizes = (manualPrice: number = 2899): BottleSizeOpt
   const p50 = manualPrice;
   return [
     { sizeMl: 15, label: '15ml Travel Spray', price: Math.max(799, Math.round((p50 * 0.42) / 50) * 50 - 1), inStock: 0, packagingCost: 120 },
-    { sizeMl: 30, label: '30ml Studio Flacon', price: Math.max(1299, Math.round((p50 * 0.68) / 50) * 50 - 1), inStock: 0, packagingCost: 210 },
-    { sizeMl: 50, label: '50ml Signature Flacon', price: p50, inStock: 0, packagingCost: 340 },
-    { sizeMl: 100, label: '100ml Grand Flacon', price: Math.max(2999, Math.round((p50 * 1.72) / 50) * 50 - 1), inStock: 0, packagingCost: 520 }
+    { sizeMl: 30, label: '30ml Studio Bottle', price: Math.max(1299, Math.round((p50 * 0.68) / 50) * 50 - 1), inStock: 0, packagingCost: 210 },
+    { sizeMl: 50, label: '50ml Signature Bottle', price: p50, inStock: 0, packagingCost: 340 },
+    { sizeMl: 100, label: '100ml Grand Bottle', price: Math.max(2999, Math.round((p50 * 1.72) / 50) * 50 - 1), inStock: 0, packagingCost: 520 }
   ];
 };
 
@@ -54,7 +54,7 @@ export const defaultProductionStages: ProductionStage[] = [
   },
   {
     id: 'bottling',
-    name: 'Flacon Bottling & Pump Crimping',
+    name: 'Bottle Filling & Pump Crimping',
     shortCode: 'Bottling',
     description: 'Filling 50ml French glass bottles, testing fine mist atomizers, and precision crimping gold collars.',
     typicalDays: 1,
@@ -70,8 +70,8 @@ export const defaultProductionStages: ProductionStage[] = [
   },
   {
     id: 'stocked',
-    name: 'Ready Flacons in Finished Stock',
-    shortCode: 'Ready Flacons',
+    name: 'Ready Bottles in Finished Stock',
+    shortCode: 'Ready Bottles',
     description: 'Packaged in rigid presentation slide boxes with atomizers primed, ready for client delivery.',
     typicalDays: 0,
     color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30'

@@ -20,7 +20,7 @@ export interface RecipeIngredient {
 
 export interface BottleSizeOption {
   sizeMl: number;         // e.g. 15, 30, 50, 100
-  label: string;          // e.g. "15ml Travel Spray", "30ml Studio Flacon", "50ml Signature Flacon", "100ml Grand Flacon"
+  label: string;          // e.g. "15ml Travel Spray", "30ml Studio Bottle", "50ml Signature Bottle", "100ml Grand Bottle"
   price: number;          // in INR
   inStock: number;        // units available in this size
   packagingCost?: number; // packaging cost for this bottle size
@@ -90,7 +90,7 @@ export interface Order {
   recipeId: string;
   recipeName: string;
   bottleSizeMl?: number; // e.g. 15, 30, 50, 100
-  bottleSizeLabel?: string; // e.g. "50ml Signature Flacon" or "15ml Travel Spray"
+  bottleSizeLabel?: string; // e.g. "50ml Signature Bottle" or "15ml Travel Spray"
   discoveryItems?: string[]; // Names of the 3 selected sample vials
   bottleSerial: string; // e.g. "Bottle 04 of 10" or "Discovery Set Box #08"
   price: number; // in INR

@@ -115,7 +115,7 @@ export const PricingLab: React.FC = () => {
         <div className="flex justify-between items-start gap-2">
           <div>
             <span className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono">
-              Direct Retail Price (50ml Flacon)
+              Direct Retail Price (50ml Bottle)
               {saveToast && (
                 <span className="text-[10px] text-emerald-400 font-normal flex items-center gap-0.5 animate-pulse font-mono">
                   <Check className="w-3 h-3" /> Updated
@@ -175,7 +175,7 @@ export const PricingLab: React.FC = () => {
           <div className="bg-[#14100d] p-3 rounded-2xl border border-amber-500/15">
             <span className="text-[10px] text-stone-400 uppercase font-bold flex items-center gap-1 font-mono">
               <TrendingUp className="w-3 h-3 text-emerald-400" />
-              Net Profit / Flacon
+              Net Profit / Bottle
             </span>
             <div className={`text-xl font-extrabold font-mono mt-1 ${netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
               ₹{Math.round(netProfit).toLocaleString('en-IN')}
@@ -208,7 +208,7 @@ export const PricingLab: React.FC = () => {
             50ml Unit Cost Breakdown (COGS)
           </h3>
           <span className="text-xs font-bold text-amber-300 font-mono">
-            Total ₹{Math.round(totalCogs)} / flacon
+            Total ₹{Math.round(totalCogs)} / bottle
           </span>
         </div>
 
@@ -225,9 +225,9 @@ export const PricingLab: React.FC = () => {
 
           <div className="p-3 rounded-2xl bg-[#14100d] border border-amber-500/15 flex justify-between items-center">
             <div>
-              <span className="font-bold text-stone-200">French Glass Flacon, Atomizer & Tag</span>
+              <span className="font-bold text-stone-200">Glass Bottle, Atomizer & Tag</span>
               <p className="text-[10px] text-stone-500 font-sans">
-                Heavy base 50ml flacon + magnetic atomizer + metallic neck label
+                Heavy base 50ml bottle + magnetic atomizer + metallic neck label
               </p>
             </div>
             <span className="font-bold text-white font-mono">₹{packCost}</span>
@@ -235,7 +235,7 @@ export const PricingLab: React.FC = () => {
         </div>
       </div>
 
-      {/* MULTI-SIZE FLACON PRICING & MARGIN MATRIX */}
+      {/* MULTI-SIZE BOTTLE PRICING & MARGIN MATRIX */}
       <div className="card-luxury rounded-3xl p-4 space-y-3.5 border-amber-500/30">
         <div className="flex justify-between items-center">
           <div>

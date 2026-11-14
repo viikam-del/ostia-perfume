@@ -129,7 +129,7 @@ export const BatchAgingTracker: React.FC = () => {
           <div className="text-xl font-extrabold text-amber-300 mt-1 font-mono">
             {productionStats.inProductionCount}
           </div>
-          <span className="text-[9px] text-amber-500/70 block font-sans">WIP Flacons</span>
+          <span className="text-[9px] text-amber-500/70 block font-sans">WIP Bottles</span>
         </div>
 
         <div className="card-luxury rounded-3xl p-3 border-orange-500/30">
@@ -307,7 +307,7 @@ export const BatchAgingTracker: React.FC = () => {
 
                   <div className="text-right shrink-0">
                     <span className="text-sm font-extrabold text-amber-300 font-mono">
-                      {batch.bottlesPlanned} Flacons
+                      {batch.bottlesPlanned} Bottles
                     </span>
                     <span className="text-[10px] text-stone-400 block font-mono">
                       Yield: {batch.bottlesPlanned * 50}ml
@@ -384,7 +384,7 @@ export const BatchAgingTracker: React.FC = () => {
                     </button>
                   ) : (
                     <div className="w-full py-2 text-center text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl font-mono">
-                      <CheckCircle2 className="w-4 h-4" /> Ready in Stock ({batch.bottlesPlanned} Flacons)
+                      <CheckCircle2 className="w-4 h-4" /> Ready in Stock ({batch.bottlesPlanned} Bottles)
                     </div>
                   )}
                 </div>

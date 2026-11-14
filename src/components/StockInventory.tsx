@@ -47,7 +47,7 @@ export const StockInventory: React.FC = () => {
             Stockroom & Raw Materials
           </h2>
           <p className="text-[11px] text-stone-400 font-sans mt-0.5">
-            Aroma isolates, flacon inventory & INR unit economics
+            Aroma isolates, bottle inventory & INR unit economics
           </p>
         </div>
         <button
@@ -66,7 +66,7 @@ export const StockInventory: React.FC = () => {
           <div>
             <span className="font-bold font-mono">{lowStockCount} items below safety reorder threshold!</span>
             <p className="text-[10px] text-amber-400/80 font-sans mt-0.5">
-              Replenish essential flacons or aroma materials to prevent bottling delays.
+              Replenish essential bottles or aroma materials to prevent bottling delays.
             </p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export const StockInventory: React.FC = () => {
             Studio Inventory Ready
           </h3>
           <p className="text-xs text-stone-400 max-w-xs mx-auto font-sans leading-relaxed">
-            No materials registered yet. Tap "+ Add Stock" above to log your raw oils, alcohol carrier, flacons, pumps, and packaging boxes.
+            No materials registered yet. Tap "+ Add Stock" above to log your raw oils, alcohol carrier, bottles, pumps, and packaging boxes.
           </p>
         </div>
       ) : (
@@ -243,7 +243,7 @@ export const StockInventory: React.FC = () => {
                   >
                     <option value="oil">Aroma Oil (g)</option>
                     <option value="alcohol">Alcohol (ml)</option>
-                    <option value="bottle">Flacon (pc)</option>
+                    <option value="bottle">Bottle (pc)</option>
                     <option value="pump">Atomizer (pc)</option>
                     <option value="label">Label (pc)</option>
                     <option value="box">Box (pc)</option>

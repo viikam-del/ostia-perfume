@@ -40,7 +40,7 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
             </div>
             <div>
               <h3 className="text-sm font-extrabold text-white font-mono uppercase tracking-wide">
-                Flacon Collar Tag & Certificate
+                Bottle Collar Tag & Certificate
               </h3>
               <p className="text-[10px] text-stone-400 font-mono">
                 {batch.batchNumber} • {batch.recipeName}
@@ -77,7 +77,7 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
           </div>
 
           <div className="flex items-center justify-between bg-[#14100d] p-3 rounded-2xl border border-amber-500/15 text-xs font-mono">
-            <span className="text-stone-400">Flacon Size:</span>
+            <span className="text-stone-400">Bottle Size:</span>
             <div className="flex items-center gap-1.5">
               {sizeOptions.map(opt => (
                 <button
@@ -109,7 +109,7 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
                 ✂
               </div>
               <span className="text-[8px] text-stone-500 uppercase tracking-widest mt-0.5 font-mono">
-                Flacon Neck Loop Cutout
+                Bottle Neck Loop Cutout
               </span>
             </div>
 
@@ -153,7 +153,7 @@ export const BottleTagGenerator: React.FC<BottleTagGeneratorProps> = ({ batch, o
               <div className="text-[10px] text-stone-400 flex justify-center gap-3 mt-1 pt-1 border-t border-[#221a14]">
                 <span>{batch.batchNumber}</span>
                 <span>•</span>
-                <span>{selectedSizeMl}ml Flacon ({currentSizeOption.oz})</span>
+                <span>{selectedSizeMl}ml Bottle ({currentSizeOption.oz})</span>
                 <span>•</span>
                 <span>{batch.targetDays} Days Matured</span>
               </div>

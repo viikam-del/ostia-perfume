@@ -241,7 +241,7 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <div className="text-xl font-extrabold text-white font-mono tracking-tight">
-            {totalStockBottles} <span className="text-xs text-stone-400 font-sans font-normal">Flacons</span>
+            {totalStockBottles} <span className="text-xs text-stone-400 font-sans font-normal">Bottles</span>
           </div>
 
           <div className="text-[10px] text-stone-400 truncate font-mono pt-0.5">
@@ -454,7 +454,7 @@ export const Dashboard: React.FC = () => {
                         ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
                         : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'
                     }`}>
-                      {inStock > 0 ? `${inStock} Flacons Ready` : 'Sold Out'}
+                      {inStock > 0 ? `${inStock} Bottles Ready` : 'Sold Out'}
                     </span>
                   </div>
                 </div>

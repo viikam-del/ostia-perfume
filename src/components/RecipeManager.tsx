@@ -246,7 +246,7 @@ export const RecipeManager: React.FC = () => {
               {/* Formulation Ingredients Summary */}
               <div className="text-[11px] text-stone-400 flex items-center justify-between border-t border-[#221a14] pt-2 font-mono">
                 <span>{recipe.ingredients.length} formula oils • {recipe.maturationDaysNeeded}d aging</span>
-                <span className="text-amber-300 font-semibold">{recipe.inStockBottles} flacons ready</span>
+                <span className="text-amber-300 font-semibold">{recipe.inStockBottles} bottles ready</span>
               </div>
 
               {/* Batch Scaler & Actions */}
@@ -541,10 +541,10 @@ export const RecipeManager: React.FC = () => {
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="text-stone-400">Unit COGS:</span>
-                  <span className="text-white font-bold font-mono">₹{Math.round(estimatedUnitCogs)} / flacon</span>
+                  <span className="text-white font-bold font-mono">₹{Math.round(estimatedUnitCogs)} / bottle</span>
                 </div>
                 <div className="flex justify-between items-center text-[11px] pt-1 border-t border-[#221a14]">
-                  <span className="text-emerald-400 font-bold">Net Profit per Flacon:</span>
+                  <span className="text-emerald-400 font-bold">Net Profit per Bottle:</span>
                   <span className="text-emerald-400 font-bold font-mono">
                     ₹{Math.round(netProfit)} ({grossMargin.toFixed(1)}% margin)
                   </span>
